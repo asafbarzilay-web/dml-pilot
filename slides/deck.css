@@ -1,0 +1,47 @@
+/* Shared look for every lesson deck. One slide on screen at a time,
+   16:9, scaled to fit any projector. Arrow keys, space or a click move. */
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #111110; overflow: hidden; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; color: #1C1C1A; }
+.stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+.slide {
+  position: absolute; width: 1280px; height: 720px; background: #FAF9F6;
+  padding: 72px 96px; display: none; flex-direction: column; justify-content: center;
+  transform-origin: center center;
+}
+.slide.on { display: flex; }
+.slide.dark { background: #1C1C1A; color: #F4F4F2; }
+.slide.dark .muted { color: #A8A8A2; }
+.kicker { font-size: 18px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #C2410C; margin: 0 0 18px; }
+.dark .kicker { color: #FB923C; }
+h1 { font-size: 72px; line-height: 1.05; margin: 0 0 24px; letter-spacing: -0.02em; }
+h2 { font-size: 52px; line-height: 1.1; margin: 0 0 28px; letter-spacing: -0.015em; }
+p, li { font-size: 28px; line-height: 1.45; margin: 0 0 14px; }
+.muted { color: #6B6B66; }
+.small { font-size: 22px; }
+ul { margin: 0; padding-left: 30px; }
+.big { font-size: 128px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin: 0 0 12px; }
+.grid { display: grid; gap: 22px; }
+.g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: 1fr 1fr 1fr; } .g4 { grid-template-columns: repeat(4, 1fr); }
+.card { background: #fff; border: 2px solid #E5E3DD; border-radius: 18px; padding: 26px 28px; }
+.dark .card { background: #262624; border-color: #3A3A37; }
+.card .num { font-size: 64px; font-weight: 800; letter-spacing: -0.02em; line-height: 1; margin-bottom: 8px; }
+.card .lbl { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+.card p { font-size: 21px; margin: 0; }
+.accent { color: #C2410C; } .dark .accent { color: #FB923C; }
+.good { color: #15803D; } .bad { color: #B91C1C; }
+table { border-collapse: collapse; font-size: 26px; }
+th, td { padding: 12px 22px; text-align: right; border-bottom: 2px solid #E5E3DD; }
+th:first-child, td:first-child { text-align: left; }
+th { font-size: 20px; color: #6B6B66; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.win { background: #ECFDF3; font-weight: 800; }
+.fill { display: inline-block; border-bottom: 3px solid #C2410C; min-width: 160px; }
+.quote { font-size: 40px; line-height: 1.3; font-weight: 600; }
+.bar { position: fixed; left: 0; bottom: 0; height: 4px; background: #C2410C; transition: width .2s; }
+.count { position: fixed; right: 18px; bottom: 12px; color: #77776F; font-size: 13px; }
+@media print {
+  html, body { overflow: visible; background: #fff; }
+  .stage { position: static; display: block; }
+  .slide { display: flex !important; position: relative; transform: none !important; page-break-after: always; }
+  .bar, .count { display: none; }
+}

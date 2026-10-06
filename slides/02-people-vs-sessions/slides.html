@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>People vs Sessions</title>
+<link rel="stylesheet" href="../deck.css">
+</head>
+<body>
+<div class="stage">
+
+  <section class="slide dark">
+    <p class="kicker">Lesson 2 · People vs sessions</p>
+    <h1>How many people<br>used your app?</h1>
+    <p class="muted">The easiest question in analytics, and almost nobody answers it right.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">A simple question</p>
+    <h2>Stride, a fitness app, had a good month.</h2>
+    <p class="big accent">1,240</p>
+    <p>visits in its database. How many people is that?</p>
+    <p class="muted small">Write your guess down before the next slide.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Three things get called "users"</p>
+    <h2>Each counts something different</h2>
+    <div class="grid g3">
+      <div class="card"><div class="lbl">A visit</div><p>One time the app was opened. Also called a <b>session</b>. The same person makes many.</p></div>
+      <div class="card"><div class="lbl">A browser</div><p>One device and one browser, remembered by a stored id. Clear it, or open a private window, and it's "new".</p></div>
+      <div class="card"><div class="lbl">An account</div><p>Someone who signed in. The closest thing to a person, but only for people who sign in.</p></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">A browser is not a person</p>
+    <h2>It breaks in both directions</h2>
+    <div class="grid g2">
+      <div class="card"><div class="lbl">One person, two devices</div><p>Maya checks Stride on her phone in the morning and on her laptop at work. Two browsers. One Maya. <b class="bad">You count too many.</b></p></div>
+      <div class="card"><div class="lbl">Two people, one device</div><p>A couple share the tablet on the kitchen counter. One browser. Two people. <b class="bad">You count too few.</b></p></div>
+    </div>
+    <p class="muted small" style="margin-top:22px">Signing in is what lets you tell them apart: the same account on two browsers, or two accounts on one.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Some visits aren't visits</p>
+    <h2>Before you count, decide what's in</h2>
+    <ul>
+      <li><b>Your own test runs.</b> You opened the app forty times while building it.</li>
+      <li><b>Another app's rows.</b> Two studies, one table.</li>
+      <li><b>Visits with no clicks.</b> Opened the link, left. A visit, but did they use the app?</li>
+    </ul>
+    <p class="muted small" style="margin-top:18px">None of these is "wrong data". Each is a decision, and the decision belongs next to the number.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Back to Stride</p>
+    <h2>Same data. Four true answers.</h2>
+    <div class="grid g4">
+      <div class="card"><div class="num">1,240</div><div class="lbl">visits</div><p>every session</p></div>
+      <div class="card"><div class="num">610</div><div class="lbl">browsers</div><p>distinct stored ids</p></div>
+      <div class="card"><div class="num">380</div><div class="lbl">accounts</div><p>signed in at least once</p></div>
+      <div class="card"><div class="num accent">540</div><div class="lbl">people</div><p>accounts + browsers that never signed in</p></div>
+    </div>
+    <p style="margin-top:26px">None is a lie. They answer <b>different questions</b>. The lie is printing one under the wrong label.</p>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">Principle · Of whom?</p>
+    <p class="quote">"40% came back" means nothing until you can say:<br><span class="accent">40% of what?</span></p>
+    <p class="muted" style="margin-top:22px">Maya on her phone, then her laptop, looks like two new visitors who never returned. Count by browser and she lowers your return rate. Count by account and she raises it.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Define before you count</p>
+    <h2>Every number gets one sentence</h2>
+    <p class="quote" style="font-size:34px">We count <span class="fill">people</span>, from <span class="fill">visits to Stride in May</span>, excluding <span class="fill">our test runs</span>, because <span class="fill">they aren't users</span>.</p>
+    <p class="muted" style="margin-top:28px">If you can't fill the blanks, you don't know what your number means yet. Neither does your AI assistant.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Principle · Follow one person</p>
+    <h2>Before you trust a total, trace one row</h2>
+    <ul>
+      <li>Pick one browser. List its visits.</li>
+      <li>Did it sign in? As which account? On which other browsers does that account appear?</li>
+      <li>Count that one person by hand, then check your dashboard counts them the same way.</li>
+    </ul>
+    <p class="muted small" style="margin-top:18px">If one person comes out right, the total might be right. If one comes out wrong, the total is wrong.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Your exercise</p>
+    <h2>Build "Who used the app?"</h2>
+    <ul>
+      <li>Load the lesson's practice data into your database.</li>
+      <li>On your dashboard, show <b>visits</b>, <b>browsers</b>, <b>people</b> and <b>how many came back</b>.</li>
+      <li>Under every number: its one-sentence definition.</li>
+      <li>Pass the checker. Then write the memo.</li>
+    </ul>
+    <p class="muted small" style="margin-top:18px">The practice data has traps in it. The checker knows where. It won't tell you.</p>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">Before you say "done"</p>
+    <h2>Three questions</h2>
+    <ul>
+      <li>Does every number say who is in it, and who isn't?</li>
+      <li>If test runs leaked in tomorrow, would any number change? Should it?</li>
+      <li>Did you follow one real person from raw rows to your dashboard?</li>
+    </ul>
+  </section>
+
+</div>
+<script src="../deck.js"></script>
+</body>
+</html>

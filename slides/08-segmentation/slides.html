@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Segmentation</title>
+<link rel="stylesheet" href="../deck.css">
+</head>
+<body>
+<div class="stage">
+
+  <section class="slide dark">
+    <p class="kicker">Lesson 8 · Segmentation</p>
+    <h1>Who does better —<br>and is it real?</h1>
+    <p class="muted">Splitting your users into groups is how you find out what's going on. It's also the fastest way to fool yourself.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">One number hides many groups</p>
+    <h2>A segment is a rule that splits people</h2>
+    <div class="grid g3">
+      <div class="card"><div class="lbl">By device</div><p>Mobile or desktop.</p></div>
+      <div class="card"><div class="lbl">By source</div><p>Where they came from: the link they clicked, the ad, the email.</p></div>
+      <div class="card"><div class="lbl">By history</div><p>First visit or returning. New account or old.</p></div>
+    </div>
+    <p style="margin-top:26px">Good segments are chosen <b>before</b> you look at the results. Segments chosen after are usually the ones that told the story you wanted.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Forko, a food-delivery app</p>
+    <h2>Checkout completion, by device</h2>
+    <div class="grid g2" style="max-width:820px">
+      <div class="card"><div class="num">47.9%</div><div class="lbl">Mobile</div><p>1,000 visits</p></div>
+      <div class="card"><div class="num good">59.3%</div><div class="lbl">Desktop</div><p>800 visits</p></div>
+    </div>
+    <p class="quote" style="font-size:32px;margin-top:30px">"Mobile checkout is broken. Let's redesign it."</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Now split by where they came from</p>
+    <h2>Mobile wins. Everywhere.</h2>
+    <table>
+      <thead><tr><th>Source</th><th>Mobile</th><th>Desktop</th></tr></thead>
+      <tbody>
+        <tr><td>TikTok ad</td><td class="win">38%</td><td>30%</td></tr>
+        <tr><td>Google search</td><td class="win">71%</td><td>66%</td></tr>
+        <tr><td><b>All visits</b></td><td>47.9%</td><td class="win">59.3%</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:26px">Within every source, mobile does better. Overall, mobile does worse. Both are true.</p>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">How can both be true?</p>
+    <h2>The groups aren't mixed the same way</h2>
+    <div class="grid g2">
+      <div class="card"><div class="num accent">70%</div><div class="lbl">of mobile visits</div><p>come from the TikTok ad, the weakest source.</p></div>
+      <div class="card"><div class="num">19%</div><div class="lbl">of desktop visits</div><p>come from the TikTok ad. Most come from Google, the strongest.</p></div>
+    </div>
+    <p class="muted" style="margin-top:24px">This is called <b>Simpson's paradox</b>. The overall gap isn't about devices at all. It's about where each device's traffic comes from.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Small groups lie</p>
+    <h2>The best segment is often the tiniest</h2>
+    <p>Forko's newsletter readers on mobile: <b>9 visits, 8 checkouts. 89%.</b></p>
+    <p>One more visit that doesn't check out, and it's 80%. Two, and it's 73%.</p>
+    <p class="muted" style="margin-top:20px">Decide a minimum size before you look, and show the size next to every rate. A rate without its count is half a number.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Principle · Same name, same thing?</p>
+    <h2>Check your labels before you split on them</h2>
+    <div class="grid g2">
+      <div class="card"><div class="lbl">One thing, two names</div><p>Half the Instagram links say <code>instagram</code>, half say <code>ig</code>. Split by source and Instagram becomes two smaller, weaker-looking segments.</p></div>
+      <div class="card"><div class="lbl">No name at all</div><p>Some visits have no device recorded. They aren't mobile or desktop. Drop them silently and every platform number shifts.</p></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">A segment is a promise</p>
+    <h2>Apply it everywhere, or say where you didn't</h2>
+    <p>You pick "mobile only". The headline changes. The chart below it doesn't. The table at the bottom half does.</p>
+    <p>Nothing on the screen is wrong on its own. Together they describe three different groups of people, and the reader can't tell.</p>
+    <p class="muted" style="margin-top:20px">Every number on the page should say which segment it shows.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Your exercise</p>
+    <h2>Build segments into your dashboard</h2>
+    <ul>
+      <li>Load the lesson's practice data.</li>
+      <li>Define <b>activation</b> and show it overall.</li>
+      <li>Add segments by <b>device</b>, <b>source</b> and <b>new vs returning</b>, applied to every number.</li>
+      <li>Show the size next to every rate. Flag segments too small to trust.</li>
+      <li>Pass the checker. Then write the memo.</li>
+    </ul>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">Before you say "done"</p>
+    <h2>Four questions</h2>
+    <ul>
+      <li>Did you check what values each segment label actually takes?</li>
+      <li>Where did the visits with no value go?</li>
+      <li>Does a gap between two segments survive splitting by a third?</li>
+      <li>Change the segment: does <i>every</i> number on the page change with it?</li>
+    </ul>
+  </section>
+
+</div>
+<script src="../deck.js"></script>
+</body>
+</html>
