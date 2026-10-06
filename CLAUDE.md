@@ -24,6 +24,13 @@ course is about reasoning from data, not about code.
 - `data/` — practice datasets, loaded by running them in the Supabase SQL editor.
 - `checker/` — the lesson checker. Open `checker/?lesson=lesson-01` (and so on) in a browser.
 
+## Links
+The team's site address is in the file `SITE`. Whenever you mention a page, give its full link
+on that site: the home page (`SITE`), the dashboard (`dashboard/`), a lesson's board
+(`dashboard/#unit-01`), raw data (`dashboard/#raw`), checks (`dashboard/#checks`), the app as a test
+run (`app/?test=1`), the database map (`units/database-map.html`), a lesson's slides, exercise
+(`view.html?f=units/unit-01.md`) and checker (`checker/?lesson=lesson-01`).
+
 ## The data
 - `sessions`: one visit. `user_id` is a **browser**, not a person. `app` says which app wrote
   the row; always filter on it. `is_test` = the team's own runs (`?test=1`). `is_synthetic` =

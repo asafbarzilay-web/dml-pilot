@@ -27,6 +27,7 @@ Start at `index.html`: your home page, with the current lesson and every tool.
 5. **Connect the app and dashboard:** put your project's URL and publishable key into
    `supabase-config.js` (*Project Settings → API* and *API Keys*).
 6. **Publish:** turn on GitHub Pages for this repository (*Settings → Pages*, branch `main`).
+   Put the address it gives you into the file `SITE`, so your AI assistant can link to your pages.
 7. **Check capture:** open `dashboard/`, sign in, press *Run the check*. It must say
    "Capture works". If it doesn't, nothing you build will have data.
 

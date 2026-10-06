@@ -21,7 +21,7 @@ own test runs, and any real visits, are never touched.
 
 ## 2. Build: "Who used the app?"
 
-Add a panel to your dashboard's **lesson 2** board that shows:
+Add a panel to [your dashboard's **lesson 2** board](dashboard/#unit-02) that shows:
 
 | Number | What it should tell the reader |
 | --- | --- |
@@ -44,7 +44,7 @@ analysis tidy?** passes before you check your answers.
 
 ## 3. Check yourself
 
-Open **`checker/?lesson=lesson-02`** on your site and answer its questions **from your
+Open [**the lesson 2 checker**](checker/?lesson=lesson-02) and answer its questions **from your
 dashboard**. A wrong answer says "not quite" and nothing else. When all are right, you're done
 with the numbers.
 

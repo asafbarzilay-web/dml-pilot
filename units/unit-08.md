@@ -21,7 +21,7 @@ The metric for this lesson is **activation**: a visit in which the person got in
 In the data, that is a visit with a choice (a row in `selections`) whose value is `discover`:
 they logged in or signed up and reached the home screen.
 
-Add to your dashboard's **lesson 8** board:
+Add to [your dashboard's **lesson 8** board](dashboard/#unit-08):
 
 1. **Activation, overall:** how many visits, how many activated, the rate.
 2. **A segment control** that splits visits by:
@@ -42,7 +42,7 @@ analysis tidy?** passes before you check your answers.
 
 ## 3. Check yourself
 
-Open **`checker/?lesson=lesson-08`** and answer **from your dashboard**. One of the questions
+Open [**the lesson 8 checker**](checker/?lesson=lesson-08) and answer **from your dashboard**. One of the questions
 compares mobile and desktop twice, in two different ways. If the two answers seem to
 disagree, don't fix it: explain it in the memo.
 
