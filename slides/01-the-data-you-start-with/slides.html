@@ -24,6 +24,16 @@
   .type { display: inline-block; font-size: 15px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: #EEEDE8; color: #4A4A45; margin-right: 6px; }
   .side { display: grid; grid-template-columns: 1.15fr 1fr; gap: 36px; align-items: center; }
   .side p, .side li { font-size: 23px; }
+  table.props { font-size: 17px; width: 100%; }
+  table.props th, table.props td { text-align: left; padding: 6px 12px; vertical-align: top; line-height: 1.35; }
+  table.props th { font-size: 14px; }
+  table.props td.c { font-family: ui-monospace, Menlo, monospace; font-weight: 700; white-space: nowrap; }
+  table.props td.c.key { color: #C2410C; }
+  table.props td.ex { font-family: ui-monospace, Menlo, monospace; font-size: 15px; color: #4A4A45; white-space: nowrap; }
+  table.props td.w { color: #B42318; font-size: 15.5px; }
+  table.props .type { font-size: 12.5px; padding: 1px 8px; }
+  .slide.dense { padding: 48px 72px; }
+  .slide.dense h2 { font-size: 40px; margin-bottom: 16px; }
 </style>
 </head>
 <body>
@@ -119,6 +129,68 @@
       <div class="card"><div class="lbl">identities</div><div class="row1">a sign-in</div><p>a scrambled id: same account, same value, never the email</p></div>
     </div>
     <p class="join">Every row of the last three carries the visit's <code>session_id</code>. That is how you put a visit back together.</p>
+  </section>
+
+  <section class="slide dense">
+    <p class="kicker">Table 1 of 4 · sessions</p>
+    <h2>One row = one visit</h2>
+    <table class="props">
+      <tr><th>column</th><th>type</th><th>what it holds</th><th>example</th><th>watch out</th></tr>
+        <tr><td class="c key">session_id</td><td><span class="type">id</span></td><td>The name of this visit. Every row in the other three tables points to it.</td><td class="ex">a41f…</td><td class="w"></td></tr>
+        <tr><td class="c">user_id</td><td><span class="type">id</span></td><td>The browser, remembered in its storage across visits.</td><td class="ex">7c2e…</td><td class="w">Not a person. Another device or a private window is a new id.</td></tr>
+        <tr><td class="c">app</td><td><span class="type">text</span></td><td>Which app wrote the row.</td><td class="ex">lumo</td><td class="w">Several studies can share one table. Always filter on it.</td></tr>
+        <tr><td class="c">platform</td><td><span class="type">text</span></td><td>mobile or desktop, from what the browser reports about the device.</td><td class="ex">mobile</td><td class="w">Can be null: neither mobile nor desktop.</td></tr>
+        <tr><td class="c">browser</td><td><span class="type">text</span></td><td>safari, chrome, firefox, edge or other.</td><td class="ex">safari</td><td class="w"></td></tr>
+        <tr><td class="c">source</td><td><span class="type">text</span></td><td>Where the link came from: <code>?src=</code> in it.</td><td class="ex">instagram</td><td class="w">null = untagged link. One source can arrive under two names.</td></tr>
+        <tr><td class="c">screen_w</td><td><span class="type">number</span></td><td>Width of the window, in pixels.</td><td class="ex">390</td><td class="w"></td></tr>
+        <tr><td class="c">started_at</td><td><span class="type">time</span></td><td>When the visit began.</td><td class="ex">10:02:01</td><td class="w"></td></tr>
+        <tr><td class="c">is_test</td><td><span class="type">true/false</span></td><td>Your own runs, through the <code>?test=1</code> link.</td><td class="ex">false</td><td class="w">Leave them out of every result.</td></tr>
+        <tr><td class="c">is_synthetic</td><td><span class="type">true/false</span></td><td>The course's practice data.</td><td class="ex">false</td><td class="w">Real visits have both flags false.</td></tr>
+    </table>
+    <p class="muted small" style="margin-top:14px">Ten columns, and the two flags decide which visits count at all.</p>
+  </section>
+
+  <section class="slide dense">
+    <p class="kicker">Table 2 of 4 · clicks</p>
+    <h2>One row = one tap</h2>
+    <table class="props">
+      <tr><th>column</th><th>type</th><th>what it holds</th><th>example</th><th>watch out</th></tr>
+        <tr><td class="c key">session_id</td><td><span class="type">id</span></td><td>The visit this tap belongs to.</td><td class="ex">a41f…</td><td class="w"></td></tr>
+        <tr><td class="c">step</td><td><span class="type">text</span></td><td>The screen it happened on.</td><td class="ex">article</td><td class="w"></td></tr>
+        <tr><td class="c">overlay</td><td><span class="type">text</span></td><td>A layer open on top of the screen, if any: a menu, a keyboard.</td><td class="ex">null</td><td class="w">null = nothing on top.</td></tr>
+        <tr><td class="c">x</td><td><span class="type">number</span></td><td>Across the app's frame: 0 = left edge, 1 = right.</td><td class="ex">0.42</td><td class="w">The app's frame, not the screen: phone and laptop compare.</td></tr>
+        <tr><td class="c">y</td><td><span class="type">number</span></td><td>Down the app's frame: 0 = top, 1 = bottom.</td><td class="ex">0.18</td><td class="w"></td></tr>
+        <tr><td class="c">seq</td><td><span class="type">number</span></td><td>1st, 2nd, 3rd tap on <i>this screen</i> in this visit.</td><td class="ex">2</td><td class="w">Restarts on every screen. Order a visit by time, not by seq.</td></tr>
+        <tr><td class="c">hit</td><td><span class="type">text</span></td><td>What it landed on: <code>option</code> (anything pressable), <code>back</code> (back or close), <code>none</code>.</td><td class="ex">none</td><td class="w">none = a tap on nothing. Kept on purpose: it shows expectation.</td></tr>
+        <tr><td class="c">created_at</td><td><span class="type">time</span></td><td>When the tap happened.</td><td class="ex">10:02:31</td><td class="w"></td></tr>
+    </table>
+    <p class="muted small" style="margin-top:14px">Every tap, including the ones that hit nothing.</p>
+  </section>
+
+  <section class="slide dense">
+    <p class="kicker">Table 3 of 4 · selections</p>
+    <h2>One row = one choice</h2>
+    <table class="props">
+      <tr><th>column</th><th>type</th><th>what it holds</th><th>example</th><th>watch out</th></tr>
+        <tr><td class="c key">session_id</td><td><span class="type">id</span></td><td>The visit this choice belongs to.</td><td class="ex">a41f…</td><td class="w"></td></tr>
+        <tr><td class="c">step</td><td><span class="type">text</span></td><td>The screen the choice was made on.</td><td class="ex">home</td><td class="w"></td></tr>
+        <tr><td class="c">value</td><td><span class="type">text</span></td><td>What was chosen: an item, an answer, a destination.</td><td class="ex">article-14</td><td class="w"></td></tr>
+        <tr><td class="c">duration_ms</td><td><span class="type">number</span></td><td>Time on that screen before choosing, in thousandths of a second.</td><td class="ex">5200</td><td class="w">Includes reading and hesitating. 5,200 = 5.2 seconds.</td></tr>
+        <tr><td class="c">created_at</td><td><span class="type">time</span></td><td>When the choice was made.</td><td class="ex">10:02:06</td><td class="w"></td></tr>
+    </table>
+    <p class="muted small" style="margin-top:14px">A choice is what the app reports, not a tap: a tap on a card can produce both a click and a selection.</p>
+  </section>
+
+  <section class="slide dense">
+    <p class="kicker">Table 4 of 4 · identities</p>
+    <h2>One row = one sign-in</h2>
+    <table class="props">
+      <tr><th>column</th><th>type</th><th>what it holds</th><th>example</th><th>watch out</th></tr>
+        <tr><td class="c key">session_id</td><td><span class="type">id</span></td><td>The visit in which the sign-in happened.</td><td class="ex">a41f…</td><td class="w"></td></tr>
+        <tr><td class="c">account</td><td><span class="type">text</span></td><td>The account, scrambled: the same account always gives the same value.</td><td class="ex">9be0d1…</td><td class="w">Never the email, and can't be turned back into one.</td></tr>
+        <tr><td class="c">created_at</td><td><span class="type">time</span></td><td>When the sign-in happened.</td><td class="ex">10:04:57</td><td class="w">Only visits that signed in have a row here.</td></tr>
+    </table>
+    <p class="muted small" style="margin-top:14px">This is the only table that can link one browser to another: the same account on both.</p>
   </section>
 
   <section class="slide">
