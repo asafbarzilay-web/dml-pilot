@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Data You Start With</title>
+<link rel="stylesheet" href="../deck.css">
+<style>
+  .tbl4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .tbl4 .card { padding: 22px 22px; }
+  .tbl4 .card .lbl { font-family: ui-monospace, Menlo, monospace; font-size: 23px; }
+  .tbl4 .card .row1 { font-size: 26px; font-weight: 700; margin: 4px 0 10px; }
+  .tbl4 .card p { font-size: 19px; color: #4A4A45; }
+  .join { text-align: center; color: #6B6B66; font-size: 21px; margin-top: 22px; }
+  .join code, .mono { font-family: ui-monospace, Menlo, monospace; }
+  table.tl { font-size: 21px; }
+  table.tl td, table.tl th { padding: 8px 16px; text-align: left; }
+  table.tl td:first-child { color: #6B6B66; font-variant-numeric: tabular-nums; }
+  table.tl .t { font-family: ui-monospace, Menlo, monospace; font-size: 18px; color: #C2410C; }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <section class="slide dark">
+    <p class="kicker">Lesson 1 · The data you start with</p>
+    <h1>What did the app<br>actually write down?</h1>
+    <p class="muted">Every number in this course is made of raw rows. Know them before you count them.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">A simple question</p>
+    <h2>Noa spends three minutes in Lumo, a reading app.</h2>
+    <p>She scrolls the home page, opens two articles, reads one to the end, saves it, and leaves.</p>
+    <p class="accent" style="font-size:34px;font-weight:700;margin-top:18px">What does Lumo's database know about those three minutes?</p>
+    <p class="muted small">Write your answer down before the next slide.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Recorded vs not</p>
+    <h2>If it isn't a row, it didn't happen</h2>
+    <div class="grid g2">
+      <div class="card"><div class="lbl good">Recorded</div>
+        <p>The visit itself: when, which device and browser, which link she came from.<br>
+           Every tap: which screen, where on it, what it landed on.<br>
+           Every choice the app reports: what, and after how long.<br>
+           A sign-in, as a scrambled account id.</p></div>
+      <div class="card"><div class="lbl bad">Not recorded</div>
+        <p>What she looked at. How far she scrolled. That she read the article to the end.
+           What she thought of it. Anything between two taps.</p>
+        <p style="margin-top:12px"><b>"She read it" is not in the data.</b> "She opened it, and 4 minutes passed before her next tap" is.</p></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Four tables</p>
+    <h2>One visit, and everything that happened in it</h2>
+    <div class="tbl4">
+      <div class="card"><div class="lbl">sessions</div><div class="row1">a visit</div><p>device, browser, source link, start time, and two flags: test run, practice data</p></div>
+      <div class="card"><div class="lbl">clicks</div><div class="row1">a tap</div><p>the screen, x and y in the app's frame, what it hit (<span class="mono">none</span> = nothing)</p></div>
+      <div class="card"><div class="lbl">selections</div><div class="row1">a choice</div><p>the screen, what was chosen, how long the screen was open before it</p></div>
+      <div class="card"><div class="lbl">identities</div><div class="row1">a sign-in</div><p>a scrambled id: same account, same value, never the email</p></div>
+    </div>
+    <p class="join">Every row of the last three carries the visit's <code>session_id</code>. That is how you put a visit back together.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">One visit, as rows</p>
+    <h2>Noa's three minutes</h2>
+    <table class="tl">
+      <tr><th>time</th><th>table</th><th>what the row says</th></tr>
+      <tr><td>10:02:01</td><td class="t">sessions</td><td>a visit on mobile, Safari, from an Instagram link</td></tr>
+      <tr><td>10:02:06</td><td class="t">clicks</td><td>home · hit an article card</td></tr>
+      <tr><td>10:02:06</td><td class="t">selections</td><td>home · chose article 14 · after 5.2 s</td></tr>
+      <tr><td>10:02:31</td><td class="t">clicks</td><td>article · hit <b>none</b> (tapped the headline; it isn't a link)</td></tr>
+      <tr><td>10:02:40</td><td class="t">clicks</td><td>article · hit back</td></tr>
+      <tr><td>10:03:02</td><td class="t">clicks</td><td>home · hit an article card</td></tr>
+      <tr><td>10:04:55</td><td class="t">clicks</td><td>article · hit save</td></tr>
+      <tr><td>10:04:57</td><td class="t">identities</td><td>signed in (saving needs an account)</td></tr>
+    </table>
+    <p class="muted small" style="margin-top:16px">This is the whole story the data can tell. Everything you will ever report about Noa is built from these eight rows.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Four misreadings</p>
+    <h2>The columns that look like something else</h2>
+    <div class="grid g2">
+      <div class="card"><div class="lbl mono">user_id</div><p>Looks like a person. It is a <b>browser</b>. Noa on her laptop tomorrow is a new one.</p></div>
+      <div class="card"><div class="lbl">a sessions row</div><p>Looks like someone using the app. It is a <b>visit</b>, and some visits have no taps at all.</p></div>
+      <div class="card"><div class="lbl mono">is_test · is_synthetic</div><p>Look like the same flag. <b>Test</b> = your own runs. <b>Synthetic</b> = the course's practice data. Real visits: both false.</p></div>
+      <div class="card"><div class="lbl mono">app</div><p>Looks like it's always yours. It is <b>whichever app wrote the row</b>. Two studies can share a table.</p></div>
+    </div>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">Principle · Capture</p>
+    <p class="quote">The page loaded. No error appeared.<br><span class="accent">Zero rows were saved.</span></p>
+    <p class="muted" style="margin-top:22px">Lumo changed one database rule on a Friday. For two weeks every tap was silently refused, and the app looked perfect. The only proof capture works: write a row, then find it.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Who may do what</p>
+    <h2>Nobody can damage collected data, including you</h2>
+    <div class="grid g3">
+      <div class="card"><div class="lbl">The app</div><p>may <b>add</b> rows. Never read, change or delete them.</p></div>
+      <div class="card"><div class="lbl">You, signed in</div><p>may <b>read</b> rows. Never change or delete them.</p></div>
+      <div class="card"><div class="lbl">Your analysis</div><p>is built <b>on top</b>, as views in its own space. The raw rows stay as they were recorded.</p></div>
+    </div>
+    <p class="muted small" style="margin-top:22px">The same goes for your AI assistant. It cannot "clean up" a row it didn't like.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Principle · One definition, one place</p>
+    <h2>Lumo's dashboard had three numbers called "readers"</h2>
+    <div class="grid g3">
+      <div class="card"><div class="num">812</div><p>built in week 2, from visits</p></div>
+      <div class="card"><div class="num">655</div><p>built in week 5, excluding test runs</p></div>
+      <div class="card"><div class="num">590</div><p>built in week 7, from accounts</p></div>
+    </div>
+    <p style="margin-top:24px">None was wrong. Nobody knew which one the board report used. <b>Rule:</b> every number is a view, carrying its one-sentence definition. A second definition of "readers" is a second view, with a different name.</p>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">The trap you can't see</p>
+    <p class="big accent">1,000</p>
+    <p>The most rows the database sends a web page at once. Count taps in the page and you get 1,000, with no error, however many there really were.</p>
+    <p class="muted small" style="margin-top:14px">Lumo's dashboard reported exactly 1,000 taps a day for a week. Count in the database, in a view. Your dashboard shows a red warning when this happens.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Your exercise</p>
+    <h2>Know the rows, then build one view</h2>
+    <ul>
+      <li>Load the practice data. Read <b>the database on one page</b>, then draw it from memory.</li>
+      <li>Use the app with <span class="mono">?test=1</span>. Find your own visit in the raw rows. Does it match what you did?</li>
+      <li>Build <b>Replay a visit</b>: paste a <span class="mono">session_id</span>, see that visit tap by tap. It is your first view.</li>
+      <li>Pass the checker. Then write the memo.</li>
+    </ul>
+    <p class="muted small" style="margin-top:18px">You will use the replay panel in every lesson after this one. It is how you check a number: by following one participant.</p>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">Before you say "done"</p>
+    <h2>Three questions</h2>
+    <ul>
+      <li>Can you say what one row of each table is, without looking?</li>
+      <li>Did you find yourself in the data, and does it match what you did?</li>
+      <li>Did the capture check and the tidiness check both pass?</li>
+    </ul>
+  </section>
+
+</div>
+<script src="../deck.js"></script>
+</body>
+</html>

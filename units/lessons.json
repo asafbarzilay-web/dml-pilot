@@ -4,7 +4,8 @@
     "checker": "lesson-01",
     "n": 1,
     "title": "The data you start with",
-    "question": "What exactly does the app record, and can you follow one visit through it?"
+    "question": "What exactly does the app record, and can you follow one visit through it?",
+    "slides": "slides/01-the-data-you-start-with/slides.html"
   },
   {
     "unit": "unit-02",
