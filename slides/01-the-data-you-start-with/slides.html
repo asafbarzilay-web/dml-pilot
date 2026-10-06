@@ -71,50 +71,25 @@
 
   <section class="slide">
     <p class="kicker">What a database is</p>
-    <h2>Tables of rows and columns</h2>
+    <h2>Six words you need</h2>
     <div class="side">
-      <table class="db">
-        <tr><th>session_id</th><th>platform</th><th>browser</th><th>started_at</th></tr>
-        <tr class="hl"><td>a41f…</td><td>mobile</td><td>safari</td><td>10:02:01</td></tr>
-        <tr><td>c07e…</td><td>desktop</td><td>chrome</td><td>10:05:44</td></tr>
-        <tr><td>e19b…</td><td>mobile</td><td><span class="muted">null</span></td><td>10:11:20</td></tr>
-      </table>
       <div>
-        <p><b>A table</b> holds one kind of thing: here, visits.</p>
-        <p><b>A row</b> is one of them: one visit.</p>
-        <p><b>A column</b> is one fact about each: its browser, its start time.</p>
-        <p><b>A key</b> is the column that names the row: <code>session_id</code>. No two rows share it.</p>
+        <table class="db">
+          <tr><th>session_id</th><th>platform</th><th>started_at</th></tr>
+          <tr class="hl"><td>a41f…</td><td>mobile</td><td>10:02:01</td></tr>
+          <tr><td>e19b…</td><td><span class="muted">null</span></td><td>10:11:20</td></tr>
+        </table>
+        <table class="db" style="margin-top:22px">
+          <tr><th>clicks: session_id</th><th>step</th></tr>
+          <tr class="hl"><td>a41f…</td><td>home</td></tr>
+          <tr class="hl"><td>a41f…</td><td>article</td></tr>
+        </table>
       </div>
-    </div>
-  </section>
-
-  <section class="slide">
-    <p class="kicker">Every column has a type</p>
-    <h2>What a value can be, and what "empty" means</h2>
-    <div class="grid g2" style="gap:18px">
-      <div class="card"><div class="lbl"><span class="type">text</span></div><p>Words: a screen's name, a browser. <code>"ig"</code> and <code>"instagram"</code> are different values to the database.</p></div>
-      <div class="card"><div class="lbl"><span class="type">number</span></div><p>Counts and measures: a screen width, milliseconds on a screen, x and y.</p></div>
-      <div class="card"><div class="lbl"><span class="type">time</span></div><p>A moment, with a time zone: when a visit started, when a tap happened. Order rows by it.</p></div>
-      <div class="card"><div class="lbl"><span class="type">true / false</span></div><p>A flag: is this a test run? Is it practice data?</p></div>
-    </div>
-    <p style="margin-top:22px"><b><code>null</code> means "not known".</b> It is not zero, not "no", not an empty word. A visit with no platform recorded is neither mobile nor desktop.</p>
-  </section>
-
-  <section class="slide">
-    <p class="kicker">Tables point to each other</p>
-    <h2>One visit, many taps</h2>
-    <div class="side">
-      <table class="db">
-        <tr><th>clicks: session_id</th><th>step</th><th>hit</th></tr>
-        <tr class="hl"><td>a41f…</td><td>home</td><td>card</td></tr>
-        <tr class="hl"><td>a41f…</td><td>article</td><td>none</td></tr>
-        <tr class="hl"><td>a41f…</td><td>article</td><td>back</td></tr>
-        <tr><td>c07e…</td><td>home</td><td>card</td></tr>
-      </table>
       <div>
-        <p>A tap doesn't repeat the visit's details. It carries the visit's key, <code>session_id</code>, which <b>points</b> to that visit's row.</p>
-        <p>One visit, many taps: <b>one-to-many</b>.</p>
-        <p>Following the pointer, to bring a tap and its visit together, is called a <b>join</b>. Every analysis you build uses one.</p>
+        <p><b>Table</b>: one kind of thing (visits). <b>Row</b>: one of them. <b>Column</b>: one fact about each.</p>
+        <p><b>Key</b>: the column that names a row, <code>session_id</code>. No two rows share it.</p>
+        <p><b>Type</b>: what a column holds: <span class="type">text</span><span class="type">number</span><span class="type">time</span><span class="type">true/false</span>. <b><code>null</code> means "not known"</b>, never zero or "no".</p>
+        <p><b>Join</b>: a tap carries its visit's key, so one visit links to many taps. Following that link brings them together.</p>
       </div>
     </div>
   </section>
