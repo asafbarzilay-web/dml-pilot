@@ -235,22 +235,6 @@
   </section>
 
   <section class="slide">
-    <p class="kicker">A wrong number with no error</p>
-    <h2>Lumo had 4,312 taps on Monday. Its dashboard said 1,000.</h2>
-    <div class="grid g2">
-      <div class="card"><div class="lbl bad">What the dashboard did</div>
-        <p>Asked the database: <i>"send me every tap from Monday"</i>, then counted them itself.</p>
-        <p style="margin-top:10px">The database never sends more than <b>1,000 rows</b> in one answer. It sent the first 1,000 and stopped, without saying so.</p>
-        <p style="margin-top:10px">The dashboard counted what arrived: <b class="bad">1,000</b>. Every day, for a week.</p></div>
-      <div class="card"><div class="lbl good">What it should do</div>
-        <p>Ask the database: <i>"how many taps on Monday?"</i></p>
-        <p style="margin-top:10px">The database does the counting and sends back a single row.</p>
-        <p style="margin-top:10px">The dashboard shows it: <b class="good">4,312</b>.</p></div>
-    </div>
-    <p class="muted small" style="margin-top:20px">That is why every number is a view: the counting happens in the database. If a page ever receives exactly 1,000 rows, your dashboard shows a red warning.</p>
-  </section>
-
-  <section class="slide">
     <p class="kicker">Your exercise</p>
     <h2>Know the rows, then build one view</h2>
     <ul>
