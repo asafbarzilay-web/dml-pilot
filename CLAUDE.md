@@ -62,6 +62,8 @@ exactly one place, so a number can always be traced and two numbers never quietl
 
 ## Scope
 Read the lesson named in `units/CURRENT`, then its file in `units/`, before building anything.
+When the team starts a lesson, point them to its class slides first: the lesson's `slides` path
+in `units/lessons.json`, opened on their site (also linked from the home page).
 Build only what that lesson asks. If the team asks for more, say it is outside this lesson
 and ask whether to continue.
 

@@ -2,6 +2,11 @@
 
 **The question this lesson asks:** how many people used your app, and how many came back?
 
+## 0. The class slides
+
+Start with [the slides for this lesson](slides/02-people-vs-sessions/slides.html) (arrow keys to move). The
+exercise below assumes you have been through them.
+
 ## 1. Load the practice data
 
 1. In Supabase, open **SQL Editor → New query**.

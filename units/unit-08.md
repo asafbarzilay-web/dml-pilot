@@ -3,6 +3,11 @@
 **The question this lesson asks:** do some groups of visitors do better than others, and is
 the difference real?
 
+## 0. The class slides
+
+Start with [the slides for this lesson](slides/08-segmentation/slides.html) (arrow keys to move). The
+exercise below assumes you have been through them.
+
 ## 1. Load the practice data
 
 1. In Supabase, open **SQL Editor → New query**.

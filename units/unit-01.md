@@ -7,6 +7,11 @@ Before any number, you need to know the raw rows by heart. Every number you buil
 made of them; if you misread them now, every later number inherits the mistake and nothing
 will warn you.
 
+## 0. The class slides
+
+Start with [the slides for this lesson](slides/01-the-data-you-start-with/slides.html) (arrow keys to move). The
+exercise below assumes you have been through them.
+
 ## 1. Load the practice data
 
 1. In Supabase, open **SQL Editor → New query**.
