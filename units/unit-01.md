@@ -16,8 +16,8 @@ will warn you.
 
 ## 2. Read the map
 
-Read `units/database-map.md`. Then, without looking, draw the four tables and how they connect
-on paper. Check your drawing against the map.
+Open **The database on one page** from your home page (`units/database-map.html`). Then draw the
+four tables and how they connect on paper, in your own words, and compare your drawing with the map.
 
 ## 3. Watch yourself being recorded
 
