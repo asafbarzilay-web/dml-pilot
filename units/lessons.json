@@ -1,5 +1,10 @@
 [
   {
+    "n": 0,
+    "title": "Product analytics concepts",
+    "question": "What are funnels, breakdowns, filters and cohorts?"
+  },
+  {
     "unit": "unit-01",
     "checker": "lesson-01",
     "n": 1,
@@ -16,11 +21,51 @@
     "slides": "slides/02-people-vs-sessions/slides.html"
   },
   {
+    "n": 3,
+    "title": "Funnels and drop-off",
+    "question": "Where do people give up on registration?"
+  },
+  {
+    "n": 4,
+    "title": "Tasks: success and time",
+    "question": "Can people do what the app is for, and how long does it take?"
+  },
+  {
+    "n": 5,
+    "title": "Questions and scoring",
+    "question": "What do people think, and how do answers become a measure?"
+  },
+  {
+    "n": 6,
+    "title": "Heatmaps: where taps land",
+    "question": "Where do people tap, and what are they trying to hit?"
+  },
+  {
+    "n": 7,
+    "title": "Missing measurement",
+    "question": "What if the answer isn't in the data?"
+  },
+  {
     "unit": "unit-08",
     "checker": "lesson-08",
     "n": 8,
     "title": "Segmentation",
     "question": "Do some groups do better than others, and is the difference real?",
     "slides": "slides/08-segmentation/slides.html"
+  },
+  {
+    "n": 9,
+    "title": "Your feature",
+    "question": "Did anyone use what you built?"
+  },
+  {
+    "n": 10,
+    "title": "Experiments",
+    "question": "Did the feature cause the change?"
+  },
+  {
+    "n": 11,
+    "title": "Field study",
+    "question": "What is actually true about this app?"
   }
 ]

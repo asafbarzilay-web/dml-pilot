@@ -32,7 +32,8 @@ four tables and how they connect on paper, in your own words, and compare your d
 Add a panel to your dashboard: paste a `session_id`, and it shows that visit as one timeline,
 oldest first: every click, choice and sign-in, with the time, the screen and what happened.
 
-This is your first view. Build it the way every later number will be built:
+This is your first view. First run `analysis/example_taps_per_screen.sql` in Supabase and see its
+panel appear on the dashboard: that is the whole pattern. Then build yours the same way:
 - the timeline is a **view** in the `analysis` schema, with its SQL in `analysis/` and a
   one-sentence definition as its comment (your AI assistant knows the rules);
 - the dashboard only displays it;

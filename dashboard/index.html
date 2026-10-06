@@ -53,10 +53,6 @@
   details summary { cursor: pointer; color: #6B6B66; font-size: 12.5px; }
   details pre { white-space: pre-wrap; font-size: 12px; background: #FAFAF8; padding: 10px; border-radius: 8px; margin: 6px 0 0; }
   td.def { white-space: normal; min-width: 260px; }
-  .start {
-    border: 1.5px dashed #CFCFCA; border-radius: 12px; padding: 28px; text-align: center;
-    color: #6B6B66; font-size: 14px; line-height: 1.6;
-  }
 </style>
 </head>
 <body>
@@ -82,10 +78,12 @@
 
   <!-- Your dashboard grows here. Keep the three cards below: they are how
        you check everything you build. -->
-  <div class="start" id="your-work">
-    This is where your dashboard starts. Every number, chart, filter and segment you
-    build goes here — and every one of them should be checkable against the raw rows below.
-  </div>
+  <!-- An example panel: reads one view and shows it. Copy the pattern. -->
+  <section class="card">
+    <h2>Example · Taps per screen</h2>
+    <p class="muted" id="ex-def"></p>
+    <div class="scroll"><div id="ex-table"></div></div>
+  </section>
   <div style="height:18px"></div>
 
   <section class="card">
@@ -218,11 +216,24 @@
     }</tbody></table>`;
   }
 
+  // The example panel: the view does the counting, the page only shows it.
+  async function loadExample() {
+    const { data, error } = await db.schema('analysis').from('example_taps_per_screen')
+      .select('*').order('taps', { ascending: false });
+    if (error) {
+      $('ex-def').textContent = 'Run analysis/example_taps_per_screen.sql in Supabase (SQL Editor) to see this example.';
+      $('ex-table').innerHTML = ''; return;
+    }
+    $('ex-def').textContent = 'From the view analysis.example_taps_per_screen. Its definition is in the tidiness check below.';
+    $('ex-table').innerHTML = `<table><thead><tr><th>app</th><th>screen</th><th>taps</th></tr></thead><tbody>${
+      data.map(r => `<tr><td>${esc(r.app)}</td><td>${esc(r.screen)}</td><td class="num">${r.taps}</td></tr>`).join('')}</tbody></table>`;
+  }
+
   async function show() {
     const { data: { session } } = await db.auth.getSession();
     $('login-page').hidden = !!session;
     $('dash').hidden = !session;
-    if (session) loadTable();
+    if (session) { loadTable(); loadExample(); }
   }
 
   $('login-form').addEventListener('submit', async (e) => {

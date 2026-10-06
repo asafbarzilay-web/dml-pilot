@@ -37,6 +37,9 @@
   .lesson .t div { color: #6B6B66; font-size: 13.5px; margin-top: 2px; }
   .lesson .go { display: flex; gap: 14px; font-size: 14px; flex: none; }
   .lesson .go a { color: #C2410C; text-decoration: none; }
+  .lesson.later .t b, .lesson.later .n { color: #A8A8A2; }
+  .lesson.later .t div { color: #B5B5AF; }
+  .tool code { background: #F4F4F2; padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
   .tag { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: #FEF0E6; color: #C2410C; margin-left: 6px; }
   @media (max-width: 600px) { .lesson { flex-wrap: wrap; } .lesson .go { width: 100%; padding-left: 50px; } }
 </style>
@@ -44,24 +47,25 @@
 <body>
 <div class="wrap">
   <h1>Your study platform</h1>
-  <p class="lead">An app that records how people use it, a database, and a dashboard you grow over the
-    course. Every number you build must be one you can prove.</p>
+  <p class="lead">An app that records how people use it, and a dashboard you grow into one whose every number you can prove.</p>
 
   <div class="now" id="now">Loading…</div>
 
   <h2>Your tools</h2>
   <div class="grid">
+    <div class="tool"><b>Your AI assistant</b>
+      <span>In Terminal: <code>cd</code> into this folder, type <code>claude</code>, ask "what are we working on?"</span></div>
     <a class="tool" href="dashboard/"><b>Your dashboard</b>
-      <span>Sign in, check capture, check your analysis is tidy, see the raw rows. Everything you build goes here.</span></a>
+      <span>Everything you build goes here.</span></a>
     <div class="tool"><b>The app</b>
-      <span>What participants use. Your own runs go through the test link, so they are marked as tests.</span>
+      <span>Use the test link yourself, so your runs are marked as tests.</span>
       <div class="links"><a href="app/?test=1">Open a test run</a><a href="app/">Participant link</a></div></div>
     <a class="tool" href="units/database-map.html"><b>The database on one page</b>
-      <span>The four tables, how they connect, and the four things people get wrong.</span></a>
+      <span>The four tables and every column.</span></a>
     <a class="tool" href="view.html?f=analysis/README.md"><b>How your analysis is kept</b>
-      <span>One view per number, with its definition. The rules your AI assistant follows.</span></a>
+      <span>One view per number, with an example.</span></a>
     <a class="tool" href="view.html?f=README.md"><b>Setup guide</b>
-      <span>Creating the database and connecting the app, once at the start.</span></a>
+      <span>Once, at the start.</span></a>
   </div>
 
   <h2>Lessons</h2>
@@ -73,7 +77,7 @@
     fetch('units/lessons.json', { cache: 'no-store' }).then(r => r.json()),
     fetch('units/CURRENT', { cache: 'no-store' }).then(r => r.ok ? r.text() : '').then(t => t.trim())
   ]).then(([lessons, current]) => {
-    const cur = lessons.find(l => l.unit === current) || lessons[0];
+    const cur = lessons.find(l => l.unit === current) || lessons.find(l => l.unit);
     const brief = l => `view.html?f=units/${l.unit}.md`;
     const checker = l => `checker/?lesson=${l.checker}`;
     document.getElementById('now').innerHTML = `
@@ -86,10 +90,10 @@
         ${cur.slides ? `<a class="btn ghost" href="${esc(cur.slides)}">Class slides</a>` : ''}
       </div>`;
     document.getElementById('lessons').innerHTML = lessons.map(l => `
-      <div class="lesson ${l === cur ? 'current' : ''}">
+      <div class="lesson ${l === cur ? 'current' : ''} ${l.unit ? '' : 'later'}">
         <div class="n">${l.n}</div>
         <div class="t"><b>${esc(l.title)}</b>${l === cur ? '<span class="tag">now</span>' : ''}<div>${esc(l.question)}</div></div>
-        <div class="go">${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}<a href="${brief(l)}">Exercise</a><a href="${checker(l)}">Checker</a></div>
+        <div class="go">${l.unit ? `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}<a href="${brief(l)}">Exercise</a><a href="${checker(l)}">Checker</a>` : ''}</div>
       </div>`).join('');
   }).catch(() => { document.getElementById('now').textContent = 'Could not load the lessons.'; });
 </script>
