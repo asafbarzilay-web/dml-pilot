@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<!--
+  The starting point of your dashboard. It does three things only:
+  signs you in, checks that capture works, and shows the raw rows.
+  Every metric, chart, filter and segment is yours to build on top.
+-->
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #F4F4F2; color: #1C1C1A;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  [hidden] { display: none !important; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 24px 64px; }
+  header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+  h1 { font-size: 28px; margin: 0; letter-spacing: -0.01em; }
+  h2 { font-size: 17px; margin: 0 0 6px; }
+  .muted { color: #6B6B66; font-size: 13px; line-height: 1.5; }
+  .card { background: #fff; border: 1px solid #E2E2DE; border-radius: 12px; padding: 18px 20px; margin-bottom: 18px; }
+  button {
+    font: inherit; font-size: 14px; cursor: pointer; border-radius: 8px;
+    padding: 8px 14px; border: 1px solid #CFCFCA; background: #fff; color: #1C1C1A;
+  }
+  button.primary { background: #1C1C1A; color: #fff; border-color: #1C1C1A; }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .linkish { background: none; border: none; color: #6B6B66; text-decoration: underline; padding: 0; }
+  input { font: inherit; font-size: 15px; padding: 10px 12px; border: 1px solid #CFCFCA; border-radius: 8px; width: 100%; }
+  .login { max-width: 360px; margin: 12vh auto 0; }
+  .login label { display: block; font-size: 13px; color: #6B6B66; margin: 14px 0 6px; }
+  .login button { margin-top: 18px; width: 100%; }
+  .row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .result { font-size: 14px; }
+  .ok { color: #1F7A3F; }
+  .bad { color: #B42318; }
+  .tabs { display: flex; gap: 6px; margin: 4px 0 14px; flex-wrap: wrap; }
+  .tabs button.on { background: #1C1C1A; color: #fff; border-color: #1C1C1A; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid #EEEEEA; white-space: nowrap; }
+  th { color: #6B6B66; font-weight: 600; background: #FAFAF8; position: sticky; top: 0; }
+  td.num { font-variant-numeric: tabular-nums; }
+  .empty { padding: 24px; text-align: center; color: #6B6B66; font-size: 14px; }
+  .start {
+    border: 1.5px dashed #CFCFCA; border-radius: 12px; padding: 28px; text-align: center;
+    color: #6B6B66; font-size: 14px; line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap login" id="login-page" hidden>
+  <h1>Sign in</h1>
+  <p class="muted">Use the account you created in your Supabase project (Authentication → Users).</p>
+  <form id="login-form">
+    <label for="email">Email</label>
+    <input id="email" type="email" required autocomplete="username">
+    <label for="password">Password</label>
+    <input id="password" type="password" required autocomplete="current-password">
+    <button class="primary" type="submit">Sign in</button>
+    <p class="result bad" id="login-error"></p>
+  </form>
+</div>
+
+<div class="wrap" id="dash" hidden>
+  <header>
+    <h1>Study dashboard</h1>
+    <button class="linkish" id="sign-out">Sign out</button>
+  </header>
+
+  <!-- Your dashboard grows here. Keep the two cards below: the health
+       check and the raw data are how you check everything you build. -->
+  <div class="start" id="your-work">
+    This is where your dashboard starts. Every number, chart, filter and segment you
+    build goes here — and every one of them should be checkable against the raw rows below.
+  </div>
+  <div style="height:18px"></div>
+
+  <section class="card">
+    <h2>Is capture working?</h2>
+    <p class="muted">Records one test visit and one test click as if from the app, then looks for them in the
+      database. If they are not found, the app is recording nothing — even if it looks fine.</p>
+    <div class="row">
+      <button class="primary" id="health-btn">Run the check</button>
+      <span class="result" id="health-result"></span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Raw data</h2>
+    <p class="muted">Exactly what is stored, newest first. Nothing is filtered: test runs, practice data and
+      every app's rows are all here.</p>
+    <div class="tabs" id="tabs"></div>
+    <p class="muted" id="table-count"></p>
+    <div class="scroll"><div id="table"></div></div>
+  </section>
+</div>
+
+<script>
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  // A second client that never signs in: it writes exactly as the app does.
+  const asApp = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false, storageKey: 'health-check' }
+  });
+
+  const TABLES = {
+    sessions:   { order: 'started_at' },
+    clicks:     { order: 'created_at' },
+    selections: { order: 'created_at' },
+    identities: { order: 'created_at' }
+  };
+  let current = 'sessions';
+  const $ = id => document.getElementById(id);
+  const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  function renderTabs() {
+    $('tabs').innerHTML = Object.keys(TABLES).map(t =>
+      `<button data-t="${t}" class="${t === current ? 'on' : ''}">${t}</button>`).join('');
+  }
+
+  async function loadTable() {
+    renderTabs();
+    $('table').innerHTML = '<div class="empty">Loading…</div>';
+    const { count } = await db.from(current).select('*', { count: 'exact', head: true });
+    const { data, error } = await db.from(current).select('*')
+      .order(TABLES[current].order, { ascending: false }).limit(50);
+    if (error) { $('table').innerHTML = `<div class="empty bad">${esc(error.message)}</div>`; return; }
+    $('table-count').textContent = `${count ?? '?'} rows in total · showing the newest ${Math.min(50, data.length)}`;
+    if (!data.length) { $('table').innerHTML = '<div class="empty">No rows yet.</div>'; return; }
+    const cols = Object.keys(data[0]);
+    $('table').innerHTML = `<table><thead><tr>${cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${
+      data.map(r => `<tr>${cols.map(c => {
+        const v = r[c];
+        return `<td class="${typeof v === 'number' ? 'num' : ''}">${v === null ? '<span class="muted">null</span>' : esc(v)}</td>`;
+      }).join('')}</tr>`).join('')}</tbody></table>`;
+  }
+
+  // Writes as the app would, then reads the exact rows back. A check that
+  // only looked for "no error" would pass even when rules silently reject
+  // the write; finding the rows is the only proof.
+  async function healthCheck() {
+    const btn = $('health-btn'), out = $('health-result');
+    btn.disabled = true; out.className = 'result'; out.textContent = 'Checking…';
+    const sid = crypto.randomUUID();
+    const s = await asApp.from('sessions').insert({
+      session_id: sid, user_id: crypto.randomUUID(), app: 'health-check', platform: 'desktop', is_test: true
+    });
+    const c = s.error ? s : await asApp.from('clicks').insert({ session_id: sid, step: 'health', x: 0.5, y: 0.5, seq: 1, hit: 'none' });
+    const back = await db.from('clicks').select('id', { count: 'exact' }).eq('session_id', sid);
+    btn.disabled = false;
+    if (!s.error && !c.error && back.count === 1) {
+      out.className = 'result ok';
+      out.textContent = 'Capture works: the test visit and click were written and found. (Marked as a test, app "health-check".)';
+    } else {
+      out.className = 'result bad';
+      out.textContent = 'Capture is NOT working: ' + ((s.error || c.error || back.error || {}).message
+        || `the rows were written but ${back.count ?? 0} came back.`) + ' Check setup.sql and supabase-config.js.';
+    }
+    loadTable();
+  }
+
+  async function show() {
+    const { data: { session } } = await db.auth.getSession();
+    $('login-page').hidden = !!session;
+    $('dash').hidden = !session;
+    if (session) loadTable();
+  }
+
+  $('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const { error } = await db.auth.signInWithPassword({ email: $('email').value, password: $('password').value });
+    $('login-error').textContent = error ? error.message : '';
+    show();
+  });
+  $('sign-out').addEventListener('click', async () => { await db.auth.signOut(); show(); });
+  $('tabs').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-t]');
+    if (b) { current = b.dataset.t; loadTable(); }
+  });
+  $('health-btn').addEventListener('click', healthCheck);
+  show();
+</script>
+</body>
+</html>

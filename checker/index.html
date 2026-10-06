@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson Checker</title>
+<!--
+  The checker for a lesson: open it as checker/?lesson=lesson-02.
+  Answer each question from YOUR dashboard. It tells you which answers
+  are right, never what the right answer is.
+
+  It holds only a fingerprint of each answer (a one-way scramble), not
+  the answer itself. Your attempts are remembered in this browser.
+-->
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #F4F4F2; color: #1C1C1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #6B6B66; margin: 0 0 6px; }
+  h1 { font-size: 30px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .lead { color: #4A4A45; font-size: 15px; line-height: 1.6; margin: 0 0 28px; }
+  .q { background: #fff; border: 1px solid #E2E2DE; border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; display: grid; grid-template-columns: 28px 1fr; gap: 4px 12px; }
+  .q.right { border-color: #9FD3B0; background: #F5FBF7; }
+  .q.wrong { border-color: #F0B8B2; }
+  .n { font-weight: 700; color: #6B6B66; font-size: 15px; padding-top: 1px; }
+  .text { font-size: 15px; line-height: 1.55; }
+  .answer { grid-column: 2; display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+  input { font: inherit; font-size: 15px; padding: 9px 12px; border: 1px solid #CFCFCA; border-radius: 8px; width: 220px; }
+  .verdict { font-size: 14px; }
+  .right .verdict { color: #1F7A3F; font-weight: 600; }
+  .wrong .verdict { color: #B42318; }
+  .tries { font-size: 12px; color: #8A8A85; }
+  .bar { position: sticky; bottom: 0; background: #F4F4F2; padding: 16px 0 0; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  button { font: inherit; font-size: 15px; font-weight: 600; padding: 12px 24px; border-radius: 10px; border: none; background: #1C1C1A; color: #fff; cursor: pointer; }
+  .score { font-size: 15px; color: #4A4A45; }
+  .all { background: #E8F5EC; border: 1px solid #9FD3B0; border-radius: 12px; padding: 16px 20px; margin-top: 18px; font-size: 15px; line-height: 1.55; }
+  .err { color: #B42318; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow" id="eyebrow">Checker</p>
+  <h1 id="title">Loading…</h1>
+  <p class="lead">Answer from your dashboard, not from a one-off query: the point is that your dashboard
+    gets it right. A wrong answer says "not quite", never why — finding out why is the lesson.</p>
+  <form id="form"></form>
+  <div class="bar"><button form="form" type="submit">Check my answers</button><span class="score" id="score"></span></div>
+  <div class="all" id="all" hidden>Every answer is right. Now write the memo: how you defined each number,
+    what you left out and why, one check that could have failed, and one thing in the data that surprised you.</div>
+</div>
+<script>
+  const lesson = new URLSearchParams(location.search).get('lesson') || 'lesson-02';
+  const KEY = `checker:${lesson}`;
+  let spec = null;
+  const saved = (() => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } })();
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch {} };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // Must match normalize() in generator/sim.mjs exactly.
+  function normalize(kind, value) {
+    const num = () => Number(String(value).replace(/[^0-9.\-]/g, ''));
+    if (kind === 'integer') { const n = Math.round(num()); return Number.isFinite(n) ? String(n) : ''; }
+    if (kind === 'percent') { const n = num(); return Number.isFinite(n) ? n.toFixed(1) : ''; }
+    if (kind === 'decimal') { const n = num(); return Number.isFinite(n) ? n.toFixed(2) : ''; }
+    return String(value).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(Boolean).sort().join(' ');
+  }
+  async function fingerprint(salt, kind, value) {
+    const bytes = new TextEncoder().encode(`${salt}|${normalize(kind, value)}`);
+    const d = await crypto.subtle.digest('SHA-256', bytes);
+    return [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  const hint = { integer: 'a whole number', percent: 'a percentage, one decimal', decimal: 'a number, two decimals', text: 'words' };
+
+  function render(results = {}) {
+    document.getElementById('form').innerHTML = spec.questions.map((q, i) => {
+      const s = saved[q.id] || {};
+      const state = results[q.id] === true || s.right ? 'right' : results[q.id] === false ? 'wrong' : '';
+      return `<div class="q ${state}">
+        <span class="n">${i + 1}</span><div class="text">${esc(q.text)}</div>
+        <div class="answer">
+          <input name="${q.id}" value="${esc(s.value || '')}" placeholder="${hint[q.kind]}" autocomplete="off" ${s.right ? 'readonly' : ''}>
+          <span class="verdict">${state === 'right' ? '✓ Right' : state === 'wrong' ? 'Not quite' : ''}</span>
+          ${s.tries ? `<span class="tries">${s.tries} ${s.tries === 1 ? 'try' : 'tries'}</span>` : ''}
+        </div></div>`;
+    }).join('');
+    const right = spec.questions.filter(q => (saved[q.id] || {}).right).length;
+    document.getElementById('score').textContent = `${right} of ${spec.questions.length} right`;
+    document.getElementById('all').hidden = right !== spec.questions.length;
+  }
+
+  document.getElementById('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = new FormData(e.target), results = {};
+    for (const q of spec.questions) {
+      const value = String(data.get(q.id) || '').trim();
+      const s = saved[q.id] = saved[q.id] || { tries: 0 };
+      if (s.right || !value) continue;
+      if (value === s.value && s.checked) { results[q.id] = false; continue; }   // same wrong answer: no new try
+      s.value = value; s.tries += 1; s.checked = true;
+      s.right = (await fingerprint(spec.salt, q.kind, value)) === q.fingerprint;
+      results[q.id] = s.right;
+    }
+    save(); render(results);
+  });
+
+  fetch(`questions/${lesson}.json`, { cache: 'no-store' })
+    .then(r => { if (!r.ok) throw new Error(`No checker for "${lesson}".`); return r.json(); })
+    .then(j => {
+      spec = j;
+      document.title = `${j.title} · Checker`;
+      document.getElementById('eyebrow').textContent = `Checker · ${j.lesson.replace('lesson-0', 'Lesson ').replace('lesson-', 'Lesson ')}`;
+      document.getElementById('title').textContent = j.title;
+      render();
+    })
+    .catch(err => { document.getElementById('title').innerHTML = `<span class="err">${esc(err.message)}</span>`; });
+</script>
+</body>
+</html>
