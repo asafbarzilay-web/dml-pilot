@@ -8,10 +8,11 @@
 <script src="../supabase-config.js"></script>
 <script src="../core/row-limit-guard.js"></script>
 <!--
-  The starting point of your dashboard. It does three things only:
-  signs you in, checks that capture works, checks that your analysis is
-  tidy, and shows the raw rows.
-  Every metric, chart, filter and segment is yours to build on top.
+  Your dashboard. Three areas:
+    Dashboards  one board per lesson. Your panels go in BOARDS below,
+                under the lesson they belong to.
+    Raw data    the four tables exactly as stored.
+    Checks      is capture working? is your analysis tidy?
 -->
 <style>
   * { box-sizing: border-box; }
@@ -20,12 +21,12 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   }
   [hidden] { display: none !important; }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 24px 64px; }
-  header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
-  h1 { font-size: 28px; margin: 0; letter-spacing: -0.01em; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 24px 16px 64px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+  h1 { font-size: 24px; margin: 0; letter-spacing: -0.01em; }
   h2 { font-size: 17px; margin: 0 0 6px; }
   .muted { color: #6B6B66; font-size: 13px; line-height: 1.5; }
-  .card { background: #fff; border: 1px solid #E2E2DE; border-radius: 12px; padding: 18px 20px; margin-bottom: 18px; }
+  .card { background: #fff; border: 1px solid #E2E2DE; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; }
   button {
     font: inherit; font-size: 14px; cursor: pointer; border-radius: 8px;
     padding: 8px 14px; border: 1px solid #CFCFCA; background: #fff; color: #1C1C1A;
@@ -33,6 +34,7 @@
   button.primary { background: #1C1C1A; color: #fff; border-color: #1C1C1A; }
   button:disabled { opacity: 0.5; cursor: default; }
   .linkish { background: none; border: none; color: #6B6B66; text-decoration: underline; padding: 0; }
+  a.linkish { font-size: 14px; }
   input { font: inherit; font-size: 15px; padding: 10px 12px; border: 1px solid #CFCFCA; border-radius: 8px; width: 100%; }
   .login { max-width: 360px; margin: 12vh auto 0; }
   .login label { display: block; font-size: 13px; color: #6B6B66; margin: 14px 0 6px; }
@@ -41,6 +43,32 @@
   .result { font-size: 14px; }
   .ok { color: #1F7A3F; }
   .bad { color: #B42318; }
+
+  /* The three areas */
+  .areas { display: flex; gap: 4px; background: #E8E8E4; padding: 4px; border-radius: 10px; }
+  .areas button { border: none; background: none; padding: 7px 16px; font-weight: 600; color: #4A4A45; }
+  .areas button.on { background: #fff; color: #1C1C1A; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+
+  /* Dashboards: lessons down the side, the board on the right */
+  .boards { display: grid; grid-template-columns: 220px 1fr; gap: 18px; align-items: start; }
+  .lessons { display: flex; flex-direction: column; gap: 2px; position: sticky; top: 16px; }
+  .lessons button { text-align: left; border: none; background: none; padding: 9px 12px; border-radius: 8px; font-size: 14px; color: #4A4A45; }
+  .lessons button .n { display: inline-block; width: 22px; color: #A8A8A2; font-weight: 700; }
+  .lessons button.on { background: #fff; color: #1C1C1A; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .lessons button.on .n { color: #C2410C; }
+  .lessons .sep { height: 1px; background: #E2E2DE; margin: 6px 4px; }
+  .board-head { margin: 2px 0 14px; }
+  .board-head .kicker { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #C2410C; }
+  .board-head h2 { font-size: 22px; margin: 4px 0 4px; }
+  .placeholder { border: 1.5px dashed #CFCFCA; border-radius: 12px; padding: 26px; text-align: center; color: #6B6B66; font-size: 14px; line-height: 1.6; }
+  .placeholder a { color: #C2410C; }
+  .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 760px) {
+    .boards, .checks { grid-template-columns: 1fr; }
+    .lessons { position: static; flex-direction: row; flex-wrap: wrap; }
+    .lessons .sep { display: none; }
+  }
+
   .tabs { display: flex; gap: 6px; margin: 4px 0 14px; flex-wrap: wrap; }
   .tabs button.on { background: #1C1C1A; color: #fff; border-color: #1C1C1A; }
   .scroll { overflow-x: auto; }
@@ -52,7 +80,7 @@
   .flag { color: #B42318; font-size: 12.5px; }
   details summary { cursor: pointer; color: #6B6B66; font-size: 12.5px; }
   details pre { white-space: pre-wrap; font-size: 12px; background: #FAFAF8; padding: 10px; border-radius: 8px; margin: 6px 0 0; }
-  td.def { white-space: normal; min-width: 260px; }
+  td.def { white-space: normal; min-width: 220px; }
 </style>
 </head>
 <body>
@@ -73,49 +101,57 @@
 <div class="wrap" id="dash" hidden>
   <header>
     <h1>Study dashboard</h1>
-    <button class="linkish" id="sign-out">Sign out</button>
+    <div class="areas" id="areas">
+      <button data-area="boards">Dashboards</button>
+      <button data-area="raw">Raw data</button>
+      <button data-area="checks">Checks</button>
+    </div>
+    <div class="row"><a class="linkish" href="../">Home</a><button class="linkish" id="sign-out">Sign out</button></div>
   </header>
 
-  <!-- Your dashboard grows here. Keep the three cards below: they are how
-       you check everything you build. -->
-  <!-- An example panel: reads one view and shows it. Copy the pattern. -->
-  <section class="card">
-    <h2>Example · Taps per screen</h2>
-    <p class="muted" id="ex-def"></p>
-    <div class="scroll"><div id="ex-table"></div></div>
-  </section>
-  <div style="height:18px"></div>
-
-  <section class="card">
-    <h2>Is capture working?</h2>
-    <p class="muted">Records one test visit and one test click as if from the app, then looks for them in the
-      database. If they are not found, the app is recording nothing — even if it looks fine.</p>
-    <div class="row">
-      <button class="primary" id="health-btn">Run the check</button>
-      <span class="result" id="health-result"></span>
+  <!-- Dashboards: one board per lesson -->
+  <div id="area-boards" class="boards">
+    <nav class="lessons" id="lesson-list"></nav>
+    <div>
+      <div class="board-head" id="board-head"></div>
+      <div id="board"></div>
     </div>
-  </section>
+  </div>
 
-  <section class="card">
-    <h2>Is your analysis tidy?</h2>
-    <p class="muted">Lists every view in your <code>analysis</code> space with its definition. Flags views
-      with no definition, two views with the same definition, and copies of data that will go stale.
-      Every number on this dashboard should come from one of these views.</p>
-    <div class="row">
-      <button class="primary" id="tidy-btn">Run the check</button>
-      <span class="result" id="tidy-result"></span>
-    </div>
-    <div class="scroll"><div id="tidy-list"></div></div>
-  </section>
+  <!-- Raw data -->
+  <div id="area-raw" hidden>
+    <section class="card">
+      <h2>Raw data</h2>
+      <p class="muted">Exactly what is stored, newest first. Nothing is filtered: test runs, practice data and
+        every app's rows are all here.</p>
+      <div class="tabs" id="tabs"></div>
+      <p class="muted" id="table-count"></p>
+      <div class="scroll"><div id="table"></div></div>
+    </section>
+  </div>
 
-  <section class="card">
-    <h2>Raw data</h2>
-    <p class="muted">Exactly what is stored, newest first. Nothing is filtered: test runs, practice data and
-      every app's rows are all here.</p>
-    <div class="tabs" id="tabs"></div>
-    <p class="muted" id="table-count"></p>
-    <div class="scroll"><div id="table"></div></div>
-  </section>
+  <!-- Checks -->
+  <div id="area-checks" class="checks" hidden>
+    <section class="card">
+      <h2>Is capture working?</h2>
+      <p class="muted">Records one test visit and one test click as if from the app, then looks for them in the
+        database. If they are not found, the app is recording nothing, even if it looks fine.</p>
+      <div class="row">
+        <button class="primary" id="health-btn">Run the check</button>
+        <span class="result" id="health-result"></span>
+      </div>
+    </section>
+    <section class="card">
+      <h2>Is your analysis tidy?</h2>
+      <p class="muted">Every view in your <code>analysis</code> space with its definition. Flags views with no
+        definition, two views with the same definition, and copies of data that will go stale.</p>
+      <div class="row">
+        <button class="primary" id="tidy-btn">Run the check</button>
+        <span class="result" id="tidy-result"></span>
+      </div>
+      <div class="scroll"><div id="tidy-list"></div></div>
+    </section>
+  </div>
 </div>
 
 <script>
@@ -124,7 +160,66 @@
   const asApp = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false, storageKey: 'health-check' }
   });
+  const $ = id => document.getElementById(id);
+  const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+  // ===================================================================
+  // YOUR PANELS. One list per lesson; a panel is { title, render(el) }.
+  // render(el) fills the card's body, reading ONE view in `analysis`:
+  //   db.schema('analysis').from('<view>').select('*')
+  // The page shows numbers; the view does the counting.
+  // ===================================================================
+  const BOARDS = {
+    example: [
+      { title: 'Taps per screen', view: 'example_taps_per_screen', render: async (el) => {
+          const { data, error } = await db.schema('analysis').from('example_taps_per_screen')
+            .select('*').order('taps', { ascending: false });
+          if (error) { el.innerHTML = '<p class="muted">Run <code>analysis/example_taps_per_screen.sql</code> in Supabase (SQL Editor) to see this example.</p>'; return; }
+          el.innerHTML = `<div class="scroll"><table><thead><tr><th>app</th><th>screen</th><th>taps</th></tr></thead><tbody>${
+            data.map(r => `<tr><td>${esc(r.app)}</td><td>${esc(r.screen)}</td><td class="num">${r.taps}</td></tr>`).join('')}</tbody></table></div>`;
+        } }
+    ],
+    'unit-01': [],
+    'unit-02': [],
+    'unit-08': []
+  };
+
+  // ---- Dashboards ----------------------------------------------------
+  let lessons = [], board = null;
+
+  async function loadLessons() {
+    const [list, current] = await Promise.all([
+      fetch('../units/lessons.json', { cache: 'no-store' }).then(r => r.json()).catch(() => []),
+      fetch('../units/CURRENT', { cache: 'no-store' }).then(r => r.ok ? r.text() : '').then(t => t.trim()).catch(() => '')
+    ]);
+    lessons = list.filter(l => l.unit);
+    board = board || current || 'example';
+  }
+
+  function renderLessonList() {
+    $('lesson-list').innerHTML =
+      `<button data-b="example" class="${board === 'example' ? 'on' : ''}"><span class="n">·</span>Example</button><div class="sep"></div>` +
+      lessons.map(l => `<button data-b="${l.unit}" class="${board === l.unit ? 'on' : ''}"><span class="n">${l.n}</span>${esc(l.title)}</button>`).join('');
+  }
+
+  async function renderBoard() {
+    renderLessonList();
+    const l = lessons.find(x => x.unit === board);
+    $('board-head').innerHTML = l
+      ? `<div class="kicker">Lesson ${l.n}</div><h2>${esc(l.title)}</h2><div class="muted">${esc(l.question)}</div>`
+      : `<div class="kicker">Example</div><h2>How a panel is built</h2><div class="muted">A view in <code>analysis</code> does the counting; the panel only shows it. Copy this pattern.</div>`;
+    const panels = BOARDS[board] || [];
+    if (!panels.length) {
+      $('board').innerHTML = `<div class="placeholder">Nothing built for this lesson yet.<br>
+        What to build is in <a href="../view.html?f=units/${esc(board)}.md">the exercise</a>. Your panels for it go here.</div>`;
+      return;
+    }
+    $('board').innerHTML = panels.map((p, i) =>
+      `<section class="card"><h2>${esc(p.title)}</h2>${p.view ? `<p class="muted">From <code>analysis.${esc(p.view)}</code></p>` : ''}<div id="panel-${i}"></div></section>`).join('');
+    panels.forEach((p, i) => p.render($(`panel-${i}`)));
+  }
+
+  // ---- Raw data -------------------------------------------------------
   const TABLES = {
     sessions:   { order: 'started_at' },
     clicks:     { order: 'created_at' },
@@ -132,8 +227,6 @@
     identities: { order: 'created_at' }
   };
   let current = 'sessions';
-  const $ = id => document.getElementById(id);
-  const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   function renderTabs() {
     $('tabs').innerHTML = Object.keys(TABLES).map(t =>
@@ -157,6 +250,7 @@
       }).join('')}</tr>`).join('')}</tbody></table>`;
   }
 
+  // ---- Checks ---------------------------------------------------------
   // Writes as the app would, then reads the exact rows back. A check that
   // only looked for "no error" would pass even when rules silently reject
   // the write; finding the rows is the only proof.
@@ -178,7 +272,6 @@
       out.textContent = 'Capture is NOT working: ' + ((s.error || c.error || back.error || {}).message
         || `the rows were written but ${back.count ?? 0} came back.`) + ' Check setup.sql and supabase-config.js.';
     }
-    loadTable();
   }
 
   // Everything in the analysis space, with what is wrong with each. A view's
@@ -202,38 +295,38 @@
       norm(v.definition) && byDef.get(norm(v.definition)).length > 1 &&
         `same definition as ${byDef.get(norm(v.definition)).filter(n => n !== v.name).join(', ')}`
     ].filter(Boolean);
-    const bad = data.filter(v => problems(v).length).length;
     if (!data.length) {
       out.className = 'result'; out.textContent = 'Nothing in your analysis space yet.';
       $('tidy-list').innerHTML = ''; return;
     }
+    const bad = data.filter(v => problems(v).length).length;
     out.className = bad ? 'result bad' : 'result ok';
     out.textContent = bad ? `${bad} of ${data.length} need attention.` : `Tidy: ${data.length} view${data.length === 1 ? '' : 's'}, each with its own definition.`;
-    $('tidy-list').innerHTML = `<table><thead><tr><th>name</th><th>definition</th><th></th></tr></thead><tbody>${
+    $('tidy-list').innerHTML = `<table><thead><tr><th>name</th><th>definition</th></tr></thead><tbody>${
       data.map(v => `<tr><td>analysis.${esc(v.name)}</td><td class="def">${v.definition ? esc(v.definition) : '<span class="muted">none</span>'}${
         problems(v).map(p => `<div class="flag">${esc(p)}</div>`).join('')}${
-        v.sql ? `<details><summary>SQL</summary><pre>${esc(v.sql)}</pre></details>` : ''}</td><td>${esc(v.kind)}</td></tr>`).join('')
+        v.sql ? `<details><summary>SQL</summary><pre>${esc(v.sql)}</pre></details>` : ''}</td></tr>`).join('')
     }</tbody></table>`;
   }
 
-  // The example panel: the view does the counting, the page only shows it.
-  async function loadExample() {
-    const { data, error } = await db.schema('analysis').from('example_taps_per_screen')
-      .select('*').order('taps', { ascending: false });
-    if (error) {
-      $('ex-def').textContent = 'Run analysis/example_taps_per_screen.sql in Supabase (SQL Editor) to see this example.';
-      $('ex-table').innerHTML = ''; return;
-    }
-    $('ex-def').textContent = 'From the view analysis.example_taps_per_screen. Its definition is in the tidiness check below.';
-    $('ex-table').innerHTML = `<table><thead><tr><th>app</th><th>screen</th><th>taps</th></tr></thead><tbody>${
-      data.map(r => `<tr><td>${esc(r.app)}</td><td>${esc(r.screen)}</td><td class="num">${r.taps}</td></tr>`).join('')}</tbody></table>`;
+  // ---- Areas, remembered in the address (#raw, #checks, #unit-02) ------
+  function showArea(area) {
+    for (const a of ['boards', 'raw', 'checks']) $(`area-${a}`).hidden = a !== area;
+    $('areas').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.area === area));
+    if (area === 'raw') loadTable();
+    if (area === 'boards') renderBoard();
+    history.replaceState(null, '', '#' + (area === 'boards' ? board : area));
   }
 
   async function show() {
     const { data: { session } } = await db.auth.getSession();
     $('login-page').hidden = !!session;
     $('dash').hidden = !session;
-    if (session) { loadTable(); loadExample(); }
+    if (!session) return;
+    const h = location.hash.slice(1);
+    if (h && h !== 'raw' && h !== 'checks') board = h;
+    await loadLessons();
+    showArea(h === 'raw' || h === 'checks' ? h : 'boards');
   }
 
   $('login-form').addEventListener('submit', async (e) => {
@@ -243,10 +336,9 @@
     show();
   });
   $('sign-out').addEventListener('click', async () => { await db.auth.signOut(); show(); });
-  $('tabs').addEventListener('click', (e) => {
-    const b = e.target.closest('[data-t]');
-    if (b) { current = b.dataset.t; loadTable(); }
-  });
+  $('areas').addEventListener('click', (e) => { const b = e.target.closest('[data-area]'); if (b) showArea(b.dataset.area); });
+  $('lesson-list').addEventListener('click', (e) => { const b = e.target.closest('[data-b]'); if (b) { board = b.dataset.b; showArea('boards'); } });
+  $('tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) { current = b.dataset.t; loadTable(); } });
   $('health-btn').addEventListener('click', healthCheck);
   $('tidy-btn').addEventListener('click', tidyCheck);
   show();

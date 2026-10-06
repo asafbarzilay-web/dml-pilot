@@ -16,7 +16,7 @@ The metric for this lesson is **activation**: a visit in which the person got in
 In the data, that is a visit with a choice (a row in `selections`) whose value is `discover`:
 they logged in or signed up and reached the home screen.
 
-Add to your dashboard:
+Add to your dashboard's **lesson 8** board:
 
 1. **Activation, overall:** how many visits, how many activated, the rate.
 2. **A segment control** that splits visits by:

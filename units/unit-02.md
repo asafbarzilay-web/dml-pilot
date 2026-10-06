@@ -16,7 +16,7 @@ own test runs, and any real visits, are never touched.
 
 ## 2. Build: "Who used the app?"
 
-Add a panel to your dashboard that shows:
+Add a panel to your dashboard's **lesson 2** board that shows:
 
 | Number | What it should tell the reader |
 | --- | --- |

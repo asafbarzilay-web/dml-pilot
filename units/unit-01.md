@@ -29,7 +29,7 @@ four tables and how they connect on paper, in your own words, and compare your d
 
 ## 4. Build: "Replay a visit"
 
-Add a panel to your dashboard: paste a `session_id`, and it shows that visit as one timeline,
+Add a panel to your dashboard's **lesson 1** board: paste a `session_id`, and it shows that visit as one timeline,
 oldest first: every click, choice and sign-in, with the time, the screen and what happened.
 
 This is your first view. First run `analysis/example_taps_per_screen.sql` in Supabase and see its
