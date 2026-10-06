@@ -25,8 +25,6 @@
   a.tool:hover { border-color: #C2410C; }
   .tool b { display: block; font-size: 16px; margin-bottom: 4px; }
   .tool span { color: #6B6B66; font-size: 13.5px; line-height: 1.5; }
-  .tool .links { margin-top: 10px; display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; }
-  .tool .links a { color: #C2410C; text-decoration: none; }
   .lessons { background: #fff; border: 1px solid #E2E2DE; border-radius: 14px; overflow: hidden; }
   .lesson { display: flex; align-items: center; gap: 16px; padding: 14px 20px; border-top: 1px solid #EEEEEA; }
   .lesson:first-child { border-top: none; }
@@ -37,6 +35,13 @@
   .lesson .t div { color: #6B6B66; font-size: 13.5px; margin-top: 2px; }
   .lesson .go { display: flex; gap: 14px; font-size: 14px; flex: none; }
   .lesson .go a { color: #C2410C; text-decoration: none; }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+  .setup { flex: none; background: #fff; border: 1.5px solid #C2410C; border-radius: 12px; padding: 12px 16px; text-decoration: none; color: #1C1C1A; margin-top: 6px; }
+  .setup b { display: block; font-size: 15px; }
+  .setup span { font-size: 13px; color: #C2410C; }
+  .tip { font-size: 14px; color: #4A4A45; margin: 14px 2px 0; line-height: 1.6; }
+  .tip code { background: #E8E8E4; padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+  @media (max-width: 600px) { .top { flex-direction: column; } }
   .lesson.later .t b, .lesson.later .n { color: #A8A8A2; }
   .lesson.later .t div { color: #B5B5AF; }
   .tool code { background: #F4F4F2; padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
@@ -46,28 +51,27 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Your study platform</h1>
-  <p class="lead">An app that records how people use it, and a dashboard you grow into one whose every number you can prove.</p>
+  <div class="top">
+    <div>
+      <h1>Your study platform</h1>
+      <p class="lead">An app that records how people use it, and a dashboard you grow into one whose every number you can prove.</p>
+    </div>
+    <a class="setup" id="setup" href="view.html?f=README.md" hidden><b>One-time setup</b><span>Do this before lesson 1 →</span></a>
+  </div>
 
   <div class="now" id="now">Loading…</div>
 
   <h2>Your tools</h2>
   <div class="grid">
-    <div class="tool"><b>Your AI assistant</b>
-      <span>Open Terminal, type <code>cd&nbsp;</code>, drag your team's folder into the window, press Enter.
-        Then type <code>claude</code> and ask "what are we working on?"</span></div>
     <a class="tool" href="dashboard/"><b>Your dashboard</b>
       <span>Everything you build goes here.</span></a>
-    <div class="tool"><b>The app</b>
-      <span>Use the test link yourself, so your runs are marked as tests.</span>
-      <div class="links"><a href="app/?test=1">Open a test run</a><a href="app/">Participant link</a></div></div>
-    <a class="tool" href="units/database-map.html"><b>The database on one page</b>
+    <a class="tool" href="app/?test=1"><b>The app</b>
+      <span>A test run: your own visits are marked as tests.</span></a>
+    <a class="tool" href="units/database-map.html"><b>The database</b>
       <span>The four tables and every column.</span></a>
-    <a class="tool" href="view.html?f=analysis/README.md"><b>How your analysis is kept</b>
-      <span>One view per number, with an example.</span></a>
-    <a class="tool" href="view.html?f=README.md"><b>Setup guide</b>
-      <span>Once, at the start.</span></a>
   </div>
+  <p class="tip"><b>Your AI assistant:</b> open Terminal, type <code>cd&nbsp;</code>, drag your team's folder into
+    the window, press Enter, then type <code>claude</code>.</p>
 
   <h2>Lessons</h2>
   <div class="lessons" id="lessons"></div>
@@ -86,10 +90,12 @@
       <h3>${esc(cur.title)}</h3>
       <p>${esc(cur.question)}</p>
       <div class="actions">
-        <a class="btn light" href="${brief(cur)}">Read the exercise</a>
-        <a class="btn ghost" href="${checker(cur)}">Check your answers</a>
-        ${cur.slides ? `<a class="btn ghost" href="${esc(cur.slides)}">Class slides</a>` : ''}
+        ${cur.slides ? `<a class="btn light" href="${esc(cur.slides)}">1 · Class slides</a>` : ''}
+        <a class="btn ${cur.slides ? 'ghost' : 'light'}" href="${brief(cur)}">2 · The exercise</a>
+        <a class="btn ghost" href="${checker(cur)}">3 · Check your answers</a>
       </div>`;
+    // Setup is needed before lesson 1 only: lesson 1 can't be done without it.
+    document.getElementById('setup').hidden = cur.n > 1;
     document.getElementById('lessons').innerHTML = lessons.map(l => `
       <div class="lesson ${l === cur ? 'current' : ''} ${l.unit ? '' : 'later'}">
         <div class="n">${l.n}</div>
