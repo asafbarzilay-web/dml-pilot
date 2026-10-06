@@ -42,6 +42,12 @@
   .tool .links { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
   .tool .links a { color: #C2410C; text-decoration: none; font-size: 14.5px; font-weight: 600; }
   .tool .links small { display: block; color: #6B6B66; font-weight: 400; font-size: 13px; }
+  .steps { counter-reset: s; list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .steps li { counter-increment: s; background: #fff; border: 1px solid #E2E2DE; border-radius: 14px; padding: 16px 18px 16px 52px; position: relative; font-size: 14px; line-height: 1.5; color: #4A4A45; }
+  .steps li::before { content: counter(s); position: absolute; left: 16px; top: 15px; width: 24px; height: 24px; border-radius: 50%; background: #1C1C1A; color: #fff; font-size: 13px; font-weight: 700; display: grid; place-items: center; }
+  .steps b { display: block; color: #1C1C1A; font-size: 15px; margin-bottom: 2px; }
+  .steps code { background: #F4F4F2; padding: 1px 6px; border-radius: 4px; font-size: 13px; }
+  @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
   .tip { font-size: 14px; color: #4A4A45; margin: 14px 2px 0; line-height: 1.6; }
   .tip code { background: #E8E8E4; padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
   @media (max-width: 600px) { .top { flex-direction: column; } }
@@ -74,8 +80,13 @@
     <a class="tool" href="units/database-map.html"><b>The database</b>
       <span>The four tables and every column.</span></a>
   </div>
-  <p class="tip"><b>Your AI assistant:</b> open Terminal, type <code>cd&nbsp;</code>, drag your team's folder into
-    the window, press Enter, then type <code>claude</code>.</p>
+  <h2>Start your AI assistant</h2>
+  <ol class="steps">
+    <li><b>Open Terminal.</b> Press ⌘ Space, type <i>Terminal</i>, press Enter.</li>
+    <li><b>Go to your team's folder.</b> Type <code>cd</code> and a space. Drag the folder from Finder onto the
+      Terminal window. Press Enter.</li>
+    <li><b>Start it.</b> Type <code>claude</code> and press Enter. Ask: <i>"What are we working on?"</i></li>
+  </ol>
 
   <h2>Lessons</h2>
   <div class="lessons" id="lessons"></div>
