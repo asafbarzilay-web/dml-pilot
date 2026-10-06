@@ -17,6 +17,13 @@
   table.tl td, table.tl th { padding: 8px 16px; text-align: left; }
   table.tl td:first-child { color: #6B6B66; font-variant-numeric: tabular-nums; }
   table.tl .t { font-family: ui-monospace, Menlo, monospace; font-size: 18px; color: #C2410C; }
+  table.db { font-size: 20px; }
+  table.db th, table.db td { text-align: left; padding: 8px 16px; }
+  table.db td { font-family: ui-monospace, Menlo, monospace; font-size: 18px; }
+  table.db .hl { background: #FEF0E6; }
+  .type { display: inline-block; font-size: 15px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: #EEEDE8; color: #4A4A45; margin-right: 6px; }
+  .side { display: grid; grid-template-columns: 1.15fr 1fr; gap: 36px; align-items: center; }
+  .side p, .side li { font-size: 23px; }
 </style>
 </head>
 <body>
@@ -49,6 +56,56 @@
         <p>What she looked at. How far she scrolled. That she read the article to the end.
            What she thought of it. Anything between two taps.</p>
         <p style="margin-top:12px"><b>"She read it" is not in the data.</b> "She opened it, and 4 minutes passed before her next tap" is.</p></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">What a database is</p>
+    <h2>Tables of rows and columns</h2>
+    <div class="side">
+      <table class="db">
+        <tr><th>session_id</th><th>platform</th><th>browser</th><th>started_at</th></tr>
+        <tr class="hl"><td>a41f…</td><td>mobile</td><td>safari</td><td>10:02:01</td></tr>
+        <tr><td>c07e…</td><td>desktop</td><td>chrome</td><td>10:05:44</td></tr>
+        <tr><td>e19b…</td><td>mobile</td><td><span class="muted">null</span></td><td>10:11:20</td></tr>
+      </table>
+      <div>
+        <p><b>A table</b> holds one kind of thing: here, visits.</p>
+        <p><b>A row</b> is one of them: one visit.</p>
+        <p><b>A column</b> is one fact about each: its browser, its start time.</p>
+        <p><b>A key</b> is the column that names the row: <code>session_id</code>. No two rows share it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Every column has a type</p>
+    <h2>What a value can be, and what "empty" means</h2>
+    <div class="grid g2" style="gap:18px">
+      <div class="card"><div class="lbl"><span class="type">text</span></div><p>Words: a screen's name, a browser. <code>"ig"</code> and <code>"instagram"</code> are different values to the database.</p></div>
+      <div class="card"><div class="lbl"><span class="type">number</span></div><p>Counts and measures: a screen width, milliseconds on a screen, x and y.</p></div>
+      <div class="card"><div class="lbl"><span class="type">time</span></div><p>A moment, with a time zone: when a visit started, when a tap happened. Order rows by it.</p></div>
+      <div class="card"><div class="lbl"><span class="type">true / false</span></div><p>A flag: is this a test run? Is it practice data?</p></div>
+    </div>
+    <p style="margin-top:22px"><b><code>null</code> means "not known".</b> It is not zero, not "no", not an empty word. A visit with no platform recorded is neither mobile nor desktop.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Tables point to each other</p>
+    <h2>One visit, many taps</h2>
+    <div class="side">
+      <table class="db">
+        <tr><th>clicks: session_id</th><th>step</th><th>hit</th></tr>
+        <tr class="hl"><td>a41f…</td><td>home</td><td>card</td></tr>
+        <tr class="hl"><td>a41f…</td><td>article</td><td>none</td></tr>
+        <tr class="hl"><td>a41f…</td><td>article</td><td>back</td></tr>
+        <tr><td>c07e…</td><td>home</td><td>card</td></tr>
+      </table>
+      <div>
+        <p>A tap doesn't repeat the visit's details. It carries the visit's key, <code>session_id</code>, which <b>points</b> to that visit's row.</p>
+        <p>One visit, many taps: <b>one-to-many</b>.</p>
+        <p>Following the pointer, to bring a tap and its visit together, is called a <b>join</b>. Every analysis you build uses one.</p>
+      </div>
     </div>
   </section>
 
@@ -107,6 +164,16 @@
       <div class="card"><div class="lbl">Your analysis</div><p>is built <b>on top</b>, as views in its own space. The raw rows stay as they were recorded.</p></div>
     </div>
     <p class="muted small" style="margin-top:22px">The same goes for your AI assistant. It cannot "clean up" a row it didn't like.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Two spaces</p>
+    <h2>The raw tables, and your views on top</h2>
+    <div class="grid g2">
+      <div class="card"><div class="lbl">Raw tables</div><p>The four tables the app writes into. Exactly what was recorded, never changed. The same for every team.</p></div>
+      <div class="card"><div class="lbl">Your views, in <code>analysis</code></div><p>A <b>view</b> is a saved question: "the photo visits, without test runs". It holds no data of its own. Ask it, and it reads the raw tables at that moment, so it is never out of date.</p></div>
+    </div>
+    <p class="muted small" style="margin-top:22px">Everything you build in this course is a view. The raw tables are the evidence; the views are your reading of it.</p>
   </section>
 
   <section class="slide">
