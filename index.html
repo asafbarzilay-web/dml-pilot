@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study Platform</title>
+<!-- The team's home page: the current lesson, the tools, every lesson. -->
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #F4F4F2; color: #1C1C1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 40px 16px 80px; }
+  h1 { font-size: 32px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .lead { color: #4A4A45; font-size: 16px; line-height: 1.6; margin: 0 0 28px; max-width: 680px; }
+  h2 { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6B6B66; margin: 34px 0 12px; }
+  .now { background: #1C1C1A; color: #fff; border-radius: 16px; padding: 24px 26px; }
+  .now .label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #F6B38A; }
+  .now h3 { font-size: 24px; margin: 6px 0 6px; }
+  .now p { margin: 0 0 18px; color: #D6D6D2; font-size: 15px; line-height: 1.5; }
+  .now .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 10px 16px; border-radius: 10px; font-size: 14.5px; font-weight: 600; text-decoration: none; }
+  .btn.light { background: #fff; color: #1C1C1A; }
+  .btn.ghost { border: 1px solid #55554F; color: #fff; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .tool { background: #fff; border: 1px solid #E2E2DE; border-radius: 14px; padding: 18px 20px; color: #1C1C1A; text-decoration: none; display: block; }
+  a.tool:hover { border-color: #C2410C; }
+  .tool b { display: block; font-size: 16px; margin-bottom: 4px; }
+  .tool span { color: #6B6B66; font-size: 13.5px; line-height: 1.5; }
+  .tool .links { margin-top: 10px; display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; }
+  .tool .links a { color: #C2410C; text-decoration: none; }
+  .lessons { background: #fff; border: 1px solid #E2E2DE; border-radius: 14px; overflow: hidden; }
+  .lesson { display: flex; align-items: center; gap: 16px; padding: 14px 20px; border-top: 1px solid #EEEEEA; }
+  .lesson:first-child { border-top: none; }
+  .lesson .n { width: 34px; height: 34px; border-radius: 50%; background: #F4F4F2; display: grid; place-items: center; font-weight: 700; font-size: 14px; flex: none; }
+  .lesson.current .n { background: #C2410C; color: #fff; }
+  .lesson .t { flex: 1; min-width: 0; }
+  .lesson .t b { font-size: 15px; }
+  .lesson .t div { color: #6B6B66; font-size: 13.5px; margin-top: 2px; }
+  .lesson .go { display: flex; gap: 14px; font-size: 14px; flex: none; }
+  .lesson .go a { color: #C2410C; text-decoration: none; }
+  .tag { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: #FEF0E6; color: #C2410C; margin-left: 6px; }
+  @media (max-width: 600px) { .lesson { flex-wrap: wrap; } .lesson .go { width: 100%; padding-left: 50px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Your study platform</h1>
+  <p class="lead">An app that records how people use it, a database, and a dashboard you grow over the
+    course. Every number you build must be one you can prove.</p>
+
+  <div class="now" id="now">Loading…</div>
+
+  <h2>Your tools</h2>
+  <div class="grid">
+    <a class="tool" href="dashboard/"><b>Your dashboard</b>
+      <span>Sign in, check capture, check your analysis is tidy, see the raw rows. Everything you build goes here.</span></a>
+    <div class="tool"><b>The app</b>
+      <span>What participants use. Your own runs go through the test link, so they are marked as tests.</span>
+      <div class="links"><a href="app/?test=1">Open a test run</a><a href="app/">Participant link</a></div></div>
+    <a class="tool" href="view.html?f=units/database-map.md"><b>The database on one page</b>
+      <span>The four tables, how they connect, and the four things people get wrong.</span></a>
+    <a class="tool" href="view.html?f=analysis/README.md"><b>How your analysis is kept</b>
+      <span>One view per number, with its definition. The rules your AI assistant follows.</span></a>
+    <a class="tool" href="view.html?f=README.md"><b>Setup guide</b>
+      <span>Creating the database and connecting the app, once at the start.</span></a>
+  </div>
+
+  <h2>Lessons</h2>
+  <div class="lessons" id="lessons"></div>
+</div>
+<script>
+  const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  Promise.all([
+    fetch('units/lessons.json', { cache: 'no-store' }).then(r => r.json()),
+    fetch('units/CURRENT', { cache: 'no-store' }).then(r => r.ok ? r.text() : '').then(t => t.trim())
+  ]).then(([lessons, current]) => {
+    const cur = lessons.find(l => l.unit === current) || lessons[0];
+    const brief = l => `view.html?f=units/${l.unit}.md`;
+    const checker = l => `checker/?lesson=${l.checker}`;
+    document.getElementById('now').innerHTML = `
+      <div class="label">You are on · Lesson ${cur.n}</div>
+      <h3>${esc(cur.title)}</h3>
+      <p>${esc(cur.question)}</p>
+      <div class="actions">
+        <a class="btn light" href="${brief(cur)}">Read the lesson</a>
+        <a class="btn ghost" href="${checker(cur)}">Check your answers</a>
+      </div>`;
+    document.getElementById('lessons').innerHTML = lessons.map(l => `
+      <div class="lesson ${l === cur ? 'current' : ''}">
+        <div class="n">${l.n}</div>
+        <div class="t"><b>${esc(l.title)}</b>${l === cur ? '<span class="tag">now</span>' : ''}<div>${esc(l.question)}</div></div>
+        <div class="go"><a href="${brief(l)}">Lesson</a><a href="${checker(l)}">Checker</a></div>
+      </div>`).join('');
+  }).catch(() => { document.getElementById('now').textContent = 'Could not load the lessons.'; });
+</script>
+</body>
+</html>
