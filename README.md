@@ -8,9 +8,10 @@ answers real questions — and that you can prove answers them correctly.
 | --- | --- |
 | `app/` | The app participants use (the course's photo app; you will add one feature to it mid-course) |
 | `dashboard/` | Your dashboard. Starts with sign-in, a capture health check and the raw tables |
-| `units/` | The lessons: what to build in each. `units/CURRENT` says which one you're on |
+| `units/` | The lessons: what to build in each. `units/CURRENT` says which one you're on. Start with `database-map.md` |
+| `analysis/` | Your views, one `.sql` file each: the record of every number you build |
 | `data/` | Practice datasets, one per lesson |
-| `checker/` | Checks your answers for a lesson: `checker/?lesson=lesson-02` |
+| `checker/` | Checks your answers for a lesson: `checker/?lesson=lesson-01` |
 | `core/`, `setup.sql` | The capture code and the database setup. Do not edit |
 
 ## Setting up (once, about 10 minutes)
@@ -19,10 +20,12 @@ answers real questions — and that you can prove answers them correctly.
 2. **Create the tables:** in Supabase, *SQL Editor → New query*, paste all of `setup.sql`, *Run*.
    The result shows four tables with 0 rows.
 3. **Create your sign-in:** *Authentication → Users → Add user*, with an email and password.
-4. **Connect the app and dashboard:** put your project's URL and publishable key into
+4. **Let the dashboard read your views:** *Project Settings → Data API*, under *Exposed
+   schemas* add `analysis`, and save.
+5. **Connect the app and dashboard:** put your project's URL and publishable key into
    `supabase-config.js` (*Project Settings → API* and *API Keys*).
-5. **Publish:** turn on GitHub Pages for this repository (*Settings → Pages*, branch `main`).
-6. **Check capture:** open `dashboard/`, sign in, press *Run the check*. It must say
+6. **Publish:** turn on GitHub Pages for this repository (*Settings → Pages*, branch `main`).
+7. **Check capture:** open `dashboard/`, sign in, press *Run the check*. It must say
    "Capture works". If it doesn't, nothing you build will have data.
 
 ## Links to share

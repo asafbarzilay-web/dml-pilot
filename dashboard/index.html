@@ -6,9 +6,11 @@
 <title>Study Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
+<script src="../core/row-limit-guard.js"></script>
 <!--
   The starting point of your dashboard. It does three things only:
-  signs you in, checks that capture works, and shows the raw rows.
+  signs you in, checks that capture works, checks that your analysis is
+  tidy, and shows the raw rows.
   Every metric, chart, filter and segment is yours to build on top.
 -->
 <style>
@@ -47,6 +49,10 @@
   th { color: #6B6B66; font-weight: 600; background: #FAFAF8; position: sticky; top: 0; }
   td.num { font-variant-numeric: tabular-nums; }
   .empty { padding: 24px; text-align: center; color: #6B6B66; font-size: 14px; }
+  .flag { color: #B42318; font-size: 12.5px; }
+  details summary { cursor: pointer; color: #6B6B66; font-size: 12.5px; }
+  details pre { white-space: pre-wrap; font-size: 12px; background: #FAFAF8; padding: 10px; border-radius: 8px; margin: 6px 0 0; }
+  td.def { white-space: normal; min-width: 260px; }
   .start {
     border: 1.5px dashed #CFCFCA; border-radius: 12px; padding: 28px; text-align: center;
     color: #6B6B66; font-size: 14px; line-height: 1.6;
@@ -74,8 +80,8 @@
     <button class="linkish" id="sign-out">Sign out</button>
   </header>
 
-  <!-- Your dashboard grows here. Keep the two cards below: the health
-       check and the raw data are how you check everything you build. -->
+  <!-- Your dashboard grows here. Keep the three cards below: they are how
+       you check everything you build. -->
   <div class="start" id="your-work">
     This is where your dashboard starts. Every number, chart, filter and segment you
     build goes here — and every one of them should be checkable against the raw rows below.
@@ -90,6 +96,18 @@
       <button class="primary" id="health-btn">Run the check</button>
       <span class="result" id="health-result"></span>
     </div>
+  </section>
+
+  <section class="card">
+    <h2>Is your analysis tidy?</h2>
+    <p class="muted">Lists every view in your <code>analysis</code> space with its definition. Flags views
+      with no definition, two views with the same definition, and copies of data that will go stale.
+      Every number on this dashboard should come from one of these views.</p>
+    <div class="row">
+      <button class="primary" id="tidy-btn">Run the check</button>
+      <span class="result" id="tidy-result"></span>
+    </div>
+    <div class="scroll"><div id="tidy-list"></div></div>
   </section>
 
   <section class="card">
@@ -165,6 +183,41 @@
     loadTable();
   }
 
+  // Everything in the analysis space, with what is wrong with each. A view's
+  // definition is the comment on it; one definition must live in one place.
+  async function tidyCheck() {
+    const btn = $('tidy-btn'), out = $('tidy-result');
+    btn.disabled = true; out.className = 'result'; out.textContent = 'Checking…';
+    const { data, error } = await db.rpc('analysis_catalog');
+    btn.disabled = false;
+    if (error) {
+      out.className = 'result bad';
+      out.textContent = `Could not read your analysis space: ${error.message}. Run setup.sql again.`;
+      $('tidy-list').innerHTML = ''; return;
+    }
+    const norm = d => (d || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    const byDef = new Map();
+    for (const v of data) if (norm(v.definition)) byDef.set(norm(v.definition), [...(byDef.get(norm(v.definition)) || []), v.name]);
+    const problems = v => [
+      !norm(v.definition) && 'no definition: add one with comment on view',
+      v.kind !== 'view' && `a ${v.kind}: a copy of the data, which goes stale. Make it a view`,
+      norm(v.definition) && byDef.get(norm(v.definition)).length > 1 &&
+        `same definition as ${byDef.get(norm(v.definition)).filter(n => n !== v.name).join(', ')}`
+    ].filter(Boolean);
+    const bad = data.filter(v => problems(v).length).length;
+    if (!data.length) {
+      out.className = 'result'; out.textContent = 'Nothing in your analysis space yet.';
+      $('tidy-list').innerHTML = ''; return;
+    }
+    out.className = bad ? 'result bad' : 'result ok';
+    out.textContent = bad ? `${bad} of ${data.length} need attention.` : `Tidy: ${data.length} view${data.length === 1 ? '' : 's'}, each with its own definition.`;
+    $('tidy-list').innerHTML = `<table><thead><tr><th>name</th><th>definition</th><th></th></tr></thead><tbody>${
+      data.map(v => `<tr><td>analysis.${esc(v.name)}</td><td class="def">${v.definition ? esc(v.definition) : '<span class="muted">none</span>'}${
+        problems(v).map(p => `<div class="flag">${esc(p)}</div>`).join('')}${
+        v.sql ? `<details><summary>SQL</summary><pre>${esc(v.sql)}</pre></details>` : ''}</td><td>${esc(v.kind)}</td></tr>`).join('')
+    }</tbody></table>`;
+  }
+
   async function show() {
     const { data: { session } } = await db.auth.getSession();
     $('login-page').hidden = !!session;
@@ -184,6 +237,7 @@
     if (b) { current = b.dataset.t; loadTable(); }
   });
   $('health-btn').addEventListener('click', healthCheck);
+  $('tidy-btn').addEventListener('click', tidyCheck);
   show();
 </script>
 </body>

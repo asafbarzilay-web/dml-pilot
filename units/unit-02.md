@@ -31,6 +31,9 @@ Under **every** number, write one sentence:
 
 You decide the definitions. Your AI assistant will ask you for them; that's on purpose.
 
+Every number is a view in `analysis` with its definition as its comment, and **Is your
+analysis tidy?** passes before you check your answers.
+
 **In scope:** the numbers above, their definitions, and anything you need to check them.
 **Not yet:** charts over time, funnels, heatmaps, segments. Those come in later lessons.
 

@@ -8,19 +8,21 @@ course is about reasoning from data, not about code.
 - Edit anything under `core/`, `setup.sql`, `data/` or `checker/`. Capture and the course's
   material live there; if they break, every number after them is wrong and nothing will say so.
 - Delete, truncate or rewrite rows in `sessions`, `clicks`, `selections`, `identities`.
-  Build views and tables in the `analysis` schema instead.
+  Build views in the `analysis` schema instead.
 - Answer a checker question for the team, or compute its answer outside their dashboard.
   The point is that their dashboard gets it right.
 - Change several unrelated things in one step. Commit before every change.
 
 ## The project
-- `app/` — the app participants use (the course's photo app until the team brings its own).
-- `dashboard/` — the team's dashboard. It starts bare: sign-in, a capture health check, raw
-  tables. Everything else is theirs, built here with you.
+- `app/` — the app participants use: the course's photo app. Mid-course the team adds one
+  feature to it.
+- `dashboard/` — the team's dashboard. It starts bare: sign-in, a capture health check, a
+  tidiness check, raw tables. Everything else is theirs, built here with you.
+- `analysis/` — one `.sql` file per view in the database's `analysis` schema. See below.
 - `units/` — one file per lesson: what to build, what is in scope. `units/CURRENT` names the
   lesson they are on.
 - `data/` — practice datasets, loaded by running them in the Supabase SQL editor.
-- `checker/` — the lesson checker. Open `checker/?lesson=lesson-02` in a browser.
+- `checker/` — the lesson checker. Open `checker/?lesson=lesson-01` (and so on) in a browser.
 
 ## The data
 - `sessions`: one visit. `user_id` is a **browser**, not a person. `app` says which app wrote
@@ -32,6 +34,29 @@ course is about reasoning from data, not about code.
   long on that screen (`duration_ms`).
 - `identities`: a sign-in. `account` is a scrambled id for the account: the same account always
   gives the same value.
+
+## How the analysis is built
+The team will add dozens of numbers over the course. These rules keep each definition in
+exactly one place, so a number can always be traced and two numbers never quietly disagree.
+
+1. **Every number comes from a view in the `analysis` schema.** The dashboard only reads a
+   view and displays it. It may ask a view for a slice (`.eq('session_id', …)`), but it does
+   not count, filter or join raw rows itself: the database
+   sends at most 1,000 rows per request, so counting in the page silently comes out too small.
+   (`core/row-limit-guard.js` puts a warning on the page when that happens. Never remove it.)
+2. **One definition, one view.** Before writing a view, look at what exists (`analysis/` and
+   the dashboard's tidiness check). Reuse it or build on it. Build views on views: a population
+   defined once is used by every number that needs it, not re-written in each.
+3. **Each view carries its definition** as a comment, in the team's words:
+   `comment on view analysis.<name> is 'We count …, from …, excluding …';`
+4. **Each view's SQL lives in `analysis/<name>.sql`**: `create or replace view …` followed by
+   its `comment on view …`. You cannot reach the database: write the file, then the team runs
+   it in the Supabase SQL Editor. The file is the record; commit it with the change.
+5. **No copies of data.** No tables or materialized views in `analysis`: they go stale.
+6. **Names say what one row is:** lowercase, plural, plain (`photo_visits`, `people`).
+7. The dashboard reads a view with `db.schema('analysis').from('<name>')`.
+8. Before saying "done", the team runs **Is your analysis tidy?** on the dashboard and it
+   passes.
 
 ## Scope
 Read the lesson named in `units/CURRENT`, then its file in `units/`, before building anything.

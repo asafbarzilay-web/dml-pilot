@@ -29,6 +29,9 @@ Add to your dashboard:
 
 Before you build the control, look at what values `platform` and `source` actually take.
 
+Every number is a view in `analysis` with its definition as its comment, and **Is your
+analysis tidy?** passes before you check your answers.
+
 **In scope:** activation, the three segment types, combining two of them, sizes and warnings.
 **Not yet:** funnels by step, time on screen, heatmaps.
 

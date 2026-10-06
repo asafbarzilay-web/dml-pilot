@@ -3,7 +3,7 @@
 -- -> paste -> Run. Safe to run again.
 --
 -- DO NOT EDIT. These tables are what the app writes into. Build your own
--- views and tables in the `analysis` schema instead (created below).
+-- views in the `analysis` schema instead (created below).
 -- ======================================================================
 
 -- One visit to the app.
@@ -80,11 +80,30 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- Your space. Views and tables you build for your analysis go here.
+-- Your space. The views you build for your analysis go here.
 -- ----------------------------------------------------------------------
 create schema if not exists analysis;
 grant usage on schema analysis to authenticated;
 alter default privileges in schema analysis grant select on tables to authenticated;
+
+-- What is in your space, for the dashboard's "Is your analysis tidy?" check:
+-- every view and table in `analysis`, its definition (the comment you put on
+-- it) and its SQL. Read-only; only a signed-in user may call it.
+create or replace function public.analysis_catalog()
+returns table (name text, kind text, definition text, sql text)
+language sql stable security definer set search_path = ''
+as $$
+  select c.relname::text,
+         case c.relkind when 'v' then 'view' when 'm' then 'materialized view' else 'table' end,
+         pg_catalog.obj_description(c.oid, 'pg_class'),
+         case when c.relkind in ('v', 'm') then pg_catalog.pg_get_viewdef(c.oid, true) end
+  from pg_catalog.pg_class c
+  join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+  where n.nspname = 'analysis' and c.relkind in ('v', 'm', 'r', 'p')
+  order by 1;
+$$;
+revoke all on function public.analysis_catalog() from public, anon;
+grant execute on function public.analysis_catalog() to authenticated;
 
 -- ----------------------------------------------------------------------
 -- Check: four tables, each empty until the app records something.
