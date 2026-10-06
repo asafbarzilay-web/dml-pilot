@@ -45,3 +45,11 @@ th { font-size: 20px; color: #6B6B66; font-weight: 700; text-transform: uppercas
   .slide { display: flex !important; position: relative; transform: none !important; page-break-after: always; }
   .bar, .count { display: none; }
 }
+/* The closing summary: what was learnt, and where to continue alone. */
+.summary { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; align-items: start; }
+.summary ul li { font-size: 22px; line-height: 1.4; margin-bottom: 10px; }
+.summary .lbl { font-size: 17px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6B6B66; margin: 0 0 14px; }
+.links a { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 12px 0; border-top: 2px solid #E5E3DD; color: #1C1C1A; text-decoration: none; font-size: 21px; font-weight: 600; }
+.links a:hover { color: #C2410C; }
+.links a span { font-size: 15px; font-weight: 400; color: #8A8A85; }
+.handin { margin-top: 16px; background: #FEF0E6; border-radius: 14px; padding: 14px 18px; font-size: 18px; line-height: 1.45; }

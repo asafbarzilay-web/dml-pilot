@@ -148,16 +148,30 @@
     <p class="muted small" style="margin-top:18px">You will use the replay panel in every lesson after this one. It is how you check a number: by following one participant.</p>
   </section>
 
-  <section class="slide dark">
-    <p class="kicker">Before you say "done"</p>
-    <h2>Six questions for your team</h2>
-    <div class="grid g2" style="gap:16px">
-      <div class="card"><div class="lbl accent">1 · The tables</div><p>For each of the four tables, what does one row stand for?</p></div>
-      <div class="card"><div class="lbl accent">2 · Your own visit</div><p>Did you find it, and does every row match something you actually did?</p></div>
-      <div class="card"><div class="lbl accent">3 · What's missing</div><p>What did you do that left no row at all? Why not?</p></div>
-      <div class="card"><div class="lbl accent">4 · Your replay</div><p>How do you know it is right? Which visit did you check it against, row by row?</p></div>
-      <div class="card"><div class="lbl accent">5 · The flags</div><p>Could you explain to a teammate why <code>user_id</code> is not a person, and how <code>is_test</code> differs from <code>is_synthetic</code>?</p></div>
-      <div class="card"><div class="lbl accent">6 · The checks</div><p>Did capture and tidiness both pass? Does your view carry its definition, with its SQL in <code>analysis/</code>?</p></div>
+  <section class="slide">
+    <p class="kicker">Lesson 1 · Summary</p>
+    <div class="summary">
+      <div>
+        <p class="lbl">What you learnt</p>
+        <ul>
+        <li>The app records four things: <b>visits, taps, choices and sign-ins</b>. Anything else, it doesn't know.</li>
+        <li>A visit is put back together through its <code>session_id</code>, in order of time.</li>
+        <li><code>user_id</code> is a browser, not a person. <code>is_test</code> and <code>is_synthetic</code> mark different rows. <code>app</code> says whose row it is.</li>
+        <li>Capture is proven by <b>writing a row and finding it</b>, never by the absence of an error.</li>
+        <li>Every number is a <b>view</b> with its definition, so the database does the counting.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="lbl">Your self-study</p>
+        <div class="links">
+        <a data-site="view.html?f=units/unit-01.md">The lesson <span>what to build</span></a>
+        <a data-site="units/database-map.html">The database on one page <span>the map</span></a>
+        <a data-site="app/?test=1">A test run of the app <span>?test=1</span></a>
+        <a data-site="dashboard/">Your dashboard <span>build here</span></a>
+        <a data-site="checker/?lesson=lesson-01">The checker <span>8 questions</span></a>
+        </div>
+        <div class="handin"><b>Hand in:</b> the checker, all correct, and the half-page memo. Its questions are at the end of the lesson.</div>
+      </div>
     </div>
   </section>
 
