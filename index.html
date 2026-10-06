@@ -81,7 +81,7 @@
       <h3>${esc(cur.title)}</h3>
       <p>${esc(cur.question)}</p>
       <div class="actions">
-        <a class="btn light" href="${brief(cur)}">Read the lesson</a>
+        <a class="btn light" href="${brief(cur)}">Read the exercise</a>
         <a class="btn ghost" href="${checker(cur)}">Check your answers</a>
         ${cur.slides ? `<a class="btn ghost" href="${esc(cur.slides)}">Class slides</a>` : ''}
       </div>`;
@@ -89,7 +89,7 @@
       <div class="lesson ${l === cur ? 'current' : ''}">
         <div class="n">${l.n}</div>
         <div class="t"><b>${esc(l.title)}</b>${l === cur ? '<span class="tag">now</span>' : ''}<div>${esc(l.question)}</div></div>
-        <div class="go">${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}<a href="${brief(l)}">Lesson</a><a href="${checker(l)}">Checker</a></div>
+        <div class="go">${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}<a href="${brief(l)}">Exercise</a><a href="${checker(l)}">Checker</a></div>
       </div>`).join('');
   }).catch(() => { document.getElementById('now').textContent = 'Could not load the lessons.'; });
 </script>
