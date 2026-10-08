@@ -191,7 +191,7 @@
       fetch('../units/lessons.json', { cache: 'no-store' }).then(r => r.json()).catch(() => []),
       fetch('../units/CURRENT', { cache: 'no-store' }).then(r => r.ok ? r.text() : '').then(t => t.trim()).catch(() => '')
     ]);
-    lessons = list.filter(l => l.unit);
+    lessons = list.filter(l => l.unit && l.checker);   // slides-only lessons have no board
     board = board || current || 'example';
   }
 

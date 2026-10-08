@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tools and Concepts</title>
+<link rel="stylesheet" href="../deck.css">
+<style>
+  .flow { display: flex; align-items: stretch; gap: 10px; margin-top: 8px; }
+  .flow .card { flex: 1; padding: 18px 16px; text-align: center; }
+  .flow .card .lbl { font-size: 20px; }
+  .flow .card p { font-size: 16px; }
+  .flow .arr { align-self: center; font-size: 30px; color: #C2410C; }
+  .bars { display: flex; align-items: flex-end; gap: 22px; height: 300px; margin-top: 10px; }
+  .bars .b { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .bars .fill { width: 100%; background: #C2410C; border-radius: 8px 8px 0 0; }
+  .bars .fill.light { background: #F6B38A; }
+  .bars .v { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+  .bars .k { font-size: 17px; color: #6B6B66; margin-top: 8px; text-align: center; }
+  table.ev { font-size: 21px; }
+  table.ev th, table.ev td { text-align: left; padding: 8px 18px; }
+  table.ev td { font-family: ui-monospace, Menlo, monospace; font-size: 19px; }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <section class="slide dark">
+    <p class="kicker">Lesson 0 · Tools and concepts</p>
+    <h1>Your tools, and the<br>ideas behind them</h1>
+    <p class="muted">Where you will work, and the words every analytics tool uses.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">The course in one picture</p>
+    <h2>From a tap to a number you can prove</h2>
+    <div class="flow">
+      <div class="card"><div class="lbl">The app</div><p>people use it</p></div><div class="arr">→</div>
+      <div class="card"><div class="lbl">The database</div><p>every tap becomes a row</p></div><div class="arr">→</div>
+      <div class="card"><div class="lbl">Your views</div><p>you define what to count</p></div><div class="arr">→</div>
+      <div class="card"><div class="lbl">Your dashboard</div><p>shows the numbers</p></div><div class="arr">→</div>
+      <div class="card"><div class="lbl">A claim</div><p>you can prove it</p></div>
+    </div>
+    <p class="muted small" style="margin-top:26px">The app and the database are given. Everything from "your views" on is yours to build, one lesson at a time.</p>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">Part 1</p>
+    <h1>Your tools</h1>
+    <p class="muted">Three services and one site. You will use all of them in every lesson.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Your site</p>
+    <h2>Everything starts from your home page</h2>
+    <div class="grid g4">
+      <div class="card"><div class="lbl">Home</div><p>The current lesson: slides, exercise, checker. Your progress.</p></div>
+      <div class="card"><div class="lbl">The app</div><p>What participants use. A test link marks your own visits.</p></div>
+      <div class="card"><div class="lbl">Dashboard</div><p>A board per lesson for what you build, the raw data, and two checks.</p></div>
+      <div class="card"><div class="lbl">Checker</div><p>Questions with exact answers, and your memo.</p></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">GitHub</p>
+    <h2>Where your platform lives, and how it is published</h2>
+    <div class="grid g3">
+      <div class="card"><div class="lbl">Repository</div><p>Every file of your platform: app, dashboard, lessons, your views.</p></div>
+      <div class="card"><div class="lbl">Commits</div><p>Every change is saved with a note. Nothing is lost; any change can be undone.</p></div>
+      <div class="card"><div class="lbl">Pages</div><p>Publishes the repository as your site, a minute after each change.</p></div>
+    </div>
+    <p class="muted small" style="margin-top:22px">Your repository is public. Your data is not in it: it lives in Supabase.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Supabase</p>
+    <h2>Where your data lives</h2>
+    <div class="grid g3">
+      <div class="card"><div class="lbl">Tables</div><p>What the app recorded. You meet all four in lesson 1.</p></div>
+      <div class="card"><div class="lbl">SQL Editor</div><p>Where you run the SQL your assistant writes: practice data, your views.</p></div>
+      <div class="card"><div class="lbl">Your sign-in</div><p>The account your dashboard uses to read the data.</p></div>
+    </div>
+    <p class="muted small" style="margin-top:22px">Nobody can change or delete what was recorded: not you, not your assistant. You build on top of it.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Claude</p>
+    <h2>Your AI assistant</h2>
+    <ul>
+      <li>Works in the cloud, on your repository. Nothing to install.</li>
+      <li>Knows the course: reads the lesson, knows your progress, follows the rules of the platform.</li>
+      <li>Asks before it builds: <b>you</b> define what a number means. It never decides that for you.</li>
+      <li>Writes the views and panels, shows you the SQL to run, and publishes your site.</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Who does what</p>
+    <h2>The split that runs through the course</h2>
+    <div class="grid g3">
+      <div class="card"><div class="lbl accent">You decide</div><p>What a number means, who is in it, what is left out, and whether to believe it.</p></div>
+      <div class="card"><div class="lbl">The assistant builds</div><p>The SQL, the views, the panels, following your definitions.</p></div>
+      <div class="card"><div class="lbl">The platform guarantees</div><p>That capture works, and that your analysis stays tidy.</p></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Every lesson</p>
+    <h2>The same four steps</h2>
+    <div class="flow">
+      <div class="card"><div class="lbl">1 · Slides</div><p>the idea, in class</p></div><div class="arr">→</div>
+      <div class="card"><div class="lbl">2 · Exercise</div><p>build it with your assistant</p></div><div class="arr">→</div>
+      <div class="card"><div class="lbl">3 · Checker</div><p>exact answers, from your dashboard</p></div><div class="arr">→</div>
+      <div class="card"><div class="lbl">4 · Memo</div><p>half a page: why</p></div>
+    </div>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">Part 2</p>
+    <h1>The ideas every<br>analytics tool uses</h1>
+    <p class="muted">You will see them in Mixpanel today. Over the course, you build each one yourself.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Event and property</p>
+    <h2>Brewly, a coffee-ordering app, records what happens</h2>
+    <table class="ev">
+      <tr><th>event</th><th>who</th><th>properties</th></tr>
+      <tr><td>App opened</td><td>u_812</td><td>platform: ios</td></tr>
+      <tr><td>Menu viewed</td><td>u_812</td><td>category: hot drinks</td></tr>
+      <tr><td>Added to cart</td><td>u_812</td><td>drink: flat white · size: large</td></tr>
+      <tr><td>Order placed</td><td>u_812</td><td>price: 4.80 · pickup: 8:15</td></tr>
+    </table>
+    <p style="margin-top:22px"><b>An event</b> is something that happened. <b>Properties</b> describe it. <b>Who</b> is an id. Whether that id is a person is lesson 2.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Funnel</p>
+    <h2>How many get from the first step to the last?</h2>
+    <div class="bars">
+      <div class="b"><div class="v">1,000</div><div class="fill" style="height:100%"></div><div class="k">App opened</div></div>
+      <div class="b"><div class="v">640</div><div class="fill" style="height:64%"></div><div class="k">Menu viewed</div></div>
+      <div class="b"><div class="v">310</div><div class="fill" style="height:31%"></div><div class="k">Added to cart</div></div>
+      <div class="b"><div class="v">220</div><div class="fill" style="height:22%"></div><div class="k">Order placed</div></div>
+    </div>
+    <p class="muted small" style="margin-top:14px">22% of those who opened the app ordered. Behind that number: who counts, in what order, within how long.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Breakdown</p>
+    <h2>The same funnel, split by a property</h2>
+    <div class="bars" style="height:260px">
+      <div class="b"><div class="v">26%</div><div class="fill" style="height:100%"></div><div class="k">iOS</div></div>
+      <div class="b"><div class="v">17%</div><div class="fill light" style="height:65%"></div><div class="k">Android</div></div>
+      <div class="b"><div class="v">12%</div><div class="fill light" style="height:46%"></div><div class="k">Web</div></div>
+    </div>
+    <p class="muted small" style="margin-top:14px">Opened app → ordered, by platform. A breakdown asks: is the number the same for everyone?</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Filter</p>
+    <h2>Choose who is in the number</h2>
+    <div class="grid g3">
+      <div class="card"><div class="num">22%</div><div class="lbl">everyone</div><p>all who opened the app</p></div>
+      <div class="card"><div class="num">31%</div><div class="lbl">returning only</div><p>filter: not their first visit</p></div>
+      <div class="card"><div class="num">9%</div><div class="lbl">first visit only</div><p>filter: first visit</p></div>
+    </div>
+    <p style="margin-top:22px">Same data, three true numbers. A filter changes <b>who</b> is counted, so it belongs next to the number.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Cohort and retention</p>
+    <h2>A group, and whether it comes back</h2>
+    <div class="side" style="display:grid;grid-template-columns:1fr 1.2fr;gap:36px;align-items:center">
+      <div>
+        <p><b>A cohort</b> is a group defined by what its members did: <i>everyone whose first order was in week 1</i>.</p>
+        <p><b>Retention</b> follows that group: what share ordered again in each later week?</p>
+      </div>
+      <div class="bars" style="height:240px">
+        <div class="b"><div class="v">100%</div><div class="fill" style="height:100%"></div><div class="k">week 1</div></div>
+        <div class="b"><div class="v">42%</div><div class="fill" style="height:42%"></div><div class="k">week 2</div></div>
+        <div class="b"><div class="v">31%</div><div class="fill" style="height:31%"></div><div class="k">week 3</div></div>
+        <div class="b"><div class="v">27%</div><div class="fill" style="height:27%"></div><div class="k">week 4</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">In class · Mixpanel</p>
+    <h2>Find each idea in a real tool</h2>
+    <ul>
+      <li>Open the demo project. Find an event and its properties.</li>
+      <li>Build a funnel of three steps. Then break it down by one property.</li>
+      <li>Add a filter. Watch the numbers change, and say who is now in them.</li>
+      <li>Look at retention for one cohort.</li>
+    </ul>
+    <p class="muted" style="margin-top:18px">For every number, ask: who is counted, and who decided?</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Lesson 0 · Summary</p>
+    <div class="summary">
+      <div>
+        <p class="lbl">What you learnt</p>
+        <ul>
+          <li>Your <b>site</b> is home: lessons, app, dashboard, checker.</li>
+          <li><b>GitHub</b> holds and publishes your platform; every change can be undone.</li>
+          <li><b>Supabase</b> holds the data; nobody can change what was recorded.</li>
+          <li>Your <b>assistant</b> builds; <b>you</b> decide what every number means.</li>
+          <li>Events, properties, funnels, breakdowns, filters, cohorts, retention: each one hides a definition.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="lbl">Your self-study</p>
+        <div class="links">
+          <a data-site="view.html?f=README.md">One-time setup <span>before lesson 1</span></a>
+          <a data-site="">Your home page <span>start here</span></a>
+          <a data-site="dashboard/">Your dashboard <span>after setup</span></a>
+        </div>
+        <div class="handin"><b>Before lesson 1:</b> finish the one-time setup, so your app records and your dashboard signs in.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script src="../deck.js"></script>
+</body>
+</html>

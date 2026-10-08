@@ -1,8 +1,10 @@
 [
   {
     "n": 0,
-    "title": "Product analytics concepts",
-    "question": "What are funnels, breakdowns, filters and cohorts?"
+    "unit": "unit-00",
+    "title": "Tools and concepts",
+    "question": "Where will you work, and what are funnels, breakdowns, filters and cohorts?",
+    "slides": "slides/00-tools-and-concepts/slides.html"
   },
   {
     "unit": "unit-01",

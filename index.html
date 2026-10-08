@@ -87,7 +87,7 @@
       <summary><b>Your AI assistant</b><span>How to start it ↓</span></summary>
       <ol>
         <li>Claude app → <b>Code</b> → <b>+ New</b></li>
-        <li>Folder button above the message box → <b class="team">your team's folder</b></li>
+        <li><b>Cloud</b> → <b class="team">your team's repository</b></li>
         <li>Ask: <i>"What are we working on?"</i></li>
       </ol>
     </details>
@@ -108,9 +108,9 @@
   <div id="steps-block">
   <h2>Start your AI assistant</h2>
   <ol class="steps">
-    <li><span class="h">Open the Claude app.</span> Click <b>Code</b> at the top.</li>
-    <li><span class="h">Choose your team's folder.</span> Click <b>+ New</b>. Just above the message box, click the folder
-      button and pick <b class="team">your team's folder</b>.</li>
+    <li><span class="h">Open the Claude app.</span> Click <b>Code</b>, then <b>+ New</b>.</li>
+    <li><span class="h">Choose your repository.</span> Switch <b>Local</b> to <b>Cloud</b>, then pick
+      <b class="team">your team's repository</b>.</li>
     <li><span class="h">Start.</span> Ask: <i>"What are we working on?"</i> It should answer with your current lesson.</li>
   </ol>
   </div>
@@ -119,7 +119,7 @@
   <div class="lessons" id="lessons"></div>
 </div>
 <script>
-  // The team's folder has the same name as its repository, which is the first part of this site's address.
+  // The team's repository name is the first part of this site's address.
   const repo = location.hostname.endsWith('github.io') ? location.pathname.split('/')[1] : '';
   if (repo) document.querySelectorAll('.team').forEach(el => { el.textContent = repo; });
   const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -133,10 +133,11 @@
     const checker = l => `checker/?lesson=${l.checker}`;
     // Progress, from the team's database. A submitted memo means the lesson is done:
     // the checker only allows submitting once every answer is right.
-    const isDone = l => !!(l.unit && (work[l.checker] || {}).memoSubmitted);
+    // A slides-only lesson (no checker) is done once the class has moved past it.
+    const isDone = l => !!(l.unit && (l.checker ? (work[l.checker] || {}).memoSubmitted : l.n < cur.n));
     const rightSoFar = l => (work[l.checker] || {}).right || 0;
     // A lesson before the current one that isn't done: open, marked, and always finishable.
-    const unfinished = l => !!(l.unit && l.n < cur.n && !isDone(l));
+    const unfinished = l => !!(l.unit && l.checker && l.n < cur.n && !isDone(l));
     const status = l => !l.unit || isDone(l) ? '' : unfinished(l) ? '<span class="tag unfinished">not finished</span>'
       : rightSoFar(l) ? `<span class="tag">${rightSoFar(l)} right so far</span>` : '';
     const next = lessons.slice(lessons.indexOf(cur) + 1).find(l => l.unit);
@@ -152,11 +153,11 @@
       <p>${esc(focus.question)}${open ? '' : ' <span class="opens">Opens in your next class.</span>'}</p>
       <div class="actions">
         ${focus.slides ? step('1 · Class slides', esc(focus.slides), true, true) : ''}
-        ${step('2 · The exercise', brief(focus), open && !focus.slides, open)}
-        ${step('3 · Check your answers', checker(focus), false, open)}
+        ${focus.checker ? step('2 · The exercise', brief(focus), open && !focus.slides, open) : ''}
+        ${focus.checker ? step('3 · Check your answers', checker(focus), false, open) : ''}
       </div>
       ${lessons.filter(unfinished).map(l => `<p class="again">Lesson ${l.n} isn't finished yet. You can still finish it: <a href="${checker(l)}">checker and memo</a>.</p>`).join('')}
-      ${open ? '' : `<p class="again">✓ Lesson ${cur.n} done. Go back over it: <a href="${esc(cur.slides || brief(cur))}">slides</a> · <a href="${brief(cur)}">exercise</a> · <a href="${checker(cur)}">checker</a></p>`}`;
+      ${open ? '' : `<p class="again">✓ Lesson ${cur.n} done. Go back over it: ${[cur.slides && `<a href="${esc(cur.slides)}">slides</a>`, cur.checker && `<a href="${brief(cur)}">exercise</a>`, cur.checker && `<a href="${checker(cur)}">checker</a>`].filter(Boolean).join(' · ')}</p>`}`;
     // Setup is needed before lesson 1 only: lesson 1 can't be done without it.
     // Before lesson 1 is done: setup in the corner and the assistant's steps in full. After: a small tip.
     const started = cur.n > 1 || isDone(cur);
@@ -168,8 +169,8 @@
         <div class="n">${isDone(l) ? '✓' : l.n}</div>
         <div class="t"><b>${esc(l.title)}</b>${l === focus ? `<span class="tag">${open ? 'now' : 'next'}</span>` : ''}${isDone(l) ? '<span class="tag done">done</span>' : ''}${status(l)}<div>${esc(l.question)}</div></div>
         <div class="go">${!l.unit ? '' : l.n > cur.n
-          ? `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}<span class="locked">Exercise and checker open in class</span>`
-          : `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}<a href="${brief(l)}">Exercise</a><a href="${checker(l)}">Checker</a>`}</div>
+          ? `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}${l.checker ? '<span class="locked">Exercise and checker open in class</span>' : ''}`
+          : `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}${l.checker ? `<a href="${brief(l)}">Exercise</a><a href="${checker(l)}">Checker</a>` : ''}`}</div>
       </div>`).join('');
   }).catch(() => { document.getElementById('now').textContent = 'Could not load the lessons.'; });
 </script>

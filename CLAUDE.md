@@ -92,12 +92,18 @@ and ask whether to continue.
 
 ## When the team runs SQL in Supabase
 - **Show the SQL in your message as one code block**, so the chat's copy button takes all of it.
-  Never ask them to open a file and copy it: viewers often copy only the part on screen. For
+  Never ask them to open a file and copy it. For
   practice data, send them to its copy page (`data/copy.html?f=lesson-02`).
 - **Say what success looks like before they run it:** creating a view answers
   "Success. No rows returned"; practice data ends with the row counts its copy page lists.
 - **Say exactly where the result appears,** with the link: the example panel is on the
   **Example** board, a lesson's panels on that lesson's board.
+
+## Where you run
+You run in a cloud session on the team's GitHub repository; nothing is on their computer. So:
+the team can't open or copy files from a folder, and you can't put anything on their clipboard.
+Everything they need to paste (SQL) goes in your message as one code block. Their site and
+dashboard show only what is pushed to `main`.
 
 ## Saving work
 The team's site shows only the `main` branch. Commit each step that works. If you are working on

@@ -45,7 +45,10 @@
   const f = (new URLSearchParams(location.search).get('f') || '').replace(/[^a-z0-9-]/g, '');
   let sql = '';
   document.getElementById('title').textContent = `Practice data · ${f}`;
-  fetch(`${f}.sql`, { cache: 'no-store' })
+  // `setup` is the one-time database setup; everything else is a lesson's practice data.
+  const isSetup = f === 'setup';
+  if (isSetup) document.getElementById('title').textContent = 'Database setup';
+  fetch(isSetup ? '../setup.sql' : `${f}.sql`, { cache: 'no-store' })
     .then(r => { if (!r.ok) throw new Error(`No practice data called ${f}.`); return r.text(); })
     .then(text => {
       sql = text;
@@ -58,6 +61,10 @@
       document.getElementById('size').textContent = `${text.split('\n').length.toLocaleString()} lines. Too long to select by hand: use the button.`;
       document.getElementById('expect').innerHTML = ['sessions', 'clicks', 'selections', 'identities']
         .map(k => `<tr><td>${k}</td><td>${(rows[k] || 0).toLocaleString()}</td></tr>`).join('');
+      if (isSetup) {
+        document.getElementById('expect').innerHTML = '';
+        document.querySelector('ol li:last-child').textContent = 'The result lists four tables: sessions, clicks, selections, identities.';
+      }
       document.getElementById('copy').disabled = false;
     })
     .catch(e => { document.getElementById('size').innerHTML = `<span class="bad">${e.message}</span>`; });
