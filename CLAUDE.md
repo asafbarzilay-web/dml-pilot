@@ -80,6 +80,10 @@ plus `memo`). Read it with the URL and publishable key in `supabase-config.js`:
   slides are already open if they want a look (give the link). Don't invent more work.
 - Otherwise, pick up where they are: which questions are still open, whether the memo is written.
 - Never tell them the right answers or which value is wrong. Never change these rows yourself.
+- An earlier lesson that isn't done stays open. Mention it once, in one line, and offer to help
+  finish it whenever they like; the current lesson comes first. To finish it they must load that
+  lesson's practice data again (its `data` in `units/lessons.json`), and the current lesson's
+  data back afterwards.
 - If you can't reach the database, ask them where they are, once.
 
 ## Scope

@@ -25,6 +25,7 @@
   .btn.ghost { border: 1px solid #55554F; color: #fff; }
   .btn.off { border: 1px dashed #4A4A45; color: #77776F; cursor: default; }
   .now .opens { color: #F6B38A; }
+  .tag.unfinished { background: #FEF3C7; color: #92400E; }
   .lesson.done .n { background: #1F7A3F; color: #fff; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
   .tool { background: #fff; border: 1px solid #E2E2DE; border-radius: 14px; padding: 18px 20px; color: #1C1C1A; text-decoration: none; display: block; }
@@ -51,7 +52,7 @@
   .steps { counter-reset: s; list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .steps li { counter-increment: s; background: #fff; border: 1px solid #E2E2DE; border-radius: 14px; padding: 16px 18px 16px 52px; position: relative; font-size: 14px; line-height: 1.5; color: #4A4A45; }
   .steps li::before { content: counter(s); position: absolute; left: 16px; top: 15px; width: 24px; height: 24px; border-radius: 50%; background: #1C1C1A; color: #fff; font-size: 13px; font-weight: 700; display: grid; place-items: center; }
-  .steps b { display: block; color: #1C1C1A; font-size: 15px; margin-bottom: 2px; }
+  .steps .h { display: block; color: #1C1C1A; font-size: 15px; font-weight: 700; margin-bottom: 2px; }
   .steps code { background: #F4F4F2; padding: 1px 6px; border-radius: 4px; font-size: 13px; }
   @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
   .tip { font-size: 14px; color: #4A4A45; margin: 14px 2px 0; line-height: 1.6; }
@@ -92,10 +93,10 @@
   </div>
   <h2>Start your AI assistant</h2>
   <ol class="steps">
-    <li><b>Open the Claude app.</b> Click <b>Code</b> at the top.</li>
-    <li><b>Choose your team's folder.</b> Click <b>+ New</b>. Just above the message box, click the folder
+    <li><span class="h">Open the Claude app.</span> Click <b>Code</b> at the top.</li>
+    <li><span class="h">Choose your team's folder.</span> Click <b>+ New</b>. Just above the message box, click the folder
       button and pick <b class="team">your team's folder</b>.</li>
-    <li><b>Start.</b> Ask: <i>"What are we working on?"</i> It should answer with your current lesson.</li>
+    <li><span class="h">Start.</span> Ask: <i>"What are we working on?"</i> It should answer with your current lesson.</li>
   </ol>
 
   <h2>Lessons</h2>
@@ -118,7 +119,10 @@
     // the checker only allows submitting once every answer is right.
     const isDone = l => !!(l.unit && (work[l.checker] || {}).memoSubmitted);
     const rightSoFar = l => (work[l.checker] || {}).right || 0;
-    const status = l => !l.unit ? '' : isDone(l) ? '' : rightSoFar(l) ? `<span class="tag">${rightSoFar(l)} right so far</span>` : '';
+    // A lesson before the current one that isn't done: open, marked, and always finishable.
+    const unfinished = l => !!(l.unit && l.n < cur.n && !isDone(l));
+    const status = l => !l.unit || isDone(l) ? '' : unfinished(l) ? '<span class="tag unfinished">not finished</span>'
+      : rightSoFar(l) ? `<span class="tag">${rightSoFar(l)} right so far</span>` : '';
     const next = lessons.slice(lessons.indexOf(cur) + 1).find(l => l.unit);
     // The lesson in focus: the current one, or, once it is done, the next one (opening in class).
     const focus = isDone(cur) && next ? next : cur;
@@ -135,6 +139,7 @@
         ${step('2 · The exercise', brief(focus), open && !focus.slides, open)}
         ${step('3 · Check your answers', checker(focus), false, open)}
       </div>
+      ${lessons.filter(unfinished).map(l => `<p class="again">Lesson ${l.n} isn't finished yet. You can still finish it: <a href="${checker(l)}">checker and memo</a>.</p>`).join('')}
       ${open ? '' : `<p class="again">✓ Lesson ${cur.n} done. Go back over it: <a href="${esc(cur.slides || brief(cur))}">slides</a> · <a href="${brief(cur)}">exercise</a> · <a href="${checker(cur)}">checker</a></p>`}`;
     // Setup is needed before lesson 1 only: lesson 1 can't be done without it.
     document.getElementById('setup').hidden = cur.n > 1 || isDone(cur);

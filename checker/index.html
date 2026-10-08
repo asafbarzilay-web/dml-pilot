@@ -41,6 +41,7 @@
   .score { font-size: 15px; color: #4A4A45; }
   .all { background: #E8F5EC; border: 1px solid #9FD3B0; border-radius: 12px; padding: 16px 20px; margin-top: 18px; font-size: 15px; line-height: 1.55; }
   .err { color: #B42318; }
+  .earlier { background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 12px; padding: 14px 18px; font-size: 15px; line-height: 1.55; margin: 0 0 18px; }
   .memo { margin-top: 34px; }
   .memo h2 { font-size: 22px; margin: 0 0 4px; }
   .lead.small { font-size: 14px; margin-bottom: 16px; }
@@ -62,6 +63,7 @@
   <h1 id="title">Loading…</h1>
   <p class="lead">Answer from your dashboard, not from a one-off query: the point is that your dashboard
     gets it right. A wrong answer says "not quite", never why — finding out why is the lesson.</p>
+  <p class="earlier" id="earlier" hidden></p>
   <form id="form"></form>
   <div class="bar"><button form="form" type="submit">Check all answers</button><span class="score" id="score"></span></div>
   <div class="all" id="all" hidden>Every answer is right. Now finish your memo below.</div>
@@ -241,8 +243,19 @@
       render();
       renderMemo();
       // What comes next, from the course outline.
-      fetch('../units/lessons.json', { cache: 'no-store' }).then(r => r.json()).then(list => {
+      Promise.all([fetch('../units/lessons.json', { cache: 'no-store' }).then(r => r.json()),
+                   fetch('../units/CURRENT', { cache: 'no-store' }).then(r => r.text()).then(t => t.trim())]).then(([list, current]) => {
         const i = list.findIndex(l => l.checker === lesson);
+        const me = list[i], cur = list.find(l => l.unit === current);
+        // An earlier lesson: its answers need its own practice data, which later lessons replace.
+        const curData = cur && cur.data;
+        if (me && cur && me.n < cur.n && me.data && me.data !== curData && !spec.questions.every(q => (saved[q.id] || {}).right)) {
+          const el = document.getElementById('earlier');
+          el.innerHTML = `This is an earlier lesson. Its answers come from its own practice data, and a later lesson's
+            data has replaced it. <a href="../data/copy.html?f=${me.data}">Load lesson ${me.n}'s practice data</a> again first,
+            then load the current lesson's data back when you are done.`;
+          el.hidden = false;
+        }
         const next = list.slice(i + 1).find(l => l.unit);
         document.getElementById('next').textContent = next
           ? `Next is lesson ${next.n}, ${next.title}. It starts in your next class.` : '';

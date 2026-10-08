@@ -10,7 +10,8 @@
     "n": 1,
     "title": "The data you start with",
     "question": "What exactly does the app record, and can you follow one visit through it?",
-    "slides": "slides/01-the-data-you-start-with/slides.html"
+    "slides": "slides/01-the-data-you-start-with/slides.html",
+    "data": "lesson-02"
   },
   {
     "unit": "unit-02",
@@ -18,7 +19,8 @@
     "n": 2,
     "title": "People vs sessions",
     "question": "How many people used your app, and how many came back?",
-    "slides": "slides/02-people-vs-sessions/slides.html"
+    "slides": "slides/02-people-vs-sessions/slides.html",
+    "data": "lesson-02"
   },
   {
     "n": 3,
@@ -51,7 +53,8 @@
     "n": 8,
     "title": "Segmentation",
     "question": "Do some groups do better than others, and is the difference real?",
-    "slides": "slides/08-segmentation/slides.html"
+    "slides": "slides/08-segmentation/slides.html",
+    "data": "lesson-08"
   },
   {
     "n": 9,
