@@ -67,6 +67,21 @@ exactly one place, so a number can always be traced and two numbers never quietl
 8. Before saying "done", the team runs **Is your analysis tidy?** on the dashboard and it
    passes.
 
+## Know where the team stands
+At the start of a session, and before suggesting what to do next, read `units/CURRENT` and the
+team's progress. Progress is in their database, table `coursework` (one row per checker question,
+plus `memo`). Read it with the URL and publishable key in `supabase-config.js`:
+
+    curl -s "<SUPABASE_URL>/rest/v1/coursework?select=lesson,question,is_right,submitted_at" \
+         -H "apikey: <SUPABASE_PUBLISHABLE_KEY>"
+
+- A lesson whose `memo` row has `submitted_at` is **done** (submitting needs every answer right).
+- If the current lesson is done, say so in one line: the next lesson opens in class, and its
+  slides are already open if they want a look (give the link). Don't invent more work.
+- Otherwise, pick up where they are: which questions are still open, whether the memo is written.
+- Never tell them the right answers or which value is wrong. Never change these rows yourself.
+- If you can't reach the database, ask them where they are, once.
+
 ## Scope
 Read the lesson named in `units/CURRENT`, then its file in `units/`, before building anything.
 When the team starts a lesson, point them to its class slides first: the lesson's `slides` path

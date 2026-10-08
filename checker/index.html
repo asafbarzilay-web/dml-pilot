@@ -10,8 +10,12 @@
   are right, never what the right answer is.
 
   It holds only a fingerprint of each answer (a one-way scramble), not
-  the answer itself. Your attempts are remembered in this browser.
+  the answer itself. Your answers and memo are kept in your team's
+  database (table coursework), not in this browser.
 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script src="../core/coursework.js"></script>
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; background: #F4F4F2; color: #1C1C1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
@@ -82,10 +86,16 @@
 </div>
 <script>
   const lesson = new URLSearchParams(location.search).get('lesson') || 'lesson-02';
-  const KEY = `checker:${lesson}`;
   let spec = null;
-  const saved = (() => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } })();
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch {} };
+  // Filled from the team's database when the page loads.
+  const saved = {};
+  const memo = { text: '', submitted: null };
+  const saveAnswer = (id) => Coursework.save(lesson, id, { answer: saved[id].value, is_right: !!saved[id].right, tries: saved[id].tries })
+    .catch(e => showSaveError(e));
+  function showSaveError(e) {
+    const st = document.getElementById('memo-status');
+    if (st) st.textContent = `Could not save to your database: ${e.message}`;
+  }
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   // Must match normalize() in generator/sim.mjs exactly.
@@ -135,9 +145,14 @@
   }
 
   // ---- The memo: one box per question, a draft kept as you type ---------
-  const MEMO_KEY = `memo:${lesson}`;
-  const memo = (() => { try { return JSON.parse(localStorage.getItem(MEMO_KEY)) || { text: '' }; } catch { return { text: '' }; } })();
-  const saveMemo = () => { try { localStorage.setItem(MEMO_KEY, JSON.stringify(memo)); } catch {} };
+  // The draft is saved a moment after typing stops.
+  let memoTimer = null;
+  const saveMemo = (now) => {
+    clearTimeout(memoTimer);
+    const go = () => Coursework.save(lesson, 'memo', { answer: memo.text, submitted_at: memo.submitted }).catch(e => showSaveError(e));
+    if (now) return go();
+    memoTimer = setTimeout(go, 800);
+  };
   const MIN_WORDS = 80;
   const words = () => (memo.text || '').split(/\s+/).filter(Boolean).length;
 
@@ -155,10 +170,6 @@
     const allWritten = words() >= MIN_WORDS;
     document.getElementById('memo-text').readOnly = !!memo.submitted;
     const btn = document.getElementById('submit-memo'), st = document.getElementById('memo-status');
-    // What the home page shows for this lesson.
-    try { localStorage.setItem(`progress:${lesson}`, JSON.stringify({
-      right: spec.questions.filter(q => (saved[q.id] || {}).right).length, total: spec.questions.length,
-      memo: !!memo.submitted })); } catch {}
     document.getElementById('done').hidden = !(allRight && memo.submitted);
     if (memo.submitted) {
       btn.textContent = 'Edit memo'; btn.disabled = false;
@@ -174,15 +185,19 @@
   });
   document.getElementById('submit-memo').addEventListener('click', () => {
     memo.submitted = memo.submitted ? null : new Date().toISOString();
-    saveMemo(); renderMemoState();
+    saveMemo(true); renderMemoState();
   });
 
   // Keep what is typed in other boxes when one question re-renders the page.
   const typed = () => Object.fromEntries([...document.querySelectorAll('#form input')].map(i => [i.name, i.value]));
   async function checkIds(ids) {
     const values = typed();
-    for (const q of spec.questions.filter(q => ids.includes(q.id))) await checkOne(q, String(values[q.id] || '').trim());
-    save(); render();
+    for (const q of spec.questions.filter(q => ids.includes(q.id))) {
+      const before = JSON.stringify(saved[q.id] || null);
+      await checkOne(q, String(values[q.id] || '').trim());
+      if (saved[q.id] && JSON.stringify(saved[q.id]) !== before) await saveAnswer(q.id);
+    }
+    render();
     for (const [id, v] of Object.entries(values)) {
       const el = document.querySelector(`#form input[name="${id}"]`);
       if (el && !el.readOnly && !ids.includes(id)) el.value = v;
@@ -211,8 +226,15 @@
     ? Promise.reject(Object.assign(new Error('This lesson opens in class. Its checker becomes available when your lecturer opens it.'), { locked: true }))
     : fetch(`questions/${lesson}.json`, { cache: 'no-store' }))
     .then(r => { if (!r.ok) throw new Error(`No checker for "${lesson}".`); return r.json(); })
-    .then(j => {
+    .then(async j => {
       spec = j;
+      // Progress lives in the team's database; an older copy in this browser moves there once.
+      await Coursework.adoptBrowserCopy(lesson).catch(() => {});
+      const rows = await Coursework.load(lesson);
+      for (const [id, r] of Object.entries(rows)) {
+        if (id === 'memo') { memo.text = r.answer || ''; memo.submitted = r.submitted_at; continue; }
+        saved[id] = { value: r.answer || '', right: r.is_right, tries: r.tries, checked: r.tries > 0 };
+      }
       document.title = `${j.title} · Checker`;
       document.getElementById('eyebrow').textContent = `Checker · ${j.lesson.replace('lesson-0', 'Lesson ').replace('lesson-', 'Lesson ')}`;
       document.getElementById('title').textContent = j.title;
@@ -233,7 +255,7 @@
         document.querySelector('.bar').style.display = 'none';
         return;
       }
-      document.getElementById('title').innerHTML = `<span class="err">${esc(err.message)}</span>`;
+      document.getElementById('title').innerHTML = `<span class="err">${esc(err.message)}${/coursework/.test(err.message) ? ' Run setup.sql again in Supabase.' : ''}</span>`;
     });
 </script>
 </body>

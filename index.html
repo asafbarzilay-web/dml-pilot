@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Study Platform</title>
 <!-- The team's home page: the current lesson, the tools, every lesson. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="core/coursework.js"></script>
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; background: #F4F4F2; color: #1C1C1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
@@ -105,16 +108,16 @@
   const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   Promise.all([
     fetch('units/lessons.json', { cache: 'no-store' }).then(r => r.json()),
-    fetch('units/CURRENT', { cache: 'no-store' }).then(r => r.ok ? r.text() : '').then(t => t.trim())
-  ]).then(([lessons, current]) => {
+    fetch('units/CURRENT', { cache: 'no-store' }).then(r => r.ok ? r.text() : '').then(t => t.trim()),
+    Coursework.summary().catch(() => ({}))
+  ]).then(([lessons, current, work]) => {
     const cur = lessons.find(l => l.unit === current) || lessons.find(l => l.unit);
     const brief = l => `view.html?f=units/${l.unit}.md`;
     const checker = l => `checker/?lesson=${l.checker}`;
-    // Progress, kept by the checker in this browser. A submitted memo means the lesson is done:
+    // Progress, from the team's database. A submitted memo means the lesson is done:
     // the checker only allows submitting once every answer is right.
-    const read = k => { try { return JSON.parse(localStorage.getItem(k)) || null; } catch { return null; } };
-    const isDone = l => !!(l.unit && (read(`memo:${l.checker}`) || {}).submitted);
-    const rightSoFar = l => Object.values(read(`checker:${l.checker}`) || {}).filter(q => q.right).length;
+    const isDone = l => !!(l.unit && (work[l.checker] || {}).memoSubmitted);
+    const rightSoFar = l => (work[l.checker] || {}).right || 0;
     const status = l => !l.unit ? '' : isDone(l) ? '' : rightSoFar(l) ? `<span class="tag">${rightSoFar(l)} right so far</span>` : '';
     const next = lessons.slice(lessons.indexOf(cur) + 1).find(l => l.unit);
     // The lesson in focus: the current one, or, once it is done, the next one (opening in class).

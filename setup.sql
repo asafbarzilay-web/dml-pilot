@@ -86,6 +86,24 @@ create schema if not exists analysis;
 grant usage on schema analysis to authenticated;
 alter default privileges in schema analysis grant select on tables to authenticated;
 
+-- ----------------------------------------------------------------------
+-- Coursework: your checker answers and memo for each lesson, so your AI
+-- assistant and every computer see the same progress. Not study data.
+-- ----------------------------------------------------------------------
+create table if not exists public.coursework (
+  lesson        text not null,            -- 'lesson-01'
+  question      text not null,            -- 'q1' … or 'memo'
+  answer        text,                     -- the last answer checked, or the memo's text
+  is_right      boolean not null default false,
+  tries         integer not null default 0,
+  submitted_at  timestamptz,              -- the memo only: when it was submitted
+  updated_at    timestamptz not null default now(),
+  primary key (lesson, question)
+);
+alter table public.coursework enable row level security;
+drop policy if exists "coursework open" on public.coursework;
+create policy "coursework open" on public.coursework for all to anon, authenticated using (true) with check (true);
+
 -- What is in your space, for the dashboard's "Is your analysis tidy?" check:
 -- every view and table in `analysis`, its definition (the comment you put on
 -- it) and its SQL. Read-only; only a signed-in user may call it.
