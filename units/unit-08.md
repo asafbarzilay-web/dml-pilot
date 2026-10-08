@@ -10,8 +10,8 @@ exercise below assumes you have been through them.
 
 ## 1. Load the practice data
 
-1. In Supabase, open **SQL Editor → New query**.
-2. Paste the whole of `data/lesson-08.sql` and press **Run**.
+Open [**the practice data**](data/copy.html?f=lesson-08), copy it with one click, and run it in
+Supabase. The page says what the result must show.
 
 This replaces the previous practice data. Your own test runs and real visits stay.
 

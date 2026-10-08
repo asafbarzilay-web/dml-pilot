@@ -14,10 +14,8 @@ exercise below assumes you have been through them.
 
 ## 1. Load the practice data
 
-1. In Supabase, open **SQL Editor → New query**.
-2. Paste the whole of `data/lesson-02.sql` and press **Run**. (The same practice data serves
-   lessons 1 and 2.)
-3. The last rows of the result show how many sessions, clicks, selections and identities were loaded.
+Open [**the practice data**](data/copy.html?f=lesson-02), copy it with one click, and run it in
+Supabase. The page says what the result must show. (The same data serves lessons 1 and 2.)
 
 ## 2. Read the map
 
