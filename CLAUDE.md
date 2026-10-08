@@ -62,7 +62,8 @@ exactly one place, so a number can always be traced and two numbers never quietl
 5. **No copies of data.** No tables or materialized views in `analysis`: they go stale.
 6. **Names say what one row is:** lowercase, plural, plain (`photo_visits`, `people`).
 7. A panel goes on its lesson's board: add it to that lesson's list in `BOARDS` in
-   `dashboard/index.html`, following the example panel. It reads one view with
+   `dashboard/boards.js`, following the example panel. Never edit `dashboard/index.html`: it is the
+   course's, and course updates replace it. It reads one view with
    `db.schema('analysis').from('<name>')`. Never put a panel on another lesson's board.
 8. Before saying "done", the team runs **Is your analysis tidy?** on the dashboard and it
    passes.

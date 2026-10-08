@@ -5,6 +5,7 @@
       "Edit(setup.sql)",
       "Edit(data/**)",
       "Edit(checker/**)",
+      "Edit(dashboard/index.html)",
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",
       "Bash(git reset --hard:*)",

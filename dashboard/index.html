@@ -9,8 +9,8 @@
 <script src="../core/row-limit-guard.js"></script>
 <!--
   Your dashboard. Three areas:
-    Dashboards  one board per lesson. Your panels go in BOARDS below,
-                under the lesson they belong to.
+    Dashboards  one board per lesson. Your panels go in boards.js,
+                under the lesson they belong to. This page is the course's.
     Raw data    the four tables exactly as stored.
     Checks      is capture working? is your analysis tidy?
 -->
@@ -161,27 +161,10 @@
   });
   const $ = id => document.getElementById(id);
   const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
-  // ===================================================================
-  // YOUR PANELS. One list per lesson; a panel is { title, render(el) }.
-  // render(el) fills the card's body, reading ONE view in `analysis`:
-  //   db.schema('analysis').from('<view>').select('*')
-  // The page shows numbers; the view does the counting.
-  // ===================================================================
-  const BOARDS = {
-    example: [
-      { title: 'Taps per screen', view: 'example_taps_per_screen', render: async (el) => {
-          const { data, error } = await db.schema('analysis').from('example_taps_per_screen')
-            .select('*').order('taps', { ascending: false });
-          if (error) { el.innerHTML = '<p class="muted">Run <code>analysis/example_taps_per_screen.sql</code> in Supabase (SQL Editor) to see this example.</p>'; return; }
-          el.innerHTML = `<div class="scroll"><table><thead><tr><th>app</th><th>screen</th><th>taps</th></tr></thead><tbody>${
-            data.map(r => `<tr><td>${esc(r.app)}</td><td>${esc(r.screen)}</td><td class="num">${r.taps}</td></tr>`).join('')}</tbody></table></div>`;
-        } }
-    ],
-    'unit-01': [],
-    'unit-02': [],
-    'unit-08': []
-  };
+</script>
+<!-- Your panels, one list per lesson. That file is yours; this page is the course's. -->
+<script src="boards.js"></script>
+<script>
 
   // ---- Dashboards ----------------------------------------------------
   let lessons = [], board = null;
