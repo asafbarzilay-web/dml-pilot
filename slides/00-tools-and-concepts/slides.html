@@ -20,6 +20,18 @@
   table.ev { font-size: 21px; }
   table.ev th, table.ev td { text-align: left; padding: 8px 18px; }
   table.ev td { font-family: ui-monospace, Menlo, monospace; font-size: 19px; }
+  figure { margin: 0; }
+  figure img { max-width: 100%; max-height: 430px; width: auto; margin: 0 auto; display: block; border: 1px solid #E2E2DE; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.08); background: #fff; }
+  figcaption { font-size: 17px; color: #4A4A45; margin-top: 10px; line-height: 1.4; }
+  figcaption b { color: #1C1C1A; }
+  .shots { display: grid; gap: 22px; align-items: start; }
+  .shots.s2 { grid-template-columns: 1fr 1fr; } .shots.s3 { grid-template-columns: 1fr 1fr 1fr; }
+  .split { display: grid; grid-template-columns: 1.5fr 1fr; gap: 34px; align-items: center; }
+  .split p, .split li { font-size: 22px; }
+  .slide.shotslide { padding: 52px 80px; }
+  .slide.shotslide h2 { font-size: 42px; margin-bottom: 20px; }
+  .feature img { max-height: 460px; }
+  .feature figcaption { font-size: 21px; text-align: center; margin-top: 16px; }
 </style>
 </head>
 <body>
@@ -50,48 +62,96 @@
     <p class="muted">Three services and one site. You will use all of them in every lesson.</p>
   </section>
 
-  <section class="slide">
+  <section class="slide shotslide">
     <p class="kicker">Your site</p>
     <h2>Everything starts from your home page</h2>
-    <div class="grid g4">
-      <div class="card"><div class="lbl">Home</div><p>The current lesson: slides, exercise, checker. Your progress.</p></div>
-      <div class="card"><div class="lbl">The app</div><p>What participants use. A test link marks your own visits.</p></div>
-      <div class="card"><div class="lbl">Dashboard</div><p>A board per lesson for what you build, the raw data, and two checks.</p></div>
-      <div class="card"><div class="lbl">Checker</div><p>Questions with exact answers, and your memo.</p></div>
+    <div class="split">
+      <figure><img src="img/site-home.jpg" alt="The home page"></figure>
+      <ul>
+        <li><b>The current lesson:</b> slides, exercise, checker, in that order.</li>
+        <li><b>Your tools:</b> dashboard, the app, the database.</li>
+        <li><b>Every lesson,</b> with what you've finished.</li>
+      </ul>
     </div>
   </section>
 
-  <section class="slide">
+  <section class="slide shotslide">
+    <p class="kicker">Your site · dashboard</p>
+    <h2>Dashboards: one board per lesson</h2>
+    <figure class="feature"><img src="img/site-dashboard-board.jpg" alt="Dashboards: one board per lesson"><figcaption>Each lesson gets a board for the panels you build. This one replays a single visit.</figcaption></figure>
+  </section>
+
+  <section class="slide shotslide">
+    <p class="kicker">Your site · dashboard</p>
+    <h2>Raw data: exactly what was recorded</h2>
+    <figure class="feature"><img src="img/site-dashboard-raw.jpg" alt="Raw data: exactly what was recorded"><figcaption>Nothing filtered: test runs, practice data and every app's rows are all here.</figcaption></figure>
+  </section>
+
+  <section class="slide shotslide">
+    <p class="kicker">Your site · dashboard</p>
+    <h2>Checks: is it working, and is it tidy?</h2>
+    <figure class="feature"><img src="img/site-dashboard-checks.jpg" alt="Checks: is it working, and is it tidy?"><figcaption>Capture writes a test row and finds it again. Tidiness lists every view with its definition.</figcaption></figure>
+  </section>
+
+  <section class="slide shotslide">
+    <p class="kicker">Your site</p>
+    <h2>The app people use, and the checker you answer</h2>
+    <div class="shots s2">
+      <figure><img src="img/site-app.jpg" alt="The photo app"><figcaption><b>The app:</b> a photo-sharing app. Every tap is recorded. Your own test runs are marked as tests.</figcaption></figure>
+      <figure><img src="img/site-checker.jpg" alt="The checker"><figcaption><b>The checker:</b> each lesson's questions, checked one by one, and your memo underneath.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="slide shotslide">
     <p class="kicker">GitHub</p>
-    <h2>Where your platform lives, and how it is published</h2>
-    <div class="grid g3">
-      <div class="card"><div class="lbl">Repository</div><p>Every file of your platform: app, dashboard, lessons, your views.</p></div>
-      <div class="card"><div class="lbl">Commits</div><p>Every change is saved with a note. Nothing is lost; any change can be undone.</p></div>
-      <div class="card"><div class="lbl">Pages</div><p>Publishes the repository as your site, a minute after each change.</p></div>
-    </div>
-    <p class="muted small" style="margin-top:22px">Your repository is public. Your data is not in it: it lives in Supabase.</p>
+    <h2>Your repository: every file of your platform</h2>
+    <figure class="feature"><img src="img/github-repo.jpg" alt="Your repository: every file of your platform"><figcaption>The app, the dashboard, the lessons, and the views you write. Public, so your site can be published.</figcaption></figure>
   </section>
 
-  <section class="slide">
+  <section class="slide shotslide">
+    <p class="kicker">GitHub</p>
+    <h2>Commits: every change, saved with a note</h2>
+    <figure class="feature"><img src="img/github-commits.jpg" alt="Commits: every change, saved with a note"><figcaption>Your assistant commits each step. Nothing is lost, and any change can be undone.</figcaption></figure>
+  </section>
+
+  <section class="slide shotslide">
+    <p class="kicker">GitHub</p>
+    <h2>Pages: your repository, published as your site</h2>
+    <figure class="feature"><img src="img/github-pages.jpg" alt="Pages: your repository, published as your site"><figcaption>A minute after each change, your site shows it. Your data is never in the repository.</figcaption></figure>
+  </section>
+
+  <section class="slide shotslide">
     <p class="kicker">Supabase</p>
-    <h2>Where your data lives</h2>
-    <div class="grid g3">
-      <div class="card"><div class="lbl">Tables</div><p>What the app recorded. You meet all four in lesson 1.</p></div>
-      <div class="card"><div class="lbl">SQL Editor</div><p>Where you run the SQL your assistant writes: practice data, your views.</p></div>
-      <div class="card"><div class="lbl">Your sign-in</div><p>The account your dashboard uses to read the data.</p></div>
-    </div>
-    <p class="muted small" style="margin-top:22px">Nobody can change or delete what was recorded: not you, not your assistant. You build on top of it.</p>
+    <h2>Tables: what the app recorded</h2>
+    <figure class="feature"><img src="img/supabase-tables.jpg" alt="Tables: what the app recorded"><figcaption>The four tables you meet in lesson 1. Nobody can change or delete these rows, not even you.</figcaption></figure>
   </section>
 
-  <section class="slide">
+  <section class="slide shotslide">
+    <p class="kicker">Supabase</p>
+    <h2>The SQL Editor: where you run what your assistant writes</h2>
+    <figure class="feature"><img src="img/supabase-sql.jpg" alt="The SQL Editor: where you run what your assistant writes"><figcaption>Practice data, and every view you build. Paste, press Run, read the result.</figcaption></figure>
+  </section>
+
+  <section class="slide shotslide">
     <p class="kicker">Claude</p>
-    <h2>Your AI assistant</h2>
-    <ul>
-      <li>Works in the cloud, on your repository. Nothing to install.</li>
-      <li>Knows the course: reads the lesson, knows your progress, follows the rules of the platform.</li>
-      <li>Asks before it builds: <b>you</b> define what a number means. It never decides that for you.</li>
-      <li>Writes the views and panels, shows you the SQL to run, and publishes your site.</li>
-    </ul>
+    <h2>Your AI assistant, in the cloud, on your repository</h2>
+    <div class="shots s2">
+      <figure><img src="img/claude-cloud-menu.jpg" alt="Choosing Cloud"><figcaption><b>1 ·</b> In the Claude app: <b>Code → + New</b>, then switch <b>Local</b> to <b>Cloud</b>.</figcaption></figure>
+      <figure><img src="img/claude-repo-picker.jpg" alt="Picking the repository" style="max-height:360px"><figcaption><b>2 ·</b> Pick your team's repository. That's it: nothing to install.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="slide shotslide">
+    <p class="kicker">Claude</p>
+    <h2>It knows the course, and where you are in it</h2>
+    <div class="split">
+      <figure><img src="img/claude-answer.jpg" alt="The assistant's answer"></figure>
+      <ul>
+        <li>Ask <i>"What are we working on?"</i></li>
+        <li>It reads your lesson and your progress.</li>
+        <li><b>You</b> define what a number means; it builds, and shows you the SQL to run.</li>
+      </ul>
+    </div>
   </section>
 
   <section class="slide">
