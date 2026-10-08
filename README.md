@@ -42,7 +42,9 @@ nothing needs installing on your computer.
 8. **Start it in the cloud:** in the Claude app, open *Code* and press *+ New*. Click *Local* above the
    message box, then *Cloud → Add cloud environment…*. Name it `Data-mindset`, set *Network access*
    to *Full* (so it can reach your database), and press *Add environment*. This is needed once. Then
-   pick your repository with the `</>` button, connecting GitHub if asked.
+   click the `</>` button next to it and pick `<your-github-name>/<your-repository>` from the list
+   (or type its name in the search box). If the list is empty, connect GitHub when it asks, then
+   press *Refresh list*.
 9. **Connect everything:** give it three things in one message: your site's address, your
    Supabase project URL (*Project Settings → API*) and your publishable key (*Project Settings →
    API Keys*, the one starting `sb_publishable_`). It puts them into `SITE` and
