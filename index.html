@@ -107,15 +107,21 @@
     const status = l => { const p = progress(l); if (!l.unit || !p) return '';
       return isDone(l) ? '<span class="tag done">done ✓</span>' : `<span class="tag">${p.right} of ${p.total}${p.memo ? '' : ' · memo to write'}</span>`; };
     const next = lessons.slice(lessons.indexOf(cur) + 1).find(l => l.unit);
-    document.getElementById('now').innerHTML = `
-      <div class="label">You are on · Lesson ${cur.n}${isDone(cur) ? ' · done ✓' : ''}</div>
-      <h3>${esc(cur.title)}</h3>
-      <p>${isDone(cur) ? `You've finished this lesson.${next ? ` Lesson ${next.n}, ${esc(next.title)}, starts in your next class.` : ''}` : esc(cur.question)}</p>
-      <div class="actions">
-        ${cur.slides ? `<a class="btn light" href="${esc(cur.slides)}">1 · Class slides</a>` : ''}
-        <a class="btn ${cur.slides ? 'ghost' : 'light'}" href="${brief(cur)}">2 · The exercise</a>
-        <a class="btn ghost" href="${checker(cur)}">3 · Check your answers</a>
+    const steps = (l, first) => `<div class="actions">
+        ${l.slides ? `<a class="btn ${first ? 'light' : 'ghost'}" href="${esc(l.slides)}">1 · Class slides</a>` : ''}
+        <a class="btn ${first && !l.slides ? 'light' : 'ghost'}" href="${brief(l)}">2 · The exercise</a>
+        <a class="btn ghost" href="${checker(l)}">3 · Check your answers</a>
       </div>`;
+    // Done with the current lesson: say what comes next, and keep the lesson reachable.
+    document.getElementById('now').innerHTML = isDone(cur) ? `
+      <div class="label">Lesson ${cur.n} · done ✓</div>
+      <h3>${next ? `Next: ${esc(next.title)}` : 'All lessons done'}</h3>
+      <p>${next ? `Lesson ${next.n} opens in your next class. Until then, you can go back over lesson ${cur.n}:` : `You can go back over lesson ${cur.n}:`}</p>
+      ${steps(cur, false)}` : `
+      <div class="label">You are on · Lesson ${cur.n}</div>
+      <h3>${esc(cur.title)}</h3>
+      <p>${esc(cur.question)}</p>
+      ${steps(cur, true)}`;
     // Setup is needed before lesson 1 only: lesson 1 can't be done without it.
     document.getElementById('setup').hidden = cur.n > 1;
     document.getElementById('lessons').innerHTML = lessons.map(l => `
