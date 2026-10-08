@@ -27,6 +27,8 @@
   .answer { grid-column: 2; display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
   input { font: inherit; font-size: 15px; padding: 9px 12px; border: 1px solid #CFCFCA; border-radius: 8px; width: 220px; }
   .verdict { font-size: 14px; }
+  button.one { font-size: 14px; padding: 8px 14px; background: #fff; color: #1C1C1A; border: 1px solid #CFCFCA; border-radius: 8px; }
+  .right button.one { display: none; }
   .right .verdict { color: #1F7A3F; font-weight: 600; }
   .wrong .verdict { color: #B42318; }
   .tries { font-size: 12px; color: #8A8A85; }
@@ -44,7 +46,7 @@
   <p class="lead">Answer from your dashboard, not from a one-off query: the point is that your dashboard
     gets it right. A wrong answer says "not quite", never why — finding out why is the lesson.</p>
   <form id="form"></form>
-  <div class="bar"><button form="form" type="submit">Check my answers</button><span class="score" id="score"></span></div>
+  <div class="bar"><button form="form" type="submit">Check all answers</button><span class="score" id="score"></span></div>
   <div class="all" id="all" hidden>Every answer is right. Now write the memo: how you defined each number,
     what you left out and why, one check that could have failed, and one thing in the data that surprised you.</div>
 </div>
@@ -71,7 +73,19 @@
   }
   const hint = { integer: 'a whole number', percent: 'a percentage, one decimal', decimal: 'a number, two decimals', text: 'words' };
 
-  function render(results = {}) {
+  const results = {};
+
+  // Checks one answer. The same wrong answer again does not count as a new try.
+  async function checkOne(q, value) {
+    const s = saved[q.id] = saved[q.id] || { tries: 0 };
+    if (s.right || !value) return;
+    if (value === s.value && s.checked) { results[q.id] = false; return; }
+    s.value = value; s.tries += 1; s.checked = true;
+    s.right = (await fingerprint(spec.salt, q.kind, value)) === q.fingerprint;
+    results[q.id] = s.right;
+  }
+
+  function render() {
     document.getElementById('form').innerHTML = spec.questions.map((q, i) => {
       const s = saved[q.id] || {};
       const state = results[q.id] === true || s.right ? 'right' : results[q.id] === false ? 'wrong' : '';
@@ -79,6 +93,7 @@
         <span class="n">${i + 1}</span><div class="text">${esc(q.text)}</div>
         <div class="answer">
           <input name="${q.id}" value="${esc(s.value || '')}" placeholder="${hint[q.kind]}" autocomplete="off" ${s.right ? 'readonly' : ''}>
+          <button type="button" class="one" data-q="${q.id}">Check</button>
           <span class="verdict">${state === 'right' ? '✓ Right' : state === 'wrong' ? 'Not quite' : ''}</span>
           ${s.tries ? `<span class="tries">${s.tries} ${s.tries === 1 ? 'try' : 'tries'}</span>` : ''}
         </div></div>`;
@@ -88,19 +103,23 @@
     document.getElementById('all').hidden = right !== spec.questions.length;
   }
 
-  document.getElementById('form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const data = new FormData(e.target), results = {};
-    for (const q of spec.questions) {
-      const value = String(data.get(q.id) || '').trim();
-      const s = saved[q.id] = saved[q.id] || { tries: 0 };
-      if (s.right || !value) continue;
-      if (value === s.value && s.checked) { results[q.id] = false; continue; }   // same wrong answer: no new try
-      s.value = value; s.tries += 1; s.checked = true;
-      s.right = (await fingerprint(spec.salt, q.kind, value)) === q.fingerprint;
-      results[q.id] = s.right;
+  // Keep what is typed in other boxes when one question re-renders the page.
+  const typed = () => Object.fromEntries([...document.querySelectorAll('#form input')].map(i => [i.name, i.value]));
+  async function checkIds(ids) {
+    const values = typed();
+    for (const q of spec.questions.filter(q => ids.includes(q.id))) await checkOne(q, String(values[q.id] || '').trim());
+    save(); render();
+    for (const [id, v] of Object.entries(values)) {
+      const el = document.querySelector(`#form input[name="${id}"]`);
+      if (el && !el.readOnly && !ids.includes(id)) el.value = v;
     }
-    save(); render(results);
+  }
+  const form = document.getElementById('form');
+  form.addEventListener('submit', (e) => { e.preventDefault(); checkIds(spec.questions.map(q => q.id)); });
+  form.addEventListener('click', (e) => { const b = e.target.closest('button.one'); if (b) checkIds([b.dataset.q]); });
+  // Enter in a box checks that one question.
+  form.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.matches('input')) { e.preventDefault(); checkIds([e.target.name]); }
   });
 
   fetch(`questions/${lesson}.json`, { cache: 'no-store' })
