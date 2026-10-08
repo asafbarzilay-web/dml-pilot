@@ -53,6 +53,7 @@
   @media (max-width: 600px) { .top { flex-direction: column; } }
   .lesson.later .t b, .lesson.later .n { color: #A8A8A2; }
   .lesson.later .t div { color: #B5B5AF; }
+  .tag.done { background: #E8F5EC; color: #1F7A3F; }
   .tool code { background: #F4F4F2; padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
   .tag { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: #FEF0E6; color: #C2410C; margin-left: 6px; }
   @media (max-width: 600px) { .lesson { flex-wrap: wrap; } .lesson .go { width: 100%; padding-left: 50px; } }
@@ -100,10 +101,16 @@
     const cur = lessons.find(l => l.unit === current) || lessons.find(l => l.unit);
     const brief = l => `view.html?f=units/${l.unit}.md`;
     const checker = l => `checker/?lesson=${l.checker}`;
+    // Progress is kept by the checker in this browser.
+    const progress = l => { try { return JSON.parse(localStorage.getItem(`progress:${l.checker}`)) || null; } catch { return null; } };
+    const isDone = l => { const p = progress(l); return !!(p && p.memo && p.right === p.total); };
+    const status = l => { const p = progress(l); if (!l.unit || !p) return '';
+      return isDone(l) ? '<span class="tag done">done ✓</span>' : `<span class="tag">${p.right} of ${p.total}${p.memo ? '' : ' · memo to write'}</span>`; };
+    const next = lessons.slice(lessons.indexOf(cur) + 1).find(l => l.unit);
     document.getElementById('now').innerHTML = `
-      <div class="label">You are on · Lesson ${cur.n}</div>
+      <div class="label">You are on · Lesson ${cur.n}${isDone(cur) ? ' · done ✓' : ''}</div>
       <h3>${esc(cur.title)}</h3>
-      <p>${esc(cur.question)}</p>
+      <p>${isDone(cur) ? `You've finished this lesson.${next ? ` Lesson ${next.n}, ${esc(next.title)}, starts in your next class.` : ''}` : esc(cur.question)}</p>
       <div class="actions">
         ${cur.slides ? `<a class="btn light" href="${esc(cur.slides)}">1 · Class slides</a>` : ''}
         <a class="btn ${cur.slides ? 'ghost' : 'light'}" href="${brief(cur)}">2 · The exercise</a>
@@ -114,7 +121,7 @@
     document.getElementById('lessons').innerHTML = lessons.map(l => `
       <div class="lesson ${l === cur ? 'current' : ''} ${l.unit ? '' : 'later'}">
         <div class="n">${l.n}</div>
-        <div class="t"><b>${esc(l.title)}</b>${l === cur ? '<span class="tag">now</span>' : ''}<div>${esc(l.question)}</div></div>
+        <div class="t"><b>${esc(l.title)}</b>${l === cur && !isDone(l) ? '<span class="tag">now</span>' : ''}${status(l)}<div>${esc(l.question)}</div></div>
         <div class="go">${l.unit ? `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}<a href="${brief(l)}">Exercise</a><a href="${checker(l)}">Checker</a>` : ''}</div>
       </div>`).join('');
   }).catch(() => { document.getElementById('now').textContent = 'Could not load the lessons.'; });
