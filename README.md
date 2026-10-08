@@ -39,8 +39,10 @@ nothing needs installing on your computer.
    add `analysis`, and save.
 
 **Your AI assistant**
-8. **Start it in the cloud:** in the Claude app, open *Code*, press *+ New*, choose *Cloud* instead
-   of *Local*, connect GitHub if asked, and pick your repository.
+8. **Start it in the cloud:** in the Claude app, open *Code* and press *+ New*. Click *Local* above the
+   message box, then *Cloud → Add cloud environment…*. Name it `Data-mindset`, set *Network access*
+   to *Full* (so it can reach your database), and press *Add environment*. This is needed once. Then
+   pick your repository with the `</>` button, connecting GitHub if asked.
 9. **Connect everything:** give it three things in one message: your site's address, your
    Supabase project URL (*Project Settings → API*) and your publishable key (*Project Settings →
    API Keys*, the one starting `sb_publishable_`). It puts them into `SITE` and
