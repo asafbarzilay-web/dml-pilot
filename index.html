@@ -46,6 +46,12 @@
   .setup { flex: none; background: #fff; border: 1.5px solid #C2410C; border-radius: 12px; padding: 12px 16px; text-decoration: none; color: #1C1C1A; margin-top: 6px; }
   .setup b { display: block; font-size: 15px; }
   .setup span { font-size: 13px; color: #C2410C; }
+  .assist { flex: none; position: relative; margin-top: 6px; }
+  .assist summary { list-style: none; cursor: pointer; background: #fff; border: 1px solid #E2E2DE; border-radius: 12px; padding: 12px 16px; }
+  .assist summary::-webkit-details-marker { display: none; }
+  .assist summary b { display: block; font-size: 15px; }
+  .assist summary span { font-size: 13px; color: #C2410C; }
+  .assist ol { position: absolute; right: 0; top: calc(100% + 6px); z-index: 5; width: 300px; background: #fff; border: 1px solid #E2E2DE; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.08); margin: 0; padding: 14px 16px 14px 34px; font-size: 14px; line-height: 1.6; }
   .tool .links { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
   .tool .links a { color: #C2410C; text-decoration: none; font-size: 14.5px; font-weight: 600; }
   .tool .links small { display: block; color: #6B6B66; font-weight: 400; font-size: 13px; }
@@ -77,6 +83,14 @@
       <p class="lead">An app that records how people use it, and a dashboard you grow into one whose every number you can prove.</p>
     </div>
     <a class="setup" id="setup" href="view.html?f=README.md" hidden><b>One-time setup</b><span>Do this before lesson 1 →</span></a>
+    <details class="assist" id="assist" hidden>
+      <summary><b>Your AI assistant</b><span>How to start it ↓</span></summary>
+      <ol>
+        <li>Claude app → <b>Code</b> → <b>+ New</b></li>
+        <li>Folder button above the message box → <b class="team">your team's folder</b></li>
+        <li>Ask: <i>"What are we working on?"</i></li>
+      </ol>
+    </details>
   </div>
 
   <div class="now" id="now">Loading…</div>
@@ -91,6 +105,7 @@
     <a class="tool" href="units/database-map.html"><b>The database</b>
       <span>The four tables and every column.</span></a>
   </div>
+  <div id="steps-block">
   <h2>Start your AI assistant</h2>
   <ol class="steps">
     <li><span class="h">Open the Claude app.</span> Click <b>Code</b> at the top.</li>
@@ -98,6 +113,7 @@
       button and pick <b class="team">your team's folder</b>.</li>
     <li><span class="h">Start.</span> Ask: <i>"What are we working on?"</i> It should answer with your current lesson.</li>
   </ol>
+  </div>
 
   <h2>Lessons</h2>
   <div class="lessons" id="lessons"></div>
@@ -142,7 +158,11 @@
       ${lessons.filter(unfinished).map(l => `<p class="again">Lesson ${l.n} isn't finished yet. You can still finish it: <a href="${checker(l)}">checker and memo</a>.</p>`).join('')}
       ${open ? '' : `<p class="again">✓ Lesson ${cur.n} done. Go back over it: <a href="${esc(cur.slides || brief(cur))}">slides</a> · <a href="${brief(cur)}">exercise</a> · <a href="${checker(cur)}">checker</a></p>`}`;
     // Setup is needed before lesson 1 only: lesson 1 can't be done without it.
-    document.getElementById('setup').hidden = cur.n > 1 || isDone(cur);
+    // Before lesson 1 is done: setup in the corner and the assistant's steps in full. After: a small tip.
+    const started = cur.n > 1 || isDone(cur);
+    document.getElementById('setup').hidden = started;
+    document.getElementById('assist').hidden = !started;
+    document.getElementById('steps-block').hidden = started;
     document.getElementById('lessons').innerHTML = lessons.map(l => `
       <div class="lesson ${l === focus ? 'current' : ''} ${isDone(l) ? 'done' : ''} ${l.unit ? '' : 'later'}">
         <div class="n">${isDone(l) ? '✓' : l.n}</div>
