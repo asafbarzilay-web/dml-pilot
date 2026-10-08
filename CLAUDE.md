@@ -69,7 +69,9 @@ exactly one place, so a number can always be traced and two numbers never quietl
    passes.
 
 ## Know where the team stands
-At the start of a session, and before suggesting what to do next, read `units/CURRENT` and the
+At the start of every session, first run `sh core/update.sh` (pre-approved): it brings in the
+course's latest lessons and slides and the lesson that is open, and publishes them to the team's
+site. Mention an update in one line only if it opened a new lesson. Then read `units/CURRENT` and the
 team's progress: run `sh core/progress.sh` (exactly that, on its own; it is pre-approved, so the
 team sees no prompt). It prints the current lesson and one row per checker question, plus `memo`.
 
@@ -113,7 +115,7 @@ confirms the step works. Never make branches or merging the team's job, or menti
 
 ## Don't make the team approve routine steps
 Read files with your file tools, never with shell commands (`cat`, `ls`, `head`). Run one command at a
-time, never chained with `;`, `&&` or `|`. The pre-approved commands are: `sh core/progress.sh` and
+time, never chained with `;`, `&&` or `|`. The pre-approved commands are: `sh core/update.sh`, `sh core/progress.sh` and
 ordinary git (status, log, diff, add, commit, push, pull, fetch, merge, checkout). Anything else asks
 the team for permission, so avoid it unless the step truly needs it.
 
