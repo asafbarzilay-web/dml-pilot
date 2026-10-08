@@ -1,6 +1,6 @@
 # Your analysis
 
-`example_taps_per_screen.sql` is a complete example: the view, its definition, and (on the dashboard) the panel that shows it.
+`example_taps_per_screen.sql` is a complete example: the view, its definition, and (on the dashboard's **Example** board) the panel that shows it.
 
 One file per view in the database's `analysis` schema. The file is the record of the view;
 the database holds a copy of it.

@@ -26,8 +26,8 @@ course is about reasoning from data, not about code.
 
 ## Links
 The team's site address is in the file `SITE`. Whenever you mention a page, give its full link
-on that site: the home page (`SITE`), the dashboard (`dashboard/`), a lesson's board
-(`dashboard/#unit-01`), raw data (`dashboard/#raw`), checks (`dashboard/#checks`), the app as a test
+on that site: the home page (`SITE`), the dashboard (`dashboard/`), the example board
+(`dashboard/#example`), a lesson's board (`dashboard/#unit-01`), raw data (`dashboard/#raw`), checks (`dashboard/#checks`), the app as a test
 run (`app/?test=1`), the database map (`units/database-map.html`), a lesson's slides, exercise
 (`view.html?f=units/unit-01.md`) and checker (`checker/?lesson=lesson-01`).
 
@@ -73,6 +73,15 @@ When the team starts a lesson, point them to its class slides first: the lesson'
 in `units/lessons.json`, opened on their site (also linked from the home page).
 Build only what that lesson asks. If the team asks for more, say it is outside this lesson
 and ask whether to continue.
+
+## When the team runs SQL in Supabase
+- **Put it on their clipboard for them** (`pbcopy < analysis/<name>.sql` on a Mac) and say so.
+  Copying a file by hand from a viewer often copies only the part on screen. For practice data,
+  send them to its copy page (`data/copy.html?f=lesson-02`).
+- **Say what success looks like before they run it:** creating a view answers
+  "Success. No rows returned"; practice data ends with the row counts its copy page lists.
+- **Say exactly where the result appears,** with the link: the example panel is on the
+  **Example** board, a lesson's panels on that lesson's board.
 
 ## Pace: one step at a time
 The team is new to all of this. Overloading them is the most common way to lose them.
