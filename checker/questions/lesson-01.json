@@ -24,8 +24,8 @@
     {
       "id": "q4",
       "kind": "integer",
-      "text": "How many rows of the sessions table are practice data?",
-      "fingerprint": "a75341bde0256668ec09954d913c59f02b31ba321bbfd294e2d59eab328cb133"
+      "text": "How many different values can the hit column of the clicks table take?",
+      "fingerprint": "f34307db73ea73afcc35753736d3c1309fe67d344eebf6b071319737134706e6"
     },
     {
       "id": "q5",
