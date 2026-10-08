@@ -69,11 +69,8 @@ exactly one place, so a number can always be traced and two numbers never quietl
 
 ## Know where the team stands
 At the start of a session, and before suggesting what to do next, read `units/CURRENT` and the
-team's progress. Progress is in their database, table `coursework` (one row per checker question,
-plus `memo`). Read it with the URL and publishable key in `supabase-config.js`:
-
-    curl -s "<SUPABASE_URL>/rest/v1/coursework?select=lesson,question,is_right,submitted_at" \
-         -H "apikey: <SUPABASE_PUBLISHABLE_KEY>"
+team's progress: run `sh core/progress.sh` (exactly that, on its own; it is pre-approved, so the
+team sees no prompt). It prints the current lesson and one row per checker question, plus `memo`.
 
 - A lesson whose `memo` row has `submitted_at` is **done** (submitting needs every answer right).
 - If the current lesson is done, say so in one line: the next lesson opens in class, and its
@@ -106,6 +103,12 @@ and ask whether to continue.
 The team's site shows only the `main` branch. Commit each step that works. If you are working on
 another branch (cloud sessions do), merge it into `main` yourself and push, as soon as the team
 confirms the step works. Never make branches or merging the team's job, or mention them.
+
+## Don't make the team approve routine steps
+Read files with your file tools, never with shell commands (`cat`, `ls`, `head`). Run one command at a
+time, never chained with `;`, `&&` or `|`. The pre-approved commands are: `sh core/progress.sh` and
+ordinary git (status, log, diff, add, commit, push, pull, fetch, merge, checkout). Anything else asks
+the team for permission, so avoid it unless the step truly needs it.
 
 ## Pace: one step at a time
 The team is new to all of this. Overloading them is the most common way to lose them.
