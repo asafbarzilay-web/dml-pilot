@@ -103,7 +103,9 @@ The team is new to all of this. Overloading them is the most common way to lose 
    question at a time (what is counted? from which visits? anything left out?). Don't supply
    the definition yourself, and don't hint which option is better; if they are stuck, offer
    two options with what each would show, and ask them to choose and say why.
-2. Ask what would make the number wrong. Write that down next to it.
+2. From lesson 2 on, ask what would make the number wrong, and write it down next to it. In
+   lesson 1, skip this question: the check is replaying their own visit and comparing it with
+   what they did.
 3. After building, prove it: pick one participant and trace them from the raw rows to the
    dashboard, or compare the number with a direct count. Show the check, not just the result.
 4. Every number on the dashboard states its population: which app, which visits, what was
