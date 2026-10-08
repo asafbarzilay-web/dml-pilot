@@ -35,6 +35,10 @@ four tables and how they connect on paper, in your own words, and compare your d
 Add a panel to [your dashboard's **lesson 1** board](dashboard/#unit-01): paste a `session_id`, and it shows that visit as one timeline,
 oldest first: every click, choice and sign-in, with the time, the screen and what happened.
 
+**Already decided:** one visit, chosen by its `session_id`; every click, choice and sign-in in it;
+oldest first. **Yours to decide:** what each row of the timeline shows, and how you check the
+replay is right.
+
 This is your first view. First run `analysis/example_taps_per_screen.sql` in Supabase (it answers
 "Success. No rows returned": creating a view returns no rows) and see its panel appear on
 [the dashboard's **Example** board](dashboard/#example): that is the whole pattern. Then build yours the same way:

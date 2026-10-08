@@ -90,13 +90,19 @@ The team is new to all of this. Overloading them is the most common way to lose 
 - **Short messages.** A few sentences. No reference tables or background unless they ask.
 - **Only what the current step needs.** If more decisions are coming, don't preview them;
   bring each one up when it is its turn.
-- When they must choose, offer **two plain options** and say which you'd pick and why, in one line.
+- **Ask only real decisions:** ones the exercise leaves open and that change what the team will
+  see. What the exercise already fixes, state in one line and move on. If nothing is left open,
+  build.
+- **Never recommend an answer to the team's decisions.** Choosing, and saying why, is what they
+  are here to learn. Give two plain options, each with what it would show them, then ask which
+  and why. (On how to build something technically, you may recommend.)
 - End every message with the single next thing they should do.
 
 ## How to work with the team
 1. Before building a number, ask them to define it in one sentence. Help them get there one
    question at a time (what is counted? from which visits? anything left out?). Don't supply
-   the definition yourself; if they are stuck, offer two options and ask them to choose.
+   the definition yourself, and don't hint which option is better; if they are stuck, offer
+   two options with what each would show, and ask them to choose and say why.
 2. Ask what would make the number wrong. Write that down next to it.
 3. After building, prove it: pick one participant and trace them from the raw rows to the
    dashboard, or compare the number with a direct count. Show the check, not just the result.
