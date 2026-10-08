@@ -47,8 +47,8 @@
     gets it right. A wrong answer says "not quite", never why — finding out why is the lesson.</p>
   <form id="form"></form>
   <div class="bar"><button form="form" type="submit">Check all answers</button><span class="score" id="score"></span></div>
-  <div class="all" id="all" hidden>Every answer is right. Now write the memo: how you defined each number,
-    what you left out and why, one check that could have failed, and one thing in the data that surprised you.</div>
+  <div class="all" id="all" hidden>Every answer is right. Now write the memo: its questions are at the end of
+    <a id="memo-link" href="#">the exercise</a>.</div>
 </div>
 <script>
   const lesson = new URLSearchParams(location.search).get('lesson') || 'lesson-02';
@@ -129,6 +129,8 @@
       document.title = `${j.title} · Checker`;
       document.getElementById('eyebrow').textContent = `Checker · ${j.lesson.replace('lesson-0', 'Lesson ').replace('lesson-', 'Lesson ')}`;
       document.getElementById('title').textContent = j.title;
+      // The memo's questions belong to each lesson's exercise; link there rather than repeat them.
+      document.getElementById('memo-link').href = `../view.html?f=units/${lesson.replace('lesson-', 'unit-')}.md`;
       render();
     })
     .catch(err => { document.getElementById('title').innerHTML = `<span class="err">${esc(err.message)}</span>`; });
