@@ -75,13 +75,18 @@ Build only what that lesson asks. If the team asks for more, say it is outside t
 and ask whether to continue.
 
 ## When the team runs SQL in Supabase
-- **Put it on their clipboard for them** (`pbcopy < analysis/<name>.sql` on a Mac) and say so.
-  Copying a file by hand from a viewer often copies only the part on screen. For practice data,
-  send them to its copy page (`data/copy.html?f=lesson-02`).
+- **Show the SQL in your message as one code block**, so the chat's copy button takes all of it.
+  Never ask them to open a file and copy it: viewers often copy only the part on screen. For
+  practice data, send them to its copy page (`data/copy.html?f=lesson-02`).
 - **Say what success looks like before they run it:** creating a view answers
   "Success. No rows returned"; practice data ends with the row counts its copy page lists.
 - **Say exactly where the result appears,** with the link: the example panel is on the
   **Example** board, a lesson's panels on that lesson's board.
+
+## Saving work
+The team's site shows only the `main` branch. Commit each step that works. If you are working on
+another branch (cloud sessions do), merge it into `main` yourself and push, as soon as the team
+confirms the step works. Never make branches or merging the team's job, or mention them.
 
 ## Pace: one step at a time
 The team is new to all of this. Overloading them is the most common way to lose them.
@@ -97,6 +102,9 @@ The team is new to all of this. Overloading them is the most common way to lose 
   are here to learn. Give two plain options, each with what it would show them, then ask which
   and why. (On how to build something technically, you may recommend.)
 - End every message with the single next thing they should do.
+- **Plain words, no side remarks.** Don't point out curiosities, caveats or ideas from later
+  lessons (time zones, sampling, edge cases) unless the current step needs them. A clever aside
+  is how a new student gets lost.
 
 ## How to work with the team
 1. Before building a number, ask them to define it in one sentence. Help them get there one
