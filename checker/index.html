@@ -40,10 +40,10 @@
   .memo { margin-top: 34px; }
   .memo h2 { font-size: 22px; margin: 0 0 4px; }
   .lead.small { font-size: 14px; margin-bottom: 16px; }
-  .mq { background: #fff; border: 1px solid #E2E2DE; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
-  .mq label { display: block; font-size: 15px; line-height: 1.5; margin-bottom: 8px; }
-  .mq textarea { width: 100%; min-height: 90px; font: inherit; font-size: 15px; line-height: 1.5; padding: 10px 12px; border: 1px solid #CFCFCA; border-radius: 8px; resize: vertical; }
-  .mq textarea[readonly] { background: #FAFAF8; color: #4A4A45; }
+  .guide { margin: 0 0 14px; padding-left: 20px; font-size: 15px; line-height: 1.6; color: #4A4A45; }
+  #memo-text { width: 100%; min-height: 280px; font: inherit; font-size: 15px; line-height: 1.6; padding: 14px 16px; border: 1px solid #CFCFCA; border-radius: 12px; resize: vertical; background: #fff; }
+  #memo-text[readonly] { background: #FAFAF8; color: #4A4A45; }
+  .muted.small { font-size: 13px; margin: 6px 0 0; }
   .memo-bar { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 6px; }
   .memo-bar button:disabled { opacity: .45; cursor: default; }
   .muted { color: #6B6B66; font-size: 14px; }
@@ -61,8 +61,10 @@
 
   <section class="memo" id="memo" hidden>
     <h2>Your memo</h2>
-    <p class="lead small">About half a page in all. Your draft is saved on this computer as you type.</p>
-    <div id="memo-qs"></div>
+    <p class="lead small">Half a page, written as one piece. Let these questions guide it:</p>
+    <ul class="guide" id="memo-guide"></ul>
+    <textarea id="memo-text" placeholder="Your memo…"></textarea>
+    <p class="muted small">Your draft is saved on this computer as you type.</p>
     <div class="memo-bar">
       <button type="button" id="submit-memo">Submit memo</button>
       <span class="muted" id="memo-status"></span>
@@ -125,23 +127,24 @@
 
   // ---- The memo: one box per question, a draft kept as you type ---------
   const MEMO_KEY = `memo:${lesson}`;
-  const memo = (() => { try { return JSON.parse(localStorage.getItem(MEMO_KEY)) || { answers: {} }; } catch { return { answers: {} }; } })();
+  const memo = (() => { try { return JSON.parse(localStorage.getItem(MEMO_KEY)) || { text: '' }; } catch { return { text: '' }; } })();
   const saveMemo = () => { try { localStorage.setItem(MEMO_KEY, JSON.stringify(memo)); } catch {} };
-  const words = () => Object.values(memo.answers).join(' ').split(/\s+/).filter(Boolean).length;
+  const MIN_WORDS = 80;
+  const words = () => (memo.text || '').split(/\s+/).filter(Boolean).length;
 
   function renderMemo() {
     if (!spec.memo || !spec.memo.length) return;
     document.getElementById('memo').hidden = false;
-    document.getElementById('memo-qs').innerHTML = spec.memo.map((q, i) =>
-      `<div class="mq"><label for="m${i}">${esc(q)}</label><textarea id="m${i}" data-i="${i}">${esc(memo.answers[i] || '')}</textarea></div>`).join('');
+    document.getElementById('memo-guide').innerHTML = spec.memo.map(q => `<li>${esc(q)}</li>`).join('');
+    document.getElementById('memo-text').value = memo.text || '';
     renderMemoState();
   }
-  // Submitting needs every answer right and every memo question answered.
+  // Submitting needs every answer right and a memo of some substance.
   function renderMemoState() {
     if (!spec || !spec.memo || !spec.memo.length) return;
     const allRight = spec.questions.every(q => (saved[q.id] || {}).right);
-    const allWritten = spec.memo.every((_, i) => (memo.answers[i] || '').trim());
-    document.querySelectorAll('#memo-qs textarea').forEach(t => { t.readOnly = !!memo.submitted; });
+    const allWritten = words() >= MIN_WORDS;
+    document.getElementById('memo-text').readOnly = !!memo.submitted;
     const btn = document.getElementById('submit-memo'), st = document.getElementById('memo-status');
     if (memo.submitted) {
       btn.textContent = 'Edit memo'; btn.disabled = false;
@@ -149,12 +152,11 @@
     } else {
       btn.textContent = 'Submit memo';
       btn.disabled = !(allRight && allWritten);
-      st.textContent = `${words()} words · ` + (!allRight ? 'Submit opens when every answer is right.' : !allWritten ? 'Answer every question to submit.' : 'Ready to submit.');
+      st.textContent = `${words()} words · ` + (!allRight ? 'Submit opens when every answer is right.' : !allWritten ? `Write at least ${MIN_WORDS} words to submit.` : 'Ready to submit.');
     }
   }
-  document.getElementById('memo-qs').addEventListener('input', (e) => {
-    if (!e.target.matches('textarea')) return;
-    memo.answers[e.target.dataset.i] = e.target.value; saveMemo(); renderMemoState();
+  document.getElementById('memo-text').addEventListener('input', (e) => {
+    memo.text = e.target.value; saveMemo(); renderMemoState();
   });
   document.getElementById('submit-memo').addEventListener('click', () => {
     memo.submitted = memo.submitted ? null : new Date().toISOString();
