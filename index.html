@@ -89,16 +89,19 @@
   </div>
   <h2>Start your AI assistant</h2>
   <ol class="steps">
-    <li><b>Open Terminal.</b> Press ⌘ Space, type <i>Terminal</i>, press Enter.</li>
-    <li><b>Go to your team's folder.</b> Type <code>cd</code> and a space. Drag the folder from Finder onto the
-      Terminal window. Press Enter.</li>
-    <li><b>Start it.</b> Type <code>claude</code> and press Enter. Ask: <i>"What are we working on?"</i></li>
+    <li><b>Open the Claude app.</b> Click <b>Code</b> at the top.</li>
+    <li><b>Choose your team's folder.</b> Click <b>+ New</b>. Just above the message box, click the folder
+      button and pick <b class="team">your team's folder</b>.</li>
+    <li><b>Start.</b> Ask: <i>"What are we working on?"</i> It should answer with your current lesson.</li>
   </ol>
 
   <h2>Lessons</h2>
   <div class="lessons" id="lessons"></div>
 </div>
 <script>
+  // The team's folder has the same name as its repository, which is the first part of this site's address.
+  const repo = location.hostname.endsWith('github.io') ? location.pathname.split('/')[1] : '';
+  if (repo) document.querySelectorAll('.team').forEach(el => { el.textContent = repo; });
   const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   Promise.all([
     fetch('units/lessons.json', { cache: 'no-store' }).then(r => r.json()),
