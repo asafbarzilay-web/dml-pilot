@@ -52,7 +52,4 @@ to your dashboard and see where your count and theirs part ways.
 
 ## 4. The memo (half a page)
 
-- How you defined **people**, and why that definition.
-- What you left out of every number, and why.
-- One check you did that **could have failed**, and what it showed.
-- One thing in the data that surprised you.
+Write it in [the checker](checker/?lesson=lesson-02), below the questions. Your draft is saved as you type.

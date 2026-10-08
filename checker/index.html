@@ -37,6 +37,16 @@
   .score { font-size: 15px; color: #4A4A45; }
   .all { background: #E8F5EC; border: 1px solid #9FD3B0; border-radius: 12px; padding: 16px 20px; margin-top: 18px; font-size: 15px; line-height: 1.55; }
   .err { color: #B42318; }
+  .memo { margin-top: 34px; }
+  .memo h2 { font-size: 22px; margin: 0 0 4px; }
+  .lead.small { font-size: 14px; margin-bottom: 16px; }
+  .mq { background: #fff; border: 1px solid #E2E2DE; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
+  .mq label { display: block; font-size: 15px; line-height: 1.5; margin-bottom: 8px; }
+  .mq textarea { width: 100%; min-height: 90px; font: inherit; font-size: 15px; line-height: 1.5; padding: 10px 12px; border: 1px solid #CFCFCA; border-radius: 8px; resize: vertical; }
+  .mq textarea[readonly] { background: #FAFAF8; color: #4A4A45; }
+  .memo-bar { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 6px; }
+  .memo-bar button:disabled { opacity: .45; cursor: default; }
+  .muted { color: #6B6B66; font-size: 14px; }
 </style>
 </head>
 <body>
@@ -47,8 +57,17 @@
     gets it right. A wrong answer says "not quite", never why — finding out why is the lesson.</p>
   <form id="form"></form>
   <div class="bar"><button form="form" type="submit">Check all answers</button><span class="score" id="score"></span></div>
-  <div class="all" id="all" hidden>Every answer is right. Now write the memo: its questions are at the end of
-    <a id="memo-link" href="#">the exercise</a>.</div>
+  <div class="all" id="all" hidden>Every answer is right. Now finish your memo below.</div>
+
+  <section class="memo" id="memo" hidden>
+    <h2>Your memo</h2>
+    <p class="lead small">About half a page in all. Your draft is saved on this computer as you type.</p>
+    <div id="memo-qs"></div>
+    <div class="memo-bar">
+      <button type="button" id="submit-memo">Submit memo</button>
+      <span class="muted" id="memo-status"></span>
+    </div>
+  </section>
 </div>
 <script>
   const lesson = new URLSearchParams(location.search).get('lesson') || 'lesson-02';
@@ -101,7 +120,46 @@
     const right = spec.questions.filter(q => (saved[q.id] || {}).right).length;
     document.getElementById('score').textContent = `${right} of ${spec.questions.length} right`;
     document.getElementById('all').hidden = right !== spec.questions.length;
+    renderMemoState();
   }
+
+  // ---- The memo: one box per question, a draft kept as you type ---------
+  const MEMO_KEY = `memo:${lesson}`;
+  const memo = (() => { try { return JSON.parse(localStorage.getItem(MEMO_KEY)) || { answers: {} }; } catch { return { answers: {} }; } })();
+  const saveMemo = () => { try { localStorage.setItem(MEMO_KEY, JSON.stringify(memo)); } catch {} };
+  const words = () => Object.values(memo.answers).join(' ').split(/\s+/).filter(Boolean).length;
+
+  function renderMemo() {
+    if (!spec.memo || !spec.memo.length) return;
+    document.getElementById('memo').hidden = false;
+    document.getElementById('memo-qs').innerHTML = spec.memo.map((q, i) =>
+      `<div class="mq"><label for="m${i}">${esc(q)}</label><textarea id="m${i}" data-i="${i}">${esc(memo.answers[i] || '')}</textarea></div>`).join('');
+    renderMemoState();
+  }
+  // Submitting needs every answer right and every memo question answered.
+  function renderMemoState() {
+    if (!spec || !spec.memo || !spec.memo.length) return;
+    const allRight = spec.questions.every(q => (saved[q.id] || {}).right);
+    const allWritten = spec.memo.every((_, i) => (memo.answers[i] || '').trim());
+    document.querySelectorAll('#memo-qs textarea').forEach(t => { t.readOnly = !!memo.submitted; });
+    const btn = document.getElementById('submit-memo'), st = document.getElementById('memo-status');
+    if (memo.submitted) {
+      btn.textContent = 'Edit memo'; btn.disabled = false;
+      st.textContent = `Submitted ${new Date(memo.submitted).toLocaleString()}.`;
+    } else {
+      btn.textContent = 'Submit memo';
+      btn.disabled = !(allRight && allWritten);
+      st.textContent = `${words()} words · ` + (!allRight ? 'Submit opens when every answer is right.' : !allWritten ? 'Answer every question to submit.' : 'Ready to submit.');
+    }
+  }
+  document.getElementById('memo-qs').addEventListener('input', (e) => {
+    if (!e.target.matches('textarea')) return;
+    memo.answers[e.target.dataset.i] = e.target.value; saveMemo(); renderMemoState();
+  });
+  document.getElementById('submit-memo').addEventListener('click', () => {
+    memo.submitted = memo.submitted ? null : new Date().toISOString();
+    saveMemo(); renderMemoState();
+  });
 
   // Keep what is typed in other boxes when one question re-renders the page.
   const typed = () => Object.fromEntries([...document.querySelectorAll('#form input')].map(i => [i.name, i.value]));
@@ -129,9 +187,8 @@
       document.title = `${j.title} · Checker`;
       document.getElementById('eyebrow').textContent = `Checker · ${j.lesson.replace('lesson-0', 'Lesson ').replace('lesson-', 'Lesson ')}`;
       document.getElementById('title').textContent = j.title;
-      // The memo's questions belong to each lesson's exercise; link there rather than repeat them.
-      document.getElementById('memo-link').href = `../view.html?f=units/${lesson.replace('lesson-', 'unit-')}.md`;
       render();
+      renderMemo();
     })
     .catch(err => { document.getElementById('title').innerHTML = `<span class="err">${esc(err.message)}</span>`; });
 </script>

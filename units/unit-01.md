@@ -59,7 +59,4 @@ questions about one visit.
 
 ## 6. The memo (half a page)
 
-- The four tables in your own words: what one row of each is.
-- Your own test visit: one thing the data recorded that you did not expect, or one thing you
-  did that it did not record.
-- How you checked that your replay panel is right.
+Write it in [the checker](checker/?lesson=lesson-01), below the questions. Your draft is saved as you type.

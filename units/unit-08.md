@@ -48,7 +48,4 @@ disagree, don't fix it: explain it in the memo.
 
 ## 4. The memo (half a page)
 
-- How you defined each segment, and what you did with visits that fit none.
-- Your minimum segment size, and why that number.
-- One difference between segments that **disappeared or flipped** when you split by something else.
-- One check you did that could have failed, and what it showed.
+Write it in [the checker](checker/?lesson=lesson-08), below the questions. Your draft is saved as you type.

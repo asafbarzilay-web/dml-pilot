@@ -2,6 +2,12 @@
   "lesson": "lesson-08",
   "title": "Segmentation",
   "salt": "lesson-08:pilot",
+  "memo": [
+    "How you defined each segment, and what you did with visits that fit none.",
+    "Your minimum segment size, and why that number.",
+    "One difference between segments that disappeared or flipped when you split by something else.",
+    "One check you did that could have failed, and what it showed."
+  ],
   "questions": [
     {
       "id": "q1",

@@ -2,6 +2,12 @@
   "lesson": "lesson-02",
   "title": "People vs sessions",
   "salt": "lesson-02:pilot",
+  "memo": [
+    "How you defined people, and why that definition.",
+    "What you left out of every number, and why.",
+    "One check you did that could have failed, and what it showed.",
+    "One thing in the data that surprised you."
+  ],
   "questions": [
     {
       "id": "q1",
