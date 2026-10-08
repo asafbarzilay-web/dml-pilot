@@ -196,7 +196,20 @@
     if (e.key === 'Enter' && e.target.matches('input')) { e.preventDefault(); checkIds([e.target.name]); }
   });
 
-  fetch(`questions/${lesson}.json`, { cache: 'no-store' })
+  const ROOT = '../';
+  // Lessons after the current one open in class.
+  async function opensLater(n) {
+    try {
+      const [list, cur] = await Promise.all([
+        fetch(`${ROOT}units/lessons.json`, { cache: 'no-store' }).then(r => r.json()),
+        fetch(`${ROOT}units/CURRENT`, { cache: 'no-store' }).then(r => r.text()).then(t => t.trim())]);
+      const c = list.find(l => l.unit === cur);
+      return !!c && n > c.n;
+    } catch { return false; }
+  }
+  opensLater(Number(lesson.replace(/\D/g, ''))).then(later => later
+    ? Promise.reject(Object.assign(new Error('This lesson opens in class. Its checker becomes available when your lecturer opens it.'), { locked: true }))
+    : fetch(`questions/${lesson}.json`, { cache: 'no-store' }))
     .then(r => { if (!r.ok) throw new Error(`No checker for "${lesson}".`); return r.json(); })
     .then(j => {
       spec = j;
@@ -213,7 +226,15 @@
           ? `Next is lesson ${next.n}, ${next.title}. It starts in your next class.` : '';
       }).catch(() => {});
     })
-    .catch(err => { document.getElementById('title').innerHTML = `<span class="err">${esc(err.message)}</span>`; });
+    .catch(err => {
+      if (err.locked) {
+        document.getElementById('title').textContent = 'This lesson opens in class';
+        document.querySelector('.lead').innerHTML = 'Its checker becomes available when your lecturer opens the lesson. <a href="../">Back to your home page</a>';
+        document.querySelector('.bar').style.display = 'none';
+        return;
+      }
+      document.getElementById('title').innerHTML = `<span class="err">${esc(err.message)}</span>`;
+    });
 </script>
 </body>
 </html>
