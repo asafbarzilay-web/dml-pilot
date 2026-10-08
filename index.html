@@ -20,6 +20,9 @@
   .btn { display: inline-block; padding: 10px 16px; border-radius: 10px; font-size: 14.5px; font-weight: 600; text-decoration: none; }
   .btn.light { background: #fff; color: #1C1C1A; }
   .btn.ghost { border: 1px solid #55554F; color: #fff; }
+  .btn.off { border: 1px dashed #4A4A45; color: #77776F; cursor: default; }
+  .now .opens { color: #F6B38A; }
+  .lesson.done .n { background: #1F7A3F; color: #fff; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
   .tool { background: #fff; border: 1px solid #E2E2DE; border-radius: 14px; padding: 18px 20px; color: #1C1C1A; text-decoration: none; display: block; }
   a.tool:hover { border-color: #C2410C; }
@@ -104,34 +107,35 @@
     const cur = lessons.find(l => l.unit === current) || lessons.find(l => l.unit);
     const brief = l => `view.html?f=units/${l.unit}.md`;
     const checker = l => `checker/?lesson=${l.checker}`;
-    // Progress is kept by the checker in this browser.
-    const progress = l => { try { return JSON.parse(localStorage.getItem(`progress:${l.checker}`)) || null; } catch { return null; } };
-    const isDone = l => { const p = progress(l); return !!(p && p.memo && p.right === p.total); };
-    const status = l => { const p = progress(l); if (!l.unit || !p || (!p.right && !p.memo)) return '';
-      return isDone(l) ? '<span class="tag done">done ✓</span>' : `<span class="tag">${p.right} of ${p.total}${p.memo ? '' : ' · memo to write'}</span>`; };
+    // Progress, kept by the checker in this browser. A submitted memo means the lesson is done:
+    // the checker only allows submitting once every answer is right.
+    const read = k => { try { return JSON.parse(localStorage.getItem(k)) || null; } catch { return null; } };
+    const isDone = l => !!(l.unit && (read(`memo:${l.checker}`) || {}).submitted);
+    const rightSoFar = l => Object.values(read(`checker:${l.checker}`) || {}).filter(q => q.right).length;
+    const status = l => !l.unit ? '' : isDone(l) ? '' : rightSoFar(l) ? `<span class="tag">${rightSoFar(l)} right so far</span>` : '';
     const next = lessons.slice(lessons.indexOf(cur) + 1).find(l => l.unit);
-    const steps = (l, first) => `<div class="actions">
-        ${l.slides ? `<a class="btn ${first ? 'light' : 'ghost'}" href="${esc(l.slides)}">1 · Class slides</a>` : ''}
-        <a class="btn ${first && !l.slides ? 'light' : 'ghost'}" href="${brief(l)}">2 · The exercise</a>
-        <a class="btn ghost" href="${checker(l)}">3 · Check your answers</a>
-      </div>`;
-    // Done with the current lesson: say what comes next, and keep the lesson reachable.
-    document.getElementById('now').innerHTML = isDone(cur) ? `
-      <div class="label">Lesson ${cur.n} · done ✓</div>
-      <h3>${next ? `Next: ${esc(next.title)}` : 'All lessons done'}</h3>
-      <p>${next ? `Lesson ${next.n} opens in your next class.${next.slides ? ' You can look at its slides now.' : ''}` : ''}</p>
-      ${next && next.slides ? `<div class="actions"><a class="btn light" href="${esc(next.slides)}">Preview lesson ${next.n} slides</a></div>
-      <p class="again">Go back over lesson ${cur.n}: <a href="${esc(cur.slides || brief(cur))}">slides</a> · <a href="${brief(cur)}">exercise</a> · <a href="${checker(cur)}">checker</a></p>` : steps(cur, false)}` : `
-      <div class="label">You are on · Lesson ${cur.n}</div>
-      <h3>${esc(cur.title)}</h3>
-      <p>${esc(cur.question)}</p>
-      ${steps(cur, true)}`;
+    // The lesson in focus: the current one, or, once it is done, the next one (opening in class).
+    const focus = isDone(cur) && next ? next : cur;
+    const open = focus === cur;
+    const step = (label, href, primary, enabled) => enabled
+      ? `<a class="btn ${primary ? 'light' : 'ghost'}" href="${href}">${label}</a>`
+      : `<span class="btn off" title="Opens in class">${label}</span>`;
+    document.getElementById('now').innerHTML = `
+      <div class="label">${open ? 'You are on' : 'Up next'} · Lesson ${focus.n}</div>
+      <h3>${esc(focus.title)}</h3>
+      <p>${esc(focus.question)}${open ? '' : ' <span class="opens">Opens in your next class.</span>'}</p>
+      <div class="actions">
+        ${focus.slides ? step('1 · Class slides', esc(focus.slides), true, true) : ''}
+        ${step('2 · The exercise', brief(focus), open && !focus.slides, open)}
+        ${step('3 · Check your answers', checker(focus), false, open)}
+      </div>
+      ${open ? '' : `<p class="again">✓ Lesson ${cur.n} done. Go back over it: <a href="${esc(cur.slides || brief(cur))}">slides</a> · <a href="${brief(cur)}">exercise</a> · <a href="${checker(cur)}">checker</a></p>`}`;
     // Setup is needed before lesson 1 only: lesson 1 can't be done without it.
-    document.getElementById('setup').hidden = cur.n > 1;
+    document.getElementById('setup').hidden = cur.n > 1 || isDone(cur);
     document.getElementById('lessons').innerHTML = lessons.map(l => `
-      <div class="lesson ${l === cur ? 'current' : ''} ${l.unit ? '' : 'later'}">
-        <div class="n">${l.n}</div>
-        <div class="t"><b>${esc(l.title)}</b>${l === cur && !isDone(l) ? '<span class="tag">now</span>' : ''}${status(l)}<div>${esc(l.question)}</div></div>
+      <div class="lesson ${l === focus ? 'current' : ''} ${isDone(l) ? 'done' : ''} ${l.unit ? '' : 'later'}">
+        <div class="n">${isDone(l) ? '✓' : l.n}</div>
+        <div class="t"><b>${esc(l.title)}</b>${l === focus ? `<span class="tag">${open ? 'now' : 'next'}</span>` : ''}${isDone(l) ? '<span class="tag done">done</span>' : ''}${status(l)}<div>${esc(l.question)}</div></div>
         <div class="go">${!l.unit ? '' : l.n > cur.n
           ? `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}<span class="locked">Exercise and checker open in class</span>`
           : `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}<a href="${brief(l)}">Exercise</a><a href="${checker(l)}">Checker</a>`}</div>
