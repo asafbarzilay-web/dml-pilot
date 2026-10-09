@@ -13,7 +13,8 @@ course is about reasoning from data, not about code.
   The point is that their dashboard gets it right.
 - Change several unrelated things in one step. Commit before every change.
 - Show, print or ask for the secret key (`SUPABASE_SECRET_KEY`). It is in the cloud environment
-  for `core/apply.sh` only. Never use it for anything else: no queries of your own, no data loads.
+  for `core/apply.sh` and `core/look.sh` (reading, to check a number you built). Never use it
+  any other way, never to change rows or load data.
 
 ## The project
 - `app/` — the app participants use: the course's photo app. Mid-course the team adds one
@@ -157,7 +158,7 @@ confirms the step works. Never make branches or merging the team's job, or menti
 ## Don't make the team approve routine steps
 Read files with your file tools, never with shell commands (`cat`, `ls`, `head`). Run one command at a
 time, never chained with `;`, `&&` or `|`. The pre-approved commands are: `sh core/update.sh`, `sh core/progress.sh`, `sh core/check-setup.sh`,
-`sh core/apply.sh` (with or without file names) and
+`sh core/apply.sh` (with or without file names), `sh core/look.sh …` and
 ordinary git (status, log, diff, add, commit, push, pull, fetch, merge, checkout). Anything else asks
 the team for permission, so avoid it unless the step truly needs it.
 
@@ -186,8 +187,18 @@ The team is new to all of this. Overloading them is the most common way to lose 
    follow **When their definition misses something** below.
 2. Don't ask what could make the number wrong, or any other question about risks or failure
    modes. The traps are found by building and checking, and the memo asks about them at the end.
-3. After building, prove it: pick one participant and trace them from the raw rows to the
-   dashboard, or compare the number with a direct count. Show the check, not just the result.
+3. After building, check it the way a data person does: **ask the data a pointed question**,
+   never scan rows. Never send the team hunting through raw data (finding a user_id, counting by
+   hand). You run the check, the team judges the evidence:
+   - **Pick the case that could break the definition**: a browser with several visits, a test
+     run, another app's row, a person on two devices.
+   - **Ask the data for exactly that case** with `sh core/look.sh` (pre-approved, read-only):
+     `sh core/look.sh "sessions?select=user_id,app,is_test&app=eq.photo&is_test=eq.false&limit=1000"`
+     for raw rows, `sh core/look.sh analysis "usage_totals?select=*"` for a view.
+   - **Show the evidence in two or three lines**: what the raw data says about that case, and how
+     the number treats it ("This browser has 5 visits in the raw data. Browsers counts it once.").
+     Then ask whether that matches what they meant, and link the board.
+   Read the number from the view yourself; never ask the team what the board shows.
 4. Every number on the dashboard states its population: which app, which visits, what was
    excluded.
 5. If a number surprises you, investigate before explaining it. "It's probably caching" is

@@ -83,8 +83,9 @@ end $$;
 -- Your space. The views you build for your analysis go here.
 -- ----------------------------------------------------------------------
 create schema if not exists analysis;
-grant usage on schema analysis to authenticated;
-alter default privileges in schema analysis grant select on tables to authenticated;
+grant usage on schema analysis to authenticated, service_role;
+alter default privileges in schema analysis grant select on tables to authenticated, service_role;
+grant select on all tables in schema analysis to service_role;   -- your assistant reads views to check them
 
 -- ----------------------------------------------------------------------
 -- Coursework: your checker answers and memo for each lesson, so your AI

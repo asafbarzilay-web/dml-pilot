@@ -17,6 +17,7 @@
       "Bash(sh core/check-setup.sh)",
       "Bash(sh core/apply.sh)",
       "Bash(sh core/apply.sh:*)",
+      "Bash(sh core/look.sh:*)",
       "Bash(git status:*)",
       "Bash(git log:*)",
       "Bash(git diff:*)",
