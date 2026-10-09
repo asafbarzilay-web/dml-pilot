@@ -43,7 +43,9 @@ analysis tidy?** passes before you check your answers.
 
 ## 3. Check yourself
 
-Open [**the lesson 8 checker**](checker/?lesson=lesson-08) and answer **from your dashboard**. One of the questions
+Open [**the lesson 8 checker**](checker/?lesson=lesson-08) and answer **from your dashboard**. If a
+question needs something your board doesn't show, you lead: decide what's missing, define it, and ask
+your assistant to build it under **On your own**. One of the questions
 compares mobile and desktop twice, in two different ways. If the two answers seem to
 disagree, don't fix it: explain it in the memo.
 

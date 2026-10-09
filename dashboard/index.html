@@ -28,6 +28,8 @@
   h1 { font-size: 24px; margin: 0; letter-spacing: -0.01em; }
   h2 { font-size: 17px; margin: 0 0 6px; }
   .muted { color: #6B6B66; font-size: 13px; line-height: 1.5; }
+  .part-head { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6B6B66; margin: 22px 0 10px; }
+  .part-head:first-child { margin-top: 0; }
   .card { background: #fff; border: 1px solid #E2E2DE; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; }
   button {
     font: inherit; font-size: 14px; cursor: pointer; border-radius: 8px;
@@ -198,8 +200,15 @@
         What to build is in <a href="../view.html?f=units/${esc(board)}.md">the exercise</a>. Your panels for it go here.</div>`;
       return;
     }
-    $('board').innerHTML = panels.map((p, i) =>
-      `<section class="card"><h2>${esc(p.title)}</h2>${p.view ? `<p class="muted">From <code>analysis.${esc(p.view)}</code></p>` : ''}<div id="panel-${i}"></div></section>`).join('');
+    const card = (p, i) =>
+      `<section class="card"><h2>${esc(p.title)}</h2>${p.view ? `<p class="muted">From <code>analysis.${esc(p.view)}</code></p>` : ''}<div id="panel-${i}"></div></section>`;
+    // A lesson board has two parts: what the exercise asked for, built with the assistant, and
+    // what the team added on its own to answer questions the exercise's panels couldn't (own: true).
+    const shared = panels.map((p, i) => [p, i]).filter(([p]) => !p.own), own = panels.map((p, i) => [p, i]).filter(([p]) => p.own);
+    $('board').innerHTML = !l ? panels.map(card).join('')
+      : `<div class="part-head">Built together</div>${shared.map(([p, i]) => card(p, i)).join('') || '<div class="placeholder">Nothing yet.</div>'}
+         <div class="part-head">On your own</div>${own.map(([p, i]) => card(p, i)).join('') ||
+           `<div class="placeholder">Nothing yet. When a question needs something your board doesn't show, you decide what's missing and ask your assistant to build it here.</div>`}`;
     panels.forEach((p, i) => p.render($(`panel-${i}`)));
   }
 

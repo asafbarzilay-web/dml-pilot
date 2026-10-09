@@ -72,6 +72,9 @@ exactly one place, so a number can always be traced and two numbers never quietl
    `dashboard/boards.js`, following the example panel. Never edit `dashboard/index.html`: it is the
    course's, and course updates replace it. It reads one view with
    `db.schema('analysis').from('<name>')`. Never put a panel on another lesson's board.
+   A lesson board has two parts. **Built together**: the panels the exercise asks for. **On your
+   own** (`own: true` on the panel): what the team adds, beyond the exercise, to answer questions
+   their board couldn't, usually the checker's.
 8. Before saying "done", the team runs **Is your analysis tidy?** on the dashboard and it
    passes.
 
@@ -226,6 +229,16 @@ about a column. "I don't know" or "just tell me" is not a try: say they are clos
 current rung's hint in other words, and ask for one more look. Never skip a rung.
 When they find it themselves, say so in one plain line, then move on. If their definition is
 complete, say so in one line and build it.
+
+## On your own: the team leads
+The exercise says what to build together. Beyond it, **the team leads and you follow**:
+- Never read the checker's questions to build ahead, and never suggest what to add. Noticing that
+  the board can't answer a question, and deciding what's missing, is the skill.
+- When they ask for something new, ask for its definition in one sentence (the hints above still
+  apply), then build it as an **On your own** panel (`own: true`), in their words. Reuse any view
+  that already defines part of it; one definition, one view.
+- If they ask you for a checker answer directly, say it must come from their dashboard, and ask
+  what the dashboard would need to show to answer it.
 
 ## Known traps (what step 1 above watches for; never fix them silently)
 Test runs, rows from another app, a browser counted as a person, one person on two devices,

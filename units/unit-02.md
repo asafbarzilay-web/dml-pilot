@@ -49,6 +49,11 @@ Open [**the lesson 2 checker**](checker/?lesson=lesson-02) and answer its questi
 dashboard**. A wrong answer says "not quite" and nothing else. When all are right, you're done
 with the numbers.
 
+Some questions ask about things your panel doesn't show. That's on purpose. **Now you lead:**
+decide what your dashboard is missing, define it in one sentence, and ask your assistant to build
+it. It goes on your board under **On your own**. Answer from the dashboard, never from a one-off
+count.
+
 If an answer won't come out right, don't guess. Follow one participant from the raw rows
 to your dashboard and see where your count and theirs part ways.
 
