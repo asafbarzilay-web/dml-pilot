@@ -93,6 +93,32 @@ const BOARDS = {
             <div style="font-size:28px;font-weight:600">${esc(r.visits)}</div>
             <div><b>Visits: ${esc(r.visit_group)}</b></div>
           </div>`).join('')}`;
+      } },
+    { title: 'Different accounts that signed in', view: 'account_totals', own: true, render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('account_totals').select('*').order('app').order('visit_kind');
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        el.innerHTML = `<p class="muted">Population: the identities table, every app, practice data and the team's own test runs included, split by app and by test runs or not.</p>
+          <p class="muted">We count different accounts that signed in, split by the app of the visit and by whether it was one of the team's own test runs; an account that signed in more than once in a group is counted once, because we want the number of accounts that logged in, not the total logins.</p>
+          <div class="scroll"><table><thead><tr><th>app</th><th>visits</th><th>accounts</th></tr></thead><tbody>${
+          data.map(r => `<tr><td>${esc(r.app)}</td><td>${esc(r.visit_kind)}</td><td class="num">${esc(r.accounts)}</td></tr>`).join('')}</tbody></table></div>`;
+      } },
+    { title: 'Accounts by number of browsers', view: 'account_browser_groups', own: true, render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('account_browser_groups').select('*').order('app').order('browser_group', { ascending: false });
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        el.innerHTML = `<p class="muted">Population: the identities table, split by app, practice data included, the team's own test runs excluded.</p>
+          <p class="muted">We count different accounts that signed in, excluding sign-ins made during the team's own test runs, per app, split between accounts that signed in from a single browser and accounts that signed in from more than one browser.</p>
+          <div class="scroll"><table><thead><tr><th>app</th><th>signed in from</th><th>accounts</th></tr></thead><tbody>${
+          data.map(r => `<tr><td>${esc(r.app)}</td><td>${esc(r.browser_group)}</td><td class="num">${esc(r.accounts)}</td></tr>`).join('')}</tbody></table></div>`;
+      } },
+    { title: 'Browsers by number of accounts', view: 'browser_account_groups', own: true, render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('browser_account_groups').select('*');
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        const order = ['no account', 'one account', 'more than one account'];
+        data.sort((a, b) => a.app.localeCompare(b.app) || order.indexOf(a.account_group) - order.indexOf(b.account_group));
+        el.innerHTML = `<p class="muted">Population: sessions, split by app, practice data included, the team's own test runs excluded.</p>
+          <p class="muted">We count different browsers, excluding the team's own test runs, per app, split between browsers where no account signed in, browsers where a single account signed in, and browsers where more than one account signed in.</p>
+          <div class="scroll"><table><thead><tr><th>app</th><th>used with</th><th>browsers</th></tr></thead><tbody>${
+          data.map(r => `<tr><td>${esc(r.app)}</td><td>${esc(r.account_group)}</td><td class="num">${esc(r.browsers)}</td></tr>`).join('')}</tbody></table></div>`;
       } }
   ],
   'unit-08': []
