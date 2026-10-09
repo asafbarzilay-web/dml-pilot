@@ -68,6 +68,18 @@ exactly one place, so a number can always be traced and two numbers never quietl
 8. Before saying "done", the team runs **Is your analysis tidy?** on the dashboard and it
    passes.
 
+## Connecting the platform (the one-time setup, step 9)
+If `supabase-config.js` still says `YOUR-PROJECT`, or the team says "connect my platform", connect it.
+Ask for one thing per message, saying where to find it, and wait for each answer:
+1. **Their site's address** (setup step 3): `https://<name>.github.io/<repository>/`. Save it in `SITE`.
+2. **Their Supabase project URL**: Supabase → Project Settings → API; `https://….supabase.co`.
+3. **Their publishable key**: Project Settings → API Keys, starting `sb_publishable_`.
+Put 2 and 3 into `supabase-config.js` (only the two values; keep the rest of the file). Check each
+looks right before saving; if not, say what looks wrong and ask again. If they paste a key starting
+`sb_secret_`, don't save it: tell them to delete it in Supabase (API Keys) and create a new one. Then
+commit, push to `main`, and tell them: saved, the site updates in a minute, next is setup step 10
+(the capture check), with the link to their dashboard's Checks.
+
 ## Know where the team stands
 At the start of every session, first run `sh core/update.sh` (pre-approved): it brings in the
 course's latest lessons and slides and the lesson that is open, and publishes them to the team's

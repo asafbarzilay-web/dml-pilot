@@ -110,18 +110,28 @@
     <p class="note">The environment is created once. Next time: <b>+ New</b>, and it remembers Data-mindset and your repository.</p>
     <img src="../slides/00-tools-and-concepts/img/claude-cloud-menu.jpg" alt="Choosing Cloud" style="max-width:420px"></div>
 
-  <div class="step"><span class="num">9</span><h3>Connect everything, in one message</h3>
-    <p>Send your assistant these three, in one message:</p>
-    <ol><li>Your site's address (step 3).</li>
-      <li>Your Supabase project URL: <b>Project Settings → API</b>.</li>
-      <li>Your publishable key: <b>Project Settings → API Keys</b>, the one starting <code>sb_publishable_</code>.</li></ol>
-    <p class="see">it fills them in, publishes your site, and says so.</p>
-    <p class="warn">Never give it, or anyone, the <b>secret</b> key (<code>sb_secret_…</code>).</p></div>
+  <div class="step"><span class="num">9</span><h3>Connect everything: your assistant asks, you answer</h3>
+    <p>Your platform needs three addresses before it can record anything. Your assistant collects them and puts them in
+      the right place.</p>
+    <ol style="margin-top:10px"><li>In the message box, type: <i>"Connect my platform"</i>.</li>
+      <li>It asks you three things, <b>one at a time</b>, and tells you where to find each:
+        <br>· <b>your site's address</b>, from step 3 (<code>https://your-name.github.io/data-mindset-template/</code>)
+        <br>· <b>your Supabase project URL</b>: in Supabase, <b>Project Settings → API</b> (starts with <code>https://</code> and ends with <code>.supabase.co</code>)
+        <br>· <b>your publishable key</b>: <b>Project Settings → API Keys</b>, the one starting <code>sb_publishable_</code></li>
+      <li>Paste each answer when it asks for it.</li></ol>
+    <p class="see">it confirms the three are saved and that your site is updated (give it a minute).</p>
+    <p class="warn">Never give it, or anyone, the <b>secret</b> key (<code>sb_secret_…</code>). If you paste one by mistake,
+      it will tell you to delete that key in Supabase.</p></div>
 
   <div class="step"><span class="num">10</span><h3>Check that it works</h3>
     <ol><li>Open your site → <b>Your dashboard</b>, and sign in (step 6).</li>
       <li><b>Checks → Is capture working? → Run the check</b>.</li></ol>
     <p class="see">"Capture works". If it doesn't, ask your assistant: nothing you build will have data until it does.</p></div>
+
+  <div class="step"><span class="num">11</span><h3>Meet your assistant</h3>
+    <ol><li>Back in the Claude app, in the same session, type: <i>"What are we working on?"</i></li></ol>
+    <p class="see">it says you're on <b>lesson 0, Tools and concepts</b>, and gives you the link to its slides.</p>
+    <p class="note">If it talks about something else, you're probably not in your repository: check step 8.</p></div>
 
   <div class="done">That's it. From now on, every lesson starts from <a href="../">your home page</a>, and your assistant
     starts from <b>+ New</b> in the Claude app.</div>
