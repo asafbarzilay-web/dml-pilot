@@ -26,6 +26,9 @@
   img { max-width: 100%; border: 1px solid #E2E2DE; border-radius: 10px; margin-top: 12px; display: block; }
   .done { background: #1C1C1A; color: #F4F4F2; border-radius: 14px; padding: 18px 22px; margin-top: 24px; font-size: 15.5px; line-height: 1.6; }
   .done a { color: #FB923C; }
+  button.copy { font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; border: none; border-radius: 8px; padding: 7px 14px; background: #1C1C1A; color: #fff; margin: 0 6px; }
+  button.copy:disabled { opacity: .5; cursor: default; }
+  .copied { font-size: 14px; color: #1F7A3F; font-weight: 600; }
   @media (max-width: 600px) { .step { padding-left: 20px; padding-top: 56px; } }
 </style>
 </head>
@@ -73,8 +76,8 @@
     <p class="see">the project's home page, with its address <code>https://….supabase.co</code> near the top.</p></div>
 
   <div class="step"><span class="num">5</span><h3>Create the tables</h3>
-    <ol><li>Open <a href="../data/copy.html?f=setup">the database setup</a> and click <b>Copy the setup</b>.</li>
-      <li>In Supabase: <b>SQL Editor → New query</b>. Paste, and click <b>Run</b>. Confirm if it warns about destructive operations.</li></ol>
+    <ol><li>Click this button: <button class="copy" id="copy-setup" disabled>Copy the setup</button> <span id="copy-status" class="copied"></span></li>
+      <li>In Supabase: <b>SQL Editor → New query</b>. Paste (⌘V), and click <b>Run</b>. If it warns about destructive operations, confirm: the setup only creates what is missing.</li></ol>
     <p class="see">a small result table listing <code>sessions</code>, <code>clicks</code>, <code>selections</code>, <code>identities</code>.</p></div>
 
   <div class="step"><span class="num">6</span><h3>Create your sign-in for the dashboard</h3>
@@ -111,5 +114,15 @@
   <div class="done">That's it. From now on, every lesson starts from <a href="../">your home page</a>, and your assistant
     starts from <b>+ New</b> in the Claude app.</div>
 </div>
+<script>
+  // The setup SQL, copied whole: selecting it by hand often copies only the part on screen.
+  let sql = '';
+  fetch('../setup.sql', { cache: 'no-store' }).then(r => r.text()).then(t => { sql = t; document.getElementById('copy-setup').disabled = false; });
+  document.getElementById('copy-setup').addEventListener('click', async () => {
+    const st = document.getElementById('copy-status');
+    try { await navigator.clipboard.writeText(sql); st.textContent = 'Copied. Now paste it in Supabase.'; }
+    catch { st.textContent = 'Your browser blocked the copy. Try again.'; st.style.color = '#B42318'; }
+  });
+</script>
 </body>
 </html>
