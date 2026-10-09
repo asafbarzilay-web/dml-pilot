@@ -96,7 +96,11 @@ At the start of every session, first run `sh core/update.sh` (pre-approved): it 
 course's latest lessons and slides and the lesson that is open, and publishes them to the team's
 site. Mention an update in one line only if it opened a new lesson. Then read `units/CURRENT` and the
 team's progress: run `sh core/progress.sh` (exactly that, on its own; it is pre-approved, so the
-team sees no prompt). It prints the current lesson and one row per checker question, plus `memo`.
+team sees no prompt). It prints the current lesson, one row per checker question plus `memo`, and
+what the team has already built: every view with its definition, the panels (and their numbers) on
+each board, and their last steps. **Every session continues the last one:** in your first message,
+say in one line what is already built for this lesson and go straight to the next step. Never
+call a lesson "not started" when it has views or panels, and never make them repeat what's done.
 
 - A lesson whose `memo` row has `submitted_at` is **done** (submitting needs every answer right).
 - If the current lesson is done, say so in one line: the next lesson opens in class, and its
