@@ -6,4 +6,4 @@ create or replace view analysis.usage_totals as
   from analysis.photo_visits;
 
 comment on view analysis.usage_totals is
-  'One row of totals for "Who used the app?". Visits: we count the rows of photo_visits (every visit to the photo app, excluding the team''s own test runs). Browsers: we count unique browsers (user_id), from photo_visits, excluding other apps'' sessions and the team''s own test runs, because they are not ours and not real browsers.';
+  'One row of totals for "Who used the app?". Visits: we count the rows of photo_visits (every visit to the photo app, excluding the team''s own test runs). Browsers: we count different browsers (user_id) in photo_visits, from the photo app''s visits, excluding the team''s own test runs.';

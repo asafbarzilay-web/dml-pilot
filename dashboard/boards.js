@@ -66,7 +66,7 @@ const BOARDS = {
             def: 'We count every visit to the photo app, from sessions, excluding the team\'s own test runs, because those are not real visits and other apps\' rows are not ours.',
             wrong: 'If visits from other apps are not filtered out.' },
           { label: 'Browsers', col: 'browsers',
-            def: 'We count unique browsers (user_id), from sessions of the photo app, excluding other apps\' sessions and the team\'s own test runs, because they are not ours and not real browsers.' }
+            def: 'We count different browsers, from the photo app\'s visits, excluding our own test runs.' }
         ];
         el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded.</p>${
           numbers.map(n => `<div style="margin-top:14px">
