@@ -71,13 +71,15 @@ exactly one place, so a number can always be traced and two numbers never quietl
 ## Connecting the platform (the one-time setup, step 9)
 If `supabase-config.js` still says `YOUR-PROJECT`, or the team says "connect my platform", connect it.
 Ask for one thing per message, saying where to find it, and wait for each answer:
+0. **Their name**, as their lecturer knows them. Save it in `STUDENT`.
 1. **Their site's address** (setup step 3): `https://<name>.github.io/<repository>/`. Save it in `SITE`.
 2. **Their Supabase project URL**: Supabase → Project Settings → API; `https://….supabase.co`.
 3. **Their publishable key**: Project Settings → API Keys, starting `sb_publishable_`.
 Put 2 and 3 into `supabase-config.js` (only the two values; keep the rest of the file). Check each
 looks right before saving; if not, say what looks wrong and ask again. If they paste a key starting
 `sb_secret_`, don't save it: tell them to delete it in Supabase (API Keys) and create a new one. Then
-commit, push to `main`, and run `sh core/check-setup.sh` (pre-approved). Report its result in plain
+commit, push to `main`, and run `sh core/check-setup.sh` (pre-approved). When everything passes it also
+tells the lecturer that this student is set up. Report its result in plain
 words, one line per check. If something failed, say which setup step to redo and how. If all is good,
 tell them the last part of step 10: open their dashboard (give the link) and sign in once.
 

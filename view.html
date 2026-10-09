@@ -6,6 +6,9 @@
 <title>Course page</title>
 <!-- Shows one of the course's written files (.md) as a page: view.html?f=<path> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="core/course-config.js"></script>
+<script src="core/course.js"></script>
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; background: #F4F4F2; color: #1C1C1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
@@ -37,7 +40,7 @@
     try {
       const [list, cur] = await Promise.all([
         fetch(`${ROOT}units/lessons.json`, { cache: 'no-store' }).then(r => r.json()),
-        fetch(`${ROOT}units/CURRENT`, { cache: 'no-store' }).then(r => r.text()).then(t => t.trim())]);
+        Course.lesson().then(r => r.lesson)]);
       const c = list.find(l => l.unit === cur);
       return !!c && n > c.n;
     } catch { return false; }

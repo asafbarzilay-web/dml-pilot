@@ -6,6 +6,8 @@
 <title>Study Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
+<script src="../core/course-config.js"></script>
+<script src="../core/course.js"></script>
 <script src="../core/row-limit-guard.js"></script>
 <!--
   Your dashboard. Three areas:
@@ -172,7 +174,7 @@
   async function loadLessons() {
     const [list, current] = await Promise.all([
       fetch('../units/lessons.json', { cache: 'no-store' }).then(r => r.json()).catch(() => []),
-      fetch('../units/CURRENT', { cache: 'no-store' }).then(r => r.ok ? r.text() : '').then(t => t.trim()).catch(() => '')
+      Course.lesson().then(r => r.lesson).catch(() => '')
     ]);
     lessons = list.filter(l => l.unit && l.checker);   // slides-only lessons have no board
     board = board || current || 'example';

@@ -36,4 +36,8 @@ r=$(curl -s -X POST "$URL/rest/v1/rpc/capture_arrived" -H "$H1" -H "$H2" -d "{\"
 case "$r" in true) echo "OK   capture works: a test visit and click were written and found (marked as a test)";;
   *) echo "FAIL capture: the test visit was not found. Check the URL and key in supabase-config.js."; ok=0;; esac
 
-[ $ok = 1 ] && echo "ALL GOOD" || exit 1
+[ $ok = 1 ] || exit 1
+echo "ALL GOOD"
+
+# Tell the lecturer this student is set up (once; again is harmless).
+. ./core/course.sh 2>/dev/null && course_register && echo "Reported to your lecturer: setup done."
