@@ -97,7 +97,7 @@ create table if not exists public.coursework (
   answer        text,                     -- the last answer checked, or the memo's text
   is_right      boolean not null default false,
   tries         integer not null default 0,
-  submitted_at  timestamptz,              -- the memo only: when it was submitted
+  submitted_at  timestamptz,              -- the memo: when it was submitted; a question: when it was given up
   updated_at    timestamptz not null default now(),
   primary key (lesson, question)
 );

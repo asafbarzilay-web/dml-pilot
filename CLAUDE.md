@@ -25,6 +25,8 @@ is missing, why a number is wrong.
      chip above the message box says **Data-mindset** before you type." (For KEY REFUSED: redo
      setup step 8 with a fresh copy of the key, then start a new session.) Do no lesson work.
    - The current lesson, and one row per question plus `memo` (`submitted_at` = lesson **done**).
+     A question row with `submitted_at` was **given up**: it is closed for good (it scores 0, and the
+     team has seen its answer). Don't reopen it or help with it again; it counts as done.
    - What is already built: every view with its definition, the panels and their numbers on each
      board, and the team's last steps.
 3. **Continue where they left off.** In your first message, say in one line what is already built

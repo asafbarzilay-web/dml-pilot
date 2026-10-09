@@ -39,6 +39,7 @@ const Coursework = (() => {
     const out = {};
     for (const r of data) {
       const l = out[r.lesson] = out[r.lesson] || { right: 0, memoSubmitted: false };
+      if (r.question.includes(':')) continue;   // e.g. 'q4:gaveup', the words written when giving up
       if (r.question === 'memo') l.memoSubmitted = !!r.submitted_at;
       else if (r.is_right) l.right += 1;
     }

@@ -46,10 +46,12 @@ const Course = (() => {
   const data = (dataId) => server({ action: 'data', data: dataId }).then(j => j.sql);
   const questions = (lessonId) => server({ action: 'questions', lesson: lessonId });
   const check = (lessonId, question, value) => server({ action: 'check', lesson: lessonId, question, value }).then(j => j.right);
+  // After 3 wrong tries: close the question for good (it scores 0) and get its right answer.
+  const giveUp = (lessonId, question, text) => server({ action: 'giveup', lesson: lessonId, question, text }).then(j => j.answer);
   // Reports never block the student: if the course can't be reached, the page carries on.
   async function memo(lessonId, text, submittedAt) {
     const s = await student(); if (!s) return;
     call('course_save_memo', { p_student: s, p_lesson: lessonId, p_text: text, p_submitted: submittedAt }).catch(() => {});
   }
-  return { student, lesson, data, questions, check, memo };
+  return { student, lesson, data, questions, check, giveUp, memo };
 })();

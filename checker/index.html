@@ -28,6 +28,13 @@
   .lead { color: #4A4A45; font-size: 15px; line-height: 1.6; margin: 0 0 28px; }
   .q { background: #fff; border: 1px solid #E2E2DE; border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; display: grid; grid-template-columns: 28px 1fr; gap: 4px 12px; }
   .q.right { border-color: #9FD3B0; background: #F5FBF7; }
+  .q.gaveup { border-color: #E2E2DE; background: #F7F7F5; }
+  .gaveup-note { grid-column: 2; margin: 8px 0 0; font-size: 13.5px; color: #4A4A45; }
+  .gaveup-note i { color: #6B6B66; }
+  details.giveup { grid-column: 2; margin-top: 8px; font-size: 13.5px; }
+  details.giveup summary { cursor: pointer; color: #B42318; }
+  details.giveup textarea { width: 100%; min-height: 70px; margin-top: 8px; font: inherit; font-size: 14px; padding: 8px 10px; border: 1px solid #E2E2DE; border-radius: 8px; }
+  details.giveup .row { display: flex; gap: 10px; align-items: center; margin-top: 6px; flex-wrap: wrap; }
   .q.wrong { border-color: #F0B8B2; }
   .n { font-weight: 700; color: #6B6B66; font-size: 15px; padding-top: 1px; }
   .text { font-size: 15px; line-height: 1.55; }
@@ -72,7 +79,7 @@
   <form id="form"></form>
   <div class="bar"><button form="form" type="submit">Check all answers</button><span class="score" id="score"></span></div>
   <p class="earlier" id="check-error" hidden></p>
-  <div class="all" id="all" hidden>Every answer is right. Now finish your memo below.</div>
+  <div class="all" id="all" hidden>Every question is done. Now finish your memo below.</div>
 
   <section class="memo" id="memo" hidden>
     <h2>Your memo</h2>
@@ -87,7 +94,7 @@
   </section>
 
   <div class="done" id="done" hidden>
-    <b>Lesson done.</b> Every answer is right and your memo is in.
+    <b>Lesson done.</b> Every question is done and your memo is in.
     <span id="next"></span>
     <a class="home" href="../">Back to your home page →</a>
   </div>
@@ -113,7 +120,7 @@
   // Checks one answer. The same wrong answer again does not count as a new try.
   async function checkOne(q, value) {
     const s = saved[q.id] = saved[q.id] || { tries: 0 };
-    if (s.right || !value) return;
+    if (s.right || s.gaveUp || !value) return;
     if (value === s.value && s.checked) { results[q.id] = false; return; }
     s.value = value; s.tries += 1; s.checked = true;
     // The course server checks it against your team's own data; your lecturer sees each try.
@@ -123,23 +130,37 @@
     results[q.id] = s.right;
   }
 
+  // Giving up: after 3 wrong tries a question can be closed for good, with a few words on what was
+  // tried. It scores 0 and shows the right answer. More tries stay possible until then.
+  const GIVE_UP_AFTER = 3, GIVE_UP_WORDS = 20;
+  const giveText = {};
+  const wordsIn = t => (t || '').split(/\s+/).filter(Boolean).length;
+  const closed = q => { const s = saved[q.id] || {}; return !!(s.right || s.gaveUp); };
+
   function render() {
     document.getElementById('form').innerHTML = spec.questions.map((q, i) => {
       const s = saved[q.id] || {};
-      const state = results[q.id] === true || s.right ? 'right' : results[q.id] === false ? 'wrong' : '';
+      const state = s.gaveUp ? 'gaveup' : results[q.id] === true || s.right ? 'right' : results[q.id] === false ? 'wrong' : '';
+      const giveUp = !s.right && !s.gaveUp && s.tries >= GIVE_UP_AFTER
+        ? `<details class="giveup" data-q="${q.id}" ${giveText[q.id] !== undefined ? 'open' : ''}><summary>Give up on this question</summary>
+            <textarea data-gu="${q.id}" placeholder="What did you try, and where do you think the gap is? (at least ${GIVE_UP_WORDS} words)">${esc(giveText[q.id] || '')}</textarea>
+            <div class="row"><button type="button" class="gu-go" data-q="${q.id}" ${wordsIn(giveText[q.id]) < GIVE_UP_WORDS ? 'disabled' : ''}>Give up for good</button>
+            <span class="muted small">It's final: the question closes and scores 0, and you see its right answer.</span></div></details>` : '';
       return `<div class="q ${state}">
         <span class="n">${i + 1}</span><div class="text">${esc(q.text)}</div>
         <div class="answer">
-          <input name="${q.id}" value="${esc(s.value || '')}" placeholder="${hint[q.kind]}" autocomplete="off" ${s.right ? 'readonly' : ''}>
-          <button type="button" class="one" data-q="${q.id}">Check</button>
+          <input name="${q.id}" value="${esc(s.value || '')}" placeholder="${hint[q.kind]}" autocomplete="off" ${s.right || s.gaveUp ? 'readonly' : ''}>
+          ${s.gaveUp ? '' : `<button type="button" class="one" data-q="${q.id}">Check</button>`}
           <span class="verdict">${state === 'right' ? '✓ Right' : state === 'wrong' ? 'Not quite' : ''}</span>
           ${s.tries ? `<span class="tries">${s.tries} ${s.tries === 1 ? 'try' : 'tries'}</span>` : ''}
-        </div>${s.tries >= 2 && !s.right ? `<p class="stuck">Stuck? Tell your assistant: <i>"Question ${i + 1} says not quite."</i>
-          It will help you find out why, without giving you the answer.</p>` : ''}</div>`;
+        </div>${s.gaveUp ? `<p class="gaveup-note"><b>Gave up.</b> The answer was <b>${esc(s.gaveUp.answer)}</b>.<br><i>${esc(s.gaveUp.text)}</i></p>`
+        : s.tries >= 2 && !s.right ? `<p class="stuck">Stuck? Tell your assistant: <i>"Question ${i + 1} says not quite."</i>
+          It will help you find out why, without giving you the answer.</p>` : ''}${giveUp}</div>`;
     }).join('');
     const right = spec.questions.filter(q => (saved[q.id] || {}).right).length;
-    document.getElementById('score').textContent = `${right} of ${spec.questions.length} right`;
-    document.getElementById('all').hidden = right !== spec.questions.length;
+    const gaveUp = spec.questions.filter(q => (saved[q.id] || {}).gaveUp).length;
+    document.getElementById('score').textContent = `${right} of ${spec.questions.length} right` + (gaveUp ? ` · ${gaveUp} given up` : '');
+    document.getElementById('all').hidden = !spec.questions.every(closed);
     renderMemoState();
   }
 
@@ -165,7 +186,7 @@
   // Submitting needs every answer right and a memo of some substance.
   function renderMemoState() {
     if (!spec || !spec.memo || !spec.memo.length) return;
-    const allRight = spec.questions.every(q => (saved[q.id] || {}).right);
+    const allRight = spec.questions.every(closed);
     const allWritten = words() >= MIN_WORDS;
     document.getElementById('memo-text').readOnly = !!memo.submitted;
     const btn = document.getElementById('submit-memo'), st = document.getElementById('memo-status');
@@ -176,7 +197,7 @@
     } else {
       btn.textContent = 'Submit memo';
       btn.disabled = !(allRight && allWritten);
-      st.textContent = `${words()} words · ` + (!allRight ? 'Submit opens when every answer is right.' : !allWritten ? `Write at least ${MIN_WORDS} words to submit.` : 'Ready to submit.');
+      st.textContent = `${words()} words · ` + (!allRight ? 'Submit opens when every question is right or given up.' : !allWritten ? `Write at least ${MIN_WORDS} words to submit.` : 'Ready to submit.');
     }
   }
   document.getElementById('memo-text').addEventListener('input', (e) => {
@@ -206,6 +227,32 @@
   const form = document.getElementById('form');
   form.addEventListener('submit', (e) => { e.preventDefault(); checkIds(spec.questions.map(q => q.id)); });
   form.addEventListener('click', (e) => { const b = e.target.closest('button.one'); if (b) checkIds([b.dataset.q]); });
+  // Giving up: typing keeps the words (the page re-renders often), the button opens at 20 words.
+  form.addEventListener('input', (e) => {
+    const t = e.target.closest('textarea[data-gu]'); if (!t) return;
+    giveText[t.dataset.gu] = t.value;
+    const btn = form.querySelector(`.gu-go[data-q="${t.dataset.gu}"]`);
+    if (btn) btn.disabled = wordsIn(t.value) < GIVE_UP_WORDS;
+  });
+  form.addEventListener('toggle', (e) => {
+    const d = e.target.closest && e.target.closest('details.giveup');
+    if (d && d.open && giveText[d.dataset.q] === undefined) giveText[d.dataset.q] = '';
+  }, true);
+  form.addEventListener('click', async (e) => {
+    const b = e.target.closest('button.gu-go'); if (!b) return;
+    const id = b.dataset.q, s = saved[id], text = (giveText[id] || '').trim();
+    b.disabled = true;
+    try {
+      const answer = await Course.giveUp(lesson, id, text);
+      s.gaveUp = { text, answer };
+      await Coursework.save(lesson, id, { answer: s.value || null, is_right: false, tries: s.tries || 0, submitted_at: new Date().toISOString() });
+      await Coursework.save(lesson, id + ':gaveup', { answer: JSON.stringify(s.gaveUp) });
+      document.getElementById('check-error').hidden = true;
+    } catch (err) {
+      const el = document.getElementById('check-error'); el.textContent = `Could not give up: ${err.message}`; el.hidden = false; b.disabled = false; return;
+    }
+    render();
+  });
   // Enter in a box checks that one question.
   form.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.target.matches('input')) { e.preventDefault(); checkIds([e.target.name]); }
@@ -232,7 +279,12 @@
       const rows = await Coursework.load(lesson);
       for (const [id, r] of Object.entries(rows)) {
         if (id === 'memo') { memo.text = r.answer || ''; memo.submitted = r.submitted_at; continue; }
+        if (id.endsWith(':gaveup')) continue;
         saved[id] = { value: r.answer || '', right: r.is_right, tries: r.tries, checked: r.tries > 0 };
+      }
+      for (const [id, r] of Object.entries(rows)) {
+        if (!id.endsWith(':gaveup') || !saved[id.split(':')[0]]) continue;
+        try { saved[id.split(':')[0]].gaveUp = JSON.parse(r.answer); } catch {}
       }
       document.title = `Lesson ${Number(j.lesson.replace(/\D/g, ''))} · Questions`;
       document.getElementById('eyebrow').textContent = `Lesson ${Number(j.lesson.replace(/\D/g, ''))} · Questions`;
