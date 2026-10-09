@@ -77,8 +77,9 @@ Ask for one thing per message, saying where to find it, and wait for each answer
 Put 2 and 3 into `supabase-config.js` (only the two values; keep the rest of the file). Check each
 looks right before saving; if not, say what looks wrong and ask again. If they paste a key starting
 `sb_secret_`, don't save it: tell them to delete it in Supabase (API Keys) and create a new one. Then
-commit, push to `main`, and tell them: saved, the site updates in a minute, next is setup step 10
-(the capture check), with the link to their dashboard's Checks.
+commit, push to `main`, and run `sh core/check-setup.sh` (pre-approved). Report its result in plain
+words, one line per check. If something failed, say which setup step to redo and how. If all is good,
+tell them the last part of step 10: open their dashboard (give the link) and sign in once.
 
 ## Know where the team stands
 At the start of every session, first run `sh core/update.sh` (pre-approved): it brings in the
@@ -127,7 +128,7 @@ confirms the step works. Never make branches or merging the team's job, or menti
 
 ## Don't make the team approve routine steps
 Read files with your file tools, never with shell commands (`cat`, `ls`, `head`). Run one command at a
-time, never chained with `;`, `&&` or `|`. The pre-approved commands are: `sh core/update.sh`, `sh core/progress.sh` and
+time, never chained with `;`, `&&` or `|`. The pre-approved commands are: `sh core/update.sh`, `sh core/progress.sh`, `sh core/check-setup.sh` and
 ordinary git (status, log, diff, add, commit, push, pull, fetch, merge, checkout). Anything else asks
 the team for permission, so avoid it unless the step truly needs it.
 

@@ -123,10 +123,14 @@
     <p class="warn">Never give it, or anyone, the <b>secret</b> key (<code>sb_secret_…</code>). If you paste one by mistake,
       it will tell you to delete that key in Supabase.</p></div>
 
-  <div class="step"><span class="num">10</span><h3>Check that it works</h3>
-    <ol><li>Open your site → <b>Your dashboard</b>, and sign in (step 6).</li>
-      <li><b>Checks → Is capture working? → Run the check</b>.</li></ol>
-    <p class="see">"Capture works". If it doesn't, ask your assistant: nothing you build will have data until it does.</p></div>
+  <div class="step"><span class="num">10</span><h3>Your assistant checks everything; you sign in once</h3>
+    <p>Right after step 9, your assistant checks your setup by itself and reports one line per check:</p>
+    <ol style="margin-top:8px"><li><b>database setup</b>: step 5 ran</li>
+      <li><b>analysis is exposed</b>: step 7 is done</li>
+      <li><b>capture works</b>: it writes a test visit and a tap exactly as the app does, and finds them in your database</li></ol>
+    <p class="see"><b>ALL GOOD</b>. If a line says FAIL, it tells you which step to redo.</p>
+    <p style="margin-top:12px">Then open <b>your dashboard</b> (it gives you the link) and sign in with the email and password from step 6.</p>
+    <p class="see">your dashboard, with a board for each lesson.</p></div>
 
   <div class="step"><span class="num">11</span><h3>Meet your assistant</h3>
     <ol><li>Back in the Claude app, in the same session, type: <i>"What are we working on?"</i></li></ol>

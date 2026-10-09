@@ -123,6 +123,18 @@ $$;
 revoke all on function public.analysis_catalog() from public, anon;
 grant execute on function public.analysis_catalog() to authenticated;
 
+-- For the setup check your AI assistant runs: did this exact test visit, and
+-- a click in it, arrive? Answers yes or no for a visit id it was given, and
+-- reveals nothing else.
+create or replace function public.capture_arrived(sid uuid)
+returns boolean
+language sql stable security definer set search_path = ''
+as $$
+  select exists (select 1 from public.sessions where session_id = sid)
+     and exists (select 1 from public.clicks where session_id = sid);
+$$;
+grant execute on function public.capture_arrived(uuid) to anon, authenticated;
+
 -- ----------------------------------------------------------------------
 -- Check: four tables, each empty until the app records something.
 -- ----------------------------------------------------------------------
