@@ -9,6 +9,12 @@ H1="apikey: $KEY"; H2="Content-Type: application/json"
 newid() { python3 -c 'import uuid;print(uuid.uuid4())' 2>/dev/null || cat /proc/sys/kernel/random/uuid 2>/dev/null || uuidgen | tr A-Z a-z; }
 ok=1
 
+# 0. The address and key work at all: a wrong one makes every other check meaningless.
+code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$URL/rest/v1/rpc/capture_arrived" -H "$H1" -H "$H2" -d '{}' 2>/dev/null)
+case "$code" in 000) echo "FAIL connection: the project URL in supabase-config.js can't be reached (step 9)."; exit 1;;
+  401|403) echo "FAIL connection: the publishable key in supabase-config.js is wrong (step 9)."; exit 1;; esac
+echo "OK   connection: project URL and key work (step 9)"
+
 # 1. The database setup ran: the check function exists and answers.
 r=$(curl -s -X POST "$URL/rest/v1/rpc/capture_arrived" -H "$H1" -H "$H2" -d "{\"sid\":\"$(newid)\"}")
 case "$r" in false) echo "OK   database setup (step 5)";;
