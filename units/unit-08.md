@@ -10,8 +10,9 @@ exercise below assumes you have been through them.
 
 ## 1. Load the practice data
 
-Open [**the practice data**](data/copy.html?f=lesson-08), copy it with one click, and run it in
-Supabase. The page says what the result must show.
+Copy the practice data with the button below and run it in Supabase.
+
+[the practice data](data/copy.html?f=lesson-08)
 
 This replaces the previous practice data. Your own test runs and real visits stay.
 

@@ -112,9 +112,12 @@ and ask whether to continue.
 ## When the team runs SQL in Supabase
 - **Show the SQL in your message as one code block**, so the chat's copy button takes all of it.
   Never ask them to open a file and copy it. For
-  practice data, send them to its copy page (`data/copy.html?f=lesson-02`).
+  practice data, send them to the lesson's exercise page: step 1 there has a **Copy the practice
+  data** button (link the page, `view.html?f=units/unit-02.md`). Don't send the copy page itself.
+- **Don't load data that is already there.** A lesson whose `data` in `units/lessons.json` is the
+  same as the lesson before it needs nothing loaded (lesson 2 uses lesson 1's data). Skip that step.
 - **Say what success looks like before they run it:** creating a view answers
-  "Success. No rows returned"; practice data ends with the row counts its copy page lists.
+  "Success. No rows returned"; practice data ends with the row counts listed under its copy button.
 - **Say exactly where the result appears,** with the link: the example panel is on the
   **Example** board, a lesson's panels on that lesson's board.
 

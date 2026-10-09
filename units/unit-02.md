@@ -9,8 +9,10 @@ exercise below assumes you have been through them.
 
 ## 1. Load the practice data
 
-Open [**the practice data**](data/copy.html?f=lesson-02), copy it with one click, and run it in
-Supabase. The page says what the result must show.
+You loaded this data in lesson 1, and it serves lesson 2 too: skip this step. Load it again
+only if you have loaded another lesson's data since.
+
+[the practice data](data/copy.html?f=lesson-02)
 
 The practice data is a few weeks of visits to the photo app. It is generated, and it is
 realistic on purpose: it has the same problems real data has. Some of them are traps.

@@ -14,8 +14,10 @@ exercise below assumes you have been through them.
 
 ## 1. Load the practice data
 
-Open [**the practice data**](data/copy.html?f=lesson-02), copy it with one click, and run it in
-Supabase. The page says what the result must show. (The same data serves lessons 1 and 2.)
+Copy the practice data with the button below and run it in Supabase.
+(The same data serves lessons 1 and 2.)
+
+[the practice data](data/copy.html?f=lesson-02)
 
 ## 2. Read the map
 
