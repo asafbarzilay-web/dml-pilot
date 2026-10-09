@@ -25,9 +25,7 @@
     if (e.key === 'End') show(slides.length - 1);
   });
   addEventListener('click', e => { if (!e.target.closest('a')) show(e.clientX < innerWidth / 3 ? i - 1 : i + 1); });
-  // Links to the team's own pages (data-site="dashboard/"). Published slides
-  // sit in <site>/slides/<lesson>/; the instructor's copy in lessons/<lesson>/,
-  // beside template/, which is the same site.
+  // Links to the team's own pages (data-site="dashboard/"). Slides sit in <site>/slides/<lesson>/.
   const site = location.pathname.includes('/slides/') ? '../../' : '../../template/';
   document.querySelectorAll('a[data-site]').forEach(a => { a.href = site + a.dataset.site; });
   addEventListener('resize', fit);

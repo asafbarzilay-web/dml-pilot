@@ -7,6 +7,10 @@
 // Needs supabase-js and supabase-config.js loaded first.
 // =====================================================================
 const Coursework = (() => {
+  // A copy whose database isn't filled in yet has no progress, and nothing to save it to.
+  const unset = /YOUR-PROJECT/.test(SUPABASE_URL);
+  const notConnected = () => Promise.reject(new Error('not connected to a database yet: finish the one-time setup'));
+
   // Never signs in and remembers nothing in the browser.
   const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false, storageKey: 'coursework' }
@@ -14,12 +18,14 @@ const Coursework = (() => {
 
   // { q1: { answer, is_right, tries, submitted_at }, …, memo: {…} } for one lesson.
   async function load(lesson) {
+    if (unset) return {};
     const { data, error } = await db.from('coursework').select('*').eq('lesson', lesson);
     if (error) throw error;
     return Object.fromEntries(data.map(r => [r.question, r]));
   }
 
   async function save(lesson, question, fields) {
+    if (unset) return notConnected();
     const { error } = await db.from('coursework')
       .upsert({ lesson, question, ...fields, updated_at: new Date().toISOString() }, { onConflict: 'lesson,question' });
     if (error) throw error;
@@ -27,6 +33,7 @@ const Coursework = (() => {
 
   // Per lesson: how many answers are right, and whether the memo was submitted.
   async function summary() {
+    if (unset) return {};
     const { data, error } = await db.from('coursework').select('lesson, question, is_right, submitted_at');
     if (error) throw error;
     const out = {};
@@ -40,6 +47,7 @@ const Coursework = (() => {
 
   // Progress from before it was kept in the database: move it in once, then forget it here.
   async function adoptBrowserCopy(lesson) {
+    if (unset) return;
     let checker = null, memo = null;
     try { checker = JSON.parse(localStorage.getItem(`checker:${lesson}`)); memo = JSON.parse(localStorage.getItem(`memo:${lesson}`)); } catch {}
     if (!checker && !memo) return;

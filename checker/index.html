@@ -100,7 +100,7 @@
   }
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  // Must match normalize() in generator/sim.mjs exactly.
+  // How an answer is tidied before it is compared: case, spacing and word order don't matter.
   function normalize(kind, value) {
     const num = () => Number(String(value).replace(/[^0-9.\-]/g, ''));
     if (kind === 'integer') { const n = Math.round(num()); return Number.isFinite(n) ? String(n) : ''; }

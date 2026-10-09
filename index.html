@@ -25,6 +25,8 @@
   .btn.ghost { border: 1px solid #55554F; color: #fff; }
   .btn.off { border: 1px dashed #4A4A45; color: #77776F; cursor: default; }
   .now .opens { color: #F6B38A; }
+  .unset { background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 12px; padding: 14px 18px; font-size: 15px; line-height: 1.55; margin: 0 0 16px; }
+  .unset a { color: #92400E; font-weight: 600; }
   .tag.unfinished { background: #FEF3C7; color: #92400E; }
   .lesson.done .n { background: #1F7A3F; color: #fff; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
@@ -93,6 +95,8 @@
     </details>
   </div>
 
+  <div class="unset" id="unset" hidden><b>Not connected to a database yet.</b> This copy can't record or show anything
+    until the one-time setup is done. <a href="units/setup.html">Follow the one-time setup →</a></div>
   <div class="now" id="now">Loading…</div>
 
   <h2>Your tools</h2>
@@ -122,11 +126,14 @@
   // The team's repository name is the first part of this site's address.
   const repo = location.hostname.endsWith('github.io') ? location.pathname.split('/')[1] : '';
   if (repo) document.querySelectorAll('.team').forEach(el => { el.textContent = repo; });
+  // A copy whose database isn't filled in yet (the course's original, or a new fork) says so.
+  document.getElementById('unset').hidden = !/YOUR-PROJECT/.test(SUPABASE_URL);
   const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   Promise.all([
     fetch('units/lessons.json', { cache: 'no-store' }).then(r => r.json()),
     fetch('units/CURRENT', { cache: 'no-store' }).then(r => r.ok ? r.text() : '').then(t => t.trim()),
-    Coursework.summary().catch(() => ({}))
+    // Progress never holds the page up: after a few seconds, show the lessons without it.
+    Promise.race([Coursework.summary(), new Promise(r => setTimeout(() => r({}), 4000))]).catch(() => ({}))
   ]).then(([lessons, current, work]) => {
     const cur = lessons.find(l => l.unit === current) || lessons.find(l => l.unit);
     const brief = l => `view.html?f=units/${l.unit}.md`;
