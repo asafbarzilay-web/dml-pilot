@@ -72,7 +72,9 @@ const BOARDS = {
           { label: 'Came back (people)', col: 'came_back',
             def: 'We count the people (as in People) who had more than one visit, from the photo app\'s visits, excluding our own test runs.' },
           { label: 'Came back (% of People)', col: 'came_back_pct', suffix: '%',
-            def: 'The people who came back, as a share of People.' }
+            def: 'The people who came back, as a share of People.' },
+          { label: 'Visits per person', col: 'visits_per_person',
+            def: 'We divide Visits by People, both from the photo app\'s visits, excluding our own test runs.' }
         ];
         el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded.</p>${
           numbers.map(n => `<div style="margin-top:14px">
