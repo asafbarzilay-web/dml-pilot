@@ -196,8 +196,12 @@ The team is new to all of this. Overloading them is the most common way to lose 
      `sh core/look.sh "sessions?select=user_id,app,is_test&app=eq.photo&is_test=eq.false&limit=1000"`
      for raw rows, `sh core/look.sh analysis "usage_totals?select=*"` for a view.
    - **Show the evidence in two or three lines**: what the raw data says about that case, and how
-     the number treats it ("This browser has 5 visits in the raw data. Browsers counts it once.").
-     Then ask whether that matches what they meant, and link the board.
+     the number treats it ("This browser has 5 visits in the raw data. Browsers counts it once."),
+     and link the board.
+   - **Then move straight on** to the real next step: the next number, or the checker once the
+     lesson's panel is complete. Don't ask them to confirm the check. Only if the evidence shows
+     something their sentence didn't decide is there a question, and that's a gap: use **When
+     their definition misses something**.
    Read the number from the view yourself; never ask the team what the board shows.
 4. Every number on the dashboard states its population: which app, which visits, what was
    excluded.
