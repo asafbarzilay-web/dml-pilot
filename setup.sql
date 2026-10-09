@@ -135,6 +135,23 @@ as $$
 $$;
 grant execute on function public.capture_arrived(uuid) to anon, authenticated;
 
+-- For your AI assistant: builds your analysis (views in `analysis`) from the
+-- files in analysis/, so you never paste SQL. Only your secret key may call it
+-- (it lives in your Claude cloud environment, setup step 8); the publishable
+-- key on your site cannot.
+create or replace function public.analysis_apply(p_sql text)
+returns text
+language plpgsql security definer set search_path = ''
+as $$
+begin
+  execute p_sql;
+  notify pgrst, 'reload schema';     -- the dashboard sees new views at once
+  return 'ok';
+end;
+$$;
+revoke all on function public.analysis_apply(text) from public, anon, authenticated;
+grant execute on function public.analysis_apply(text) to service_role;
+
 -- ----------------------------------------------------------------------
 -- Check: four tables, each empty until the app records something.
 -- ----------------------------------------------------------------------

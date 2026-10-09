@@ -36,6 +36,19 @@ r=$(curl -s -X POST "$URL/rest/v1/rpc/capture_arrived" -H "$H1" -H "$H2" -d "{\"
 case "$r" in true) echo "OK   capture works: a test visit and click were written and found (marked as a test)";;
   *) echo "FAIL capture: the test visit was not found. Check the URL and key in supabase-config.js."; ok=0;; esac
 
+# 4. The assistant can build: create a test view with the secret key, then remove it.
+if [ -z "$SUPABASE_SECRET_KEY" ]; then
+  echo "FAIL assistant can't build (step 8): this cloud environment has no SUPABASE_SECRET_KEY. Add it, then start a new session."; ok=0
+else
+  code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$URL/rest/v1/rpc/analysis_apply" -H "apikey: $SUPABASE_SECRET_KEY" \
+    -H "Authorization: Bearer $SUPABASE_SECRET_KEY" -H "$H2" \
+    -d '{"p_sql":"create or replace view analysis.zz_setup_check as select 1 as ok; drop view analysis.zz_setup_check;"}')
+  case "$code" in 200) echo "OK   your assistant can build in your database (step 8)";;
+    401|403) echo "FAIL assistant can't build (step 8): the secret key was refused. Copy it again from Project Settings > API Keys."; ok=0;;
+    404) echo "FAIL assistant can't build (step 5): run the setup again in Supabase's SQL Editor."; ok=0;;
+    *) echo "FAIL assistant can't build: the database answered $code."; ok=0;; esac
+fi
+
 [ $ok = 1 ] || exit 1
 echo "ALL GOOD"
 

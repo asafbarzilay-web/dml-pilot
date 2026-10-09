@@ -15,8 +15,7 @@ comment on view analysis.photo_visits is
   'We count ..., from ..., excluding ..., because ...';
 ```
 
-To put a view in the database (or change it): your assistant shows you its SQL; copy it,
-paste it into Supabase (SQL Editor, New query) and press Run. Then run **Is your analysis tidy?** on your
-dashboard.
+Your assistant puts each view in your database itself (it runs `sh core/apply.sh`), so you never
+paste SQL. Then run **Is your analysis tidy?** on your dashboard.
 
 Never a table of copied data here, only views. Never two views that define the same thing.

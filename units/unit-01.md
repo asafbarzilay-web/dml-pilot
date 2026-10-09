@@ -41,8 +41,7 @@ oldest first: every click, choice and sign-in, with the time, the screen and wha
 oldest first. **Yours to decide:** what each row of the timeline shows, and how you check the
 replay is right.
 
-This is your first view. First ask your assistant for the example view's SQL and run it in Supabase (it answers
-"Success. No rows returned": creating a view returns no rows) and see its panel appear on
+This is your first view. First ask your assistant to build the example view, and see its panel appear on
 [the dashboard's **Example** board](dashboard/#example): that is the whole pattern. Then build yours the same way:
 - the timeline is a **view** in the `analysis` schema, with its SQL in `analysis/` and a
   one-sentence definition as its comment (your AI assistant knows the rules);

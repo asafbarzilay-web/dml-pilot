@@ -12,6 +12,8 @@ course is about reasoning from data, not about code.
 - Answer a checker question for the team, or compute its answer outside their dashboard.
   The point is that their dashboard gets it right.
 - Change several unrelated things in one step. Commit before every change.
+- Show, print or ask for the secret key (`SUPABASE_SECRET_KEY`). It is in the cloud environment
+  for `core/apply.sh` only. Never use it for anything else: no queries of your own, no data loads.
 
 ## The project
 - `app/` — the app participants use: the course's photo app. Mid-course the team adds one
@@ -58,9 +60,11 @@ exactly one place, so a number can always be traced and two numbers never quietl
    defined once is used by every number that needs it, not re-written in each.
 3. **Each view carries its definition** as a comment, in the team's words:
    `comment on view analysis.<name> is 'We count …, from …, excluding …';`
-4. **Each view's SQL lives in `analysis/<name>.sql`**: `create or replace view …` followed by
-   its `comment on view …`. You cannot reach the database: write the file, then the team runs
-   it in the Supabase SQL Editor. The file is the record; commit it with the change.
+4. **Each view's SQL lives in `analysis/<name>.sql`**: `create or replace view analysis.…` followed
+   by its `comment on view …` (and, only when a view's columns change, a `drop view if exists …
+   cascade` first). Nothing else goes in these files. Write the file, then build it yourself with
+   `sh core/apply.sh` (pre-approved; it builds every file in `analysis/`, views on views in the right
+   order). **Never ask the team to paste SQL.** The file is the record; commit it with the change.
 5. **No copies of data.** No tables or materialized views in `analysis`: they go stale.
 6. **Names say what one row is:** lowercase, plural, plain (`photo_visits`, `people`).
 7. A panel goes on its lesson's board: add it to that lesson's list in `BOARDS` in
@@ -80,7 +84,8 @@ Ask for one thing per message, saying where to find it, and wait for each answer
 3. **Their publishable key**: Project Settings → API Keys, starting `sb_publishable_`.
 Put 2 and 3 into `supabase-config.js` (only the two values; keep the rest of the file). Check each
 looks right before saving; if not, say what looks wrong and ask again. If they paste a key starting
-`sb_secret_`, don't save it: tell them to delete it in Supabase (API Keys) and create a new one. Then
+`sb_secret_`, don't save it: it was exposed in the chat, so tell them to create a new secret key in
+Supabase (API Keys), delete the old one, and put the new one in the cloud environment (step 8). Then
 commit, push to `main`, and run `sh core/check-setup.sh` (pre-approved). When everything passes it also
 tells the lecturer that this student is set up. Report its result in plain
 words, one line per check. If something failed, say which setup step to redo and how. If all is good,
@@ -111,15 +116,18 @@ in `units/lessons.json`, opened on their site (also linked from the home page).
 Build only what that lesson asks. If the team asks for more, say it is outside this lesson
 and ask whether to continue.
 
-## When the team runs SQL in Supabase
-- **Show the SQL in your message as one code block**, so the chat's copy button takes all of it.
-  Never ask them to open a file and copy it. For
-  practice data, send them to the lesson's exercise page: step 1 there has a **Copy the practice
-  data** button (link the page, `view.html?f=units/unit-02.md`). Don't send the copy page itself.
+## Building, and the one thing the team runs: practice data
+- **You build; the team looks.** After `sh core/apply.sh` says `ALL BUILT`, commit and merge to
+  `main`, then tell them where to see it, with the link. If it says `NO KEY` or the key was
+  refused, tell them to fix setup step 8 (the secret key in the cloud environment) and start a
+  new session; until then, nothing can be built. If a file FAILs, fix the SQL and run it again.
+- **Practice data is the team's to load.** Send them to the lesson's exercise page: step 1 there
+  has a **Copy the practice data** button (link the page, `view.html?f=units/unit-02.md`). They paste
+  it in Supabase's SQL Editor and click Run. Don't send the copy page itself.
 - **Don't load data that is already there.** A lesson whose `data` in `units/lessons.json` is the
   same as the lesson before it needs nothing loaded (lesson 2 uses lesson 1's data). Skip that step.
-- **Say what success looks like before they run it:** creating a view answers
-  "Success. No rows returned"; practice data ends with the row counts listed under its copy button.
+- **Say what success looks like before they run it:** practice data ends with the row counts
+  listed under its copy button.
 - **Say exactly where the result appears,** with the link: the example panel is on the
   **Example** board, a lesson's panels on that lesson's board.
 
@@ -136,7 +144,8 @@ confirms the step works. Never make branches or merging the team's job, or menti
 
 ## Don't make the team approve routine steps
 Read files with your file tools, never with shell commands (`cat`, `ls`, `head`). Run one command at a
-time, never chained with `;`, `&&` or `|`. The pre-approved commands are: `sh core/update.sh`, `sh core/progress.sh`, `sh core/check-setup.sh` and
+time, never chained with `;`, `&&` or `|`. The pre-approved commands are: `sh core/update.sh`, `sh core/progress.sh`, `sh core/check-setup.sh`,
+`sh core/apply.sh` (with or without file names) and
 ordinary git (status, log, diff, add, commit, push, pull, fetch, merge, checkout). Anything else asks
 the team for permission, so avoid it unless the step truly needs it.
 
@@ -163,9 +172,8 @@ The team is new to all of this. Overloading them is the most common way to lose 
    question at a time (what is counted? from which visits? anything left out?). Don't supply
    the definition yourself, and don't hint which option is better; if they are stuck, offer
    two options with what each would show, and ask them to choose and say why.
-2. From lesson 2 on, ask what would make the number wrong, and write it down next to it. In
-   lesson 1, skip this question: the check is replaying their own visit and comparing it with
-   what they did.
+2. Don't ask what could make the number wrong, or any other question about risks or failure
+   modes. The traps are found by building and checking, and the memo asks about them at the end.
 3. After building, prove it: pick one participant and trace them from the raw rows to the
    dashboard, or compare the number with a direct count. Show the check, not just the result.
 4. Every number on the dashboard states its population: which app, which visits, what was
