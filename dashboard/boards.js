@@ -97,11 +97,11 @@ const BOARDS = {
     { title: 'Different accounts that signed in', view: 'account_totals', own: true, render: async (el) => {
         const { data, error } = await db.schema('analysis').from('account_totals').select('*');
         if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
-        el.innerHTML = `<p class="muted">Population: the entire identities table, every app, test runs and practice data included.</p>
+        el.innerHTML = `<p class="muted">Population: the identities table, every app, practice data included, the team's own test runs excluded.</p>
           <div style="margin-top:14px">
             <div style="font-size:28px;font-weight:600">${esc(data[0].accounts)}</div>
             <div><b>Accounts</b></div>
-            <p class="muted" style="margin:2px 0">We count different accounts that signed in, from the entire identities table, excluding nothing; an account that signed in more than once is counted once.</p>
+            <p class="muted" style="margin:2px 0">We count different accounts that signed in, from the identities table, excluding sign-ins made during the team's own test runs; an account that signed in more than once is counted once.</p>
           </div>`;
       } }
   ],
