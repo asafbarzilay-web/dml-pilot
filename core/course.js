@@ -1,6 +1,7 @@
 // =====================================================================
 // The course connection. DO NOT EDIT.
-// Reports setup, checker tries and memos to the lecturer, and asks which
+// Fetches your team's own practice data and questions, checks answers (each
+// try reaches the lecturer), reports setup and memos, and asks which
 // lesson this student is on (the lecturer sets it; units/CURRENT is the
 // fallback when the course can't be reached).
 // Needs supabase-js and core/course-config.js loaded first.
@@ -33,14 +34,22 @@ const Course = (() => {
     const cur = (await fetch(root + 'units/CURRENT', { cache: 'no-store' }).then(r => r.ok ? r.text() : '').catch(() => '')).trim();
     return { lesson: cur, since: null };
   }
-  // Reports never block the student: if the course can't be reached, the page carries on.
-  async function attempt(lessonId, question, answer, right) {
-    const s = await student(); if (!s) return;
-    call('course_record_attempt', { p_student: s, p_lesson: lessonId, p_question: question, p_answer: answer, p_right: right }).catch(() => {});
+  // The course server: your team's own practice data, questions and answer checks.
+  async function server(body) {
+    const s = await student();
+    if (!s) throw new Error('This page cannot tell which team it belongs to. Open it from your GitHub Pages site.');
+    const res = await fetch(COURSE_FN, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...body, student: s }) });
+    const j = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(j.error || 'The course server did not answer. Try again in a minute.');
+    return j;
   }
+  const data = (dataId) => server({ action: 'data', data: dataId }).then(j => j.sql);
+  const questions = (lessonId) => server({ action: 'questions', lesson: lessonId });
+  const check = (lessonId, question, value) => server({ action: 'check', lesson: lessonId, question, value }).then(j => j.right);
+  // Reports never block the student: if the course can't be reached, the page carries on.
   async function memo(lessonId, text, submittedAt) {
     const s = await student(); if (!s) return;
     call('course_save_memo', { p_student: s, p_lesson: lessonId, p_text: text, p_submitted: submittedAt }).catch(() => {});
   }
-  return { student, lesson, attempt, memo };
+  return { student, lesson, data, questions, check, memo };
 })();

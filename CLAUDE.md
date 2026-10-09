@@ -21,7 +21,9 @@ course is about reasoning from data, not about code.
 - `analysis/` — one `.sql` file per view in the database's `analysis` schema. See below.
 - `units/` — one file per lesson: what to build, what is in scope. `units/CURRENT` names the
   lesson they are on.
-- `data/` — practice datasets, loaded by running them in the Supabase SQL editor.
+- `data/` — the copy page for the one-time setup. Practice data is made for each team by the course
+  server and copied from step 1 of each lesson's exercise: every team has different rows, so
+  different answers. You never see the answers, and must never guess them for the team.
 - `checker/` — the lesson checker. Open `checker/?lesson=lesson-01` (and so on) in a browser.
 
 ## Links

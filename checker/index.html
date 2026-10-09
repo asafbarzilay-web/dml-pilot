@@ -9,9 +9,10 @@
   Answer each question from YOUR dashboard. It tells you which answers
   are right, never what the right answer is.
 
-  It holds only a fingerprint of each answer (a one-way scramble), not
-  the answer itself. Your answers and memo are kept in your team's
-  database (table coursework), not in this browser.
+  Every team has its own practice data, so its own answers. They live on
+  the course server, which checks each try; this page never sees them.
+  Your answers and memo are kept in your team's database (table
+  coursework), not in this browser.
 -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
@@ -68,6 +69,7 @@
   <p class="earlier" id="earlier" hidden></p>
   <form id="form"></form>
   <div class="bar"><button form="form" type="submit">Check all answers</button><span class="score" id="score"></span></div>
+  <p class="earlier" id="check-error" hidden></p>
   <div class="all" id="all" hidden>Every answer is right. Now finish your memo below.</div>
 
   <section class="memo" id="memo" hidden>
@@ -75,7 +77,7 @@
     <p class="lead small">Half a page, written as one piece. Let these questions guide it:</p>
     <ul class="guide" id="memo-guide"></ul>
     <textarea id="memo-text" placeholder="Your memo…"></textarea>
-    <p class="muted small">Your draft is saved on this computer as you type.</p>
+    <p class="muted small">Your draft is saved in your team's database as you type.</p>
     <div class="memo-bar">
       <button type="button" id="submit-memo">Submit memo</button>
       <span class="muted" id="memo-status"></span>
@@ -102,19 +104,6 @@
   }
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  // How an answer is tidied before it is compared: case, spacing and word order don't matter.
-  function normalize(kind, value) {
-    const num = () => Number(String(value).replace(/[^0-9.\-]/g, ''));
-    if (kind === 'integer') { const n = Math.round(num()); return Number.isFinite(n) ? String(n) : ''; }
-    if (kind === 'percent') { const n = num(); return Number.isFinite(n) ? n.toFixed(1) : ''; }
-    if (kind === 'decimal') { const n = num(); return Number.isFinite(n) ? n.toFixed(2) : ''; }
-    return String(value).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(Boolean).sort().join(' ');
-  }
-  async function fingerprint(salt, kind, value) {
-    const bytes = new TextEncoder().encode(`${salt}|${normalize(kind, value)}`);
-    const d = await crypto.subtle.digest('SHA-256', bytes);
-    return [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, '0')).join('');
-  }
   const hint = { integer: 'a whole number', percent: 'a percentage, one decimal', decimal: 'a number, two decimals', text: 'words' };
 
   const results = {};
@@ -125,9 +114,11 @@
     if (s.right || !value) return;
     if (value === s.value && s.checked) { results[q.id] = false; return; }
     s.value = value; s.tries += 1; s.checked = true;
-    s.right = (await fingerprint(spec.salt, q.kind, value)) === q.fingerprint;
+    // The course server checks it against your team's own data; your lecturer sees each try.
+    try { s.right = await Course.check(lesson, q.id, value); }
+    catch (e) { s.tries -= 1; s.checked = false; const el = document.getElementById('check-error'); el.textContent = `Could not check: ${e.message}`; el.hidden = false; return; }
+    document.getElementById('check-error').hidden = true;
     results[q.id] = s.right;
-    Course.attempt(lesson, q.id, value, s.right);   // your lecturer sees each try
   }
 
   function render() {
@@ -230,8 +221,7 @@
   }
   opensLater(Number(lesson.replace(/\D/g, ''))).then(later => later
     ? Promise.reject(Object.assign(new Error('This lesson opens in class. Its checker becomes available when your lecturer opens it.'), { locked: true }))
-    : fetch(`questions/${lesson}.json`, { cache: 'no-store' }))
-    .then(r => { if (!r.ok) throw new Error(`No checker for "${lesson}".`); return r.json(); })
+    : Course.questions(lesson))
     .then(async j => {
       spec = j;
       // Progress lives in the team's database; an older copy in this browser moves there once.
@@ -256,7 +246,7 @@
         if (me && cur && me.n < cur.n && me.data && me.data !== curData && !spec.questions.every(q => (saved[q.id] || {}).right)) {
           const el = document.getElementById('earlier');
           el.innerHTML = `This is an earlier lesson. Its answers come from its own practice data, and a later lesson's
-            data has replaced it. <a href="../data/copy.html?f=${me.data}">Load lesson ${me.n}'s practice data</a> again first,
+            data has replaced it. <a href="../view.html?f=units/${me.unit}.md">Load lesson ${me.n}'s practice data</a> (step 1 of its exercise) again first,
             then load the current lesson's data back when you are done.`;
           el.hidden = false;
         }

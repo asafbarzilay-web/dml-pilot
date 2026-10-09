@@ -12,7 +12,7 @@ Start at `index.html`: your home page, with the current lesson and every tool.
 | `dashboard/` | Your dashboard. Starts with sign-in, a capture health check and the raw tables |
 | `units/` | The lessons: what to build in each. `units/CURRENT` says which one you're on. Start with `database-map.html` |
 | `analysis/` | Your views, one `.sql` file each: the record of every number you build |
-| `data/` | Practice datasets, one per lesson |
+| `data/` | The copy page for the setup. Practice data is made for your team by the course, with its own answers |
 | `checker/` | Checks your answers for a lesson: `checker/?lesson=lesson-01` |
 | `core/`, `setup.sql` | The capture code and the database setup. Do not edit |
 

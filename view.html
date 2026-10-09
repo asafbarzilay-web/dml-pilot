@@ -51,8 +51,8 @@
       return !!c && n > c.n;
     } catch { return false; }
   }
-  // A lesson's practice data, copied with one button right in the exercise (the link would
-  // open a separate page with the same button). The counts are what Run must report.
+  // A lesson's practice data, copied with one button right in the exercise. It is made for
+  // this team by the course server: other teams get different rows. The counts are what Run must report.
   function dataButton(a) {
     const name = new URL(a.href).searchParams.get('f').replace(/[^a-z0-9-]/g, '');
     const box = document.createElement('div');
@@ -62,7 +62,7 @@
     if (p && p.textContent.trim() === a.textContent.trim()) p.replaceWith(box); else (p || a).after(box);
     const [btn, st, note] = [box.querySelector('button'), box.querySelector('.st'), box.querySelector('p')];
     let sql = '';
-    fetch(`data/${name}.sql`, { cache: 'no-store' }).then(r => { if (!r.ok) throw 0; return r.text(); }).then(text => {
+    Course.data(name).then(text => {
       sql = text;
       const rows = {}; let t = null;
       for (const line of text.split('\n')) {
@@ -72,7 +72,7 @@
       note.innerHTML = 'Then in Supabase: <b>SQL Editor → New query</b>, paste (⌘V), <b>Run</b>. It worked if the result shows ' +
         ['sessions', 'clicks', 'selections', 'identities'].map(k => `${k} <b>${(rows[k] || 0).toLocaleString()}</b>`).join(', ') + '.';
       btn.disabled = false;
-    }).catch(() => { st.innerHTML = '<span class="bad">Could not load the practice data.</span>'; });
+    }).catch(e => { st.innerHTML = `<span class="bad">Could not load the practice data. ${e.message}</span>`; });
     btn.addEventListener('click', async () => {
       try { await navigator.clipboard.writeText(sql); st.innerHTML = '<span class="ok">Copied, all of it.</span>'; }
       catch { st.innerHTML = '<span class="bad">Your browser blocked the copy. Try again.</span>'; }
