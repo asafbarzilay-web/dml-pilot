@@ -134,7 +134,7 @@
           <button type="button" class="one" data-q="${q.id}">Check</button>
           <span class="verdict">${state === 'right' ? '✓ Right' : state === 'wrong' ? 'Not quite' : ''}</span>
           ${s.tries ? `<span class="tries">${s.tries} ${s.tries === 1 ? 'try' : 'tries'}</span>` : ''}
-        </div>${s.tries && !s.right ? `<p class="stuck">Stuck? Tell your assistant: <i>"Question ${i + 1} says not quite."</i>
+        </div>${s.tries >= 2 && !s.right ? `<p class="stuck">Stuck? Tell your assistant: <i>"Question ${i + 1} says not quite."</i>
           It will help you find out why, without giving you the answer.</p>` : ''}</div>`;
     }).join('');
     const right = spec.questions.filter(q => (saved[q.id] || {}).right).length;
