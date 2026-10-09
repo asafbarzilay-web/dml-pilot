@@ -39,6 +39,7 @@
   .right .verdict { color: #1F7A3F; font-weight: 600; }
   .wrong .verdict { color: #B42318; }
   .tries { font-size: 12px; color: #8A8A85; }
+  .stuck { grid-column: 2; margin: 8px 0 0; font-size: 13px; color: #6B6B66; }
   .bar { position: sticky; bottom: 0; background: #F4F4F2; padding: 16px 0 0; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
   button { font: inherit; font-size: 15px; font-weight: 600; padding: 12px 24px; border-radius: 10px; border: none; background: #1C1C1A; color: #fff; cursor: pointer; }
   .score { font-size: 15px; color: #4A4A45; }
@@ -64,8 +65,9 @@
 <div class="wrap">
   <p class="eyebrow" id="eyebrow">Questions</p>
   <h1 id="title">Loading…</h1>
-  <p class="lead">Answer from your dashboard, not from a one-off query: the point is that your dashboard
-    gets it right. A wrong answer says "not quite", never why — finding out why is the lesson.</p>
+  <p class="lead">Answer every question from <a id="board-link" href="../dashboard/">your dashboard</a>, never from a one-off
+    count. Some ask about things your board doesn't show yet: then you lead. Decide what's missing, and build it with your
+    assistant under <b>On your own</b>. A wrong answer says "not quite", never why: finding out why is the lesson.</p>
   <p class="earlier" id="earlier" hidden></p>
   <form id="form"></form>
   <div class="bar"><button form="form" type="submit">Check all answers</button><span class="score" id="score"></span></div>
@@ -132,7 +134,8 @@
           <button type="button" class="one" data-q="${q.id}">Check</button>
           <span class="verdict">${state === 'right' ? '✓ Right' : state === 'wrong' ? 'Not quite' : ''}</span>
           ${s.tries ? `<span class="tries">${s.tries} ${s.tries === 1 ? 'try' : 'tries'}</span>` : ''}
-        </div></div>`;
+        </div>${s.tries && !s.right ? `<p class="stuck">Stuck? Tell your assistant: <i>"Question ${i + 1} says not quite."</i>
+          It will help you find out why, without giving you the answer.</p>` : ''}</div>`;
     }).join('');
     const right = spec.questions.filter(q => (saved[q.id] || {}).right).length;
     document.getElementById('score').textContent = `${right} of ${spec.questions.length} right`;
@@ -234,6 +237,7 @@
       document.title = `Lesson ${Number(j.lesson.replace(/\D/g, ''))} · Questions`;
       document.getElementById('eyebrow').textContent = `Lesson ${Number(j.lesson.replace(/\D/g, ''))} · Questions`;
       document.getElementById('title').textContent = j.title;
+      document.getElementById('board-link').href = `../dashboard/#unit-${j.lesson.replace(/\D/g, '').padStart(2, '0')}`;
       render();
       renderMemo();
       // What comes next, from the course outline.

@@ -32,10 +32,12 @@ Add a panel to [your dashboard's **lesson 2** board](dashboard/#unit-02) that sh
 | Came back | How many people, or what share, visited more than once |
 | Visits per person | On average |
 
-Under **every** number, write one sentence:
-*We count ___, from ___, excluding ___, because ___.*
+Under **every** number goes one sentence that says exactly what it counts:
+*we count …, from …, excluding …, because …*
 
-You decide the definitions. Your AI assistant will ask you for them; that's on purpose.
+You decide the definitions, in your own words. Your AI assistant asks what each number should
+count, asks about anything you left open (sometimes which column you mean: look it up), and
+writes the sentence from what you said. It's yours to change any time.
 
 Every number is a view in `analysis` with its definition as its comment, and **Is your
 analysis tidy?** passes before you check your answers.
@@ -50,7 +52,7 @@ dashboard**. A wrong answer says "not quite" and nothing else. When all are righ
 with the numbers.
 
 Some questions ask about things your panel doesn't show. That's on purpose. **Now you lead:**
-decide what your dashboard is missing, define it in one sentence, and ask your assistant to build
+decide what your dashboard is missing, say what it should count, and ask your assistant to build
 it. It goes on your board under **On your own**. Answer from the dashboard, never from a one-off
 count.
 
