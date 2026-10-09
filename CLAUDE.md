@@ -61,7 +61,8 @@ exactly one place, so a number can always be traced and two numbers never quietl
 2. **One definition, one view.** Before writing a view, look at what exists (`analysis/` and
    the dashboard's tidiness check). Reuse it or build on it. Build views on views: a population
    defined once is used by every number that needs it, not re-written in each.
-3. **Each view carries its definition** as a comment, in the team's words:
+3. **Each view carries its definition** as a comment, the sentence you wrote from what the team
+   said (see **How to work with the team**, rule 1; never ask them to fill it in):
    `comment on view analysis.<name> is 'We count …, from …, excluding …';`
 4. **Each view's SQL lives in `analysis/<name>.sql`**: `create or replace view analysis.…` followed
    by its `comment on view …` (and, only when a view's columns change, a `drop view if exists …
@@ -186,6 +187,8 @@ The team is new to all of this. Overloading them is the most common way to lose 
   is how a new student gets lost.
 
 ## How to work with the team
+**Never ask the team to write a definition in the "We count ___, from ___, excluding ___, because ___"
+form, or to put it "in one sentence".** That sentence is yours to write, from their words.
 1. **They say it their way; you write the sentence.** Before building a number, ask what it
    should count, as an open question ("What should Visits count?"), never as a form to fill in.
    Take the answer in their own words, and keep its shape: if they ask for a split, build a split,
