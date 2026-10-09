@@ -68,11 +68,15 @@ const BOARDS = {
           { label: 'Browsers', col: 'browsers',
             def: 'We count different browsers, from the photo app\'s visits, excluding our own test runs.' },
           { label: 'People', col: 'people',
-            def: 'We count different accounts from sign-ins, plus one person per browser that never signed in, from the photo app\'s visits, excluding our own test runs, because a browser that signed in on any visit is already counted by its account.' }
+            def: 'We count different accounts from sign-ins, plus one person per browser that never signed in, from the photo app\'s visits, excluding our own test runs, because a browser that signed in on any visit is already counted by its account.' },
+          { label: 'Came back (people)', col: 'came_back',
+            def: 'We count the people (as in People) who had more than one visit, from the photo app\'s visits, excluding our own test runs.' },
+          { label: 'Came back (% of People)', col: 'came_back_pct', suffix: '%',
+            def: 'The people who came back, as a share of People.' }
         ];
         el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded.</p>${
           numbers.map(n => `<div style="margin-top:14px">
-            <div style="font-size:28px;font-weight:600">${esc(r[n.col])}</div>
+            <div style="font-size:28px;font-weight:600">${esc(r[n.col])}${n.suffix || ''}</div>
             <div><b>${esc(n.label)}</b></div>
             <p class="muted" style="margin:2px 0">${esc(n.def)}</p>
             ${n.wrong ? `<p class="muted" style="margin:2px 0">Could be wrong: ${esc(n.wrong)}</p>` : ''}
