@@ -55,7 +55,26 @@ const BOARDS = {
         el.querySelector('#rp-screen').addEventListener('change', () => show(false));
       } }
   ],
-  'unit-02': [],
+  'unit-02': [
+    { title: 'Who used the app?', view: 'usage_totals', render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('usage_totals').select('*');
+        if (error || !data.length) { el.innerHTML = '<p class="muted">Run <code>analysis/usage_totals.sql</code> in Supabase (SQL Editor) to see this panel.</p>'; return; }
+        const r = data[0];
+        // One entry per number: its column in usage_totals, its definition, and what could make it wrong.
+        const numbers = [
+          { label: 'Visits', col: 'visits',
+            def: 'We count every visit to the photo app, from sessions, excluding the team\'s own test runs, because those are not real visits and other apps\' rows are not ours.',
+            wrong: 'If visits from other apps are not filtered out.' }
+        ];
+        el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded.</p>${
+          numbers.map(n => `<div style="margin-top:14px">
+            <div style="font-size:28px;font-weight:600">${esc(r[n.col])}</div>
+            <div><b>${esc(n.label)}</b></div>
+            <p class="muted" style="margin:2px 0">${esc(n.def)}</p>
+            <p class="muted" style="margin:2px 0">Could be wrong: ${esc(n.wrong)}</p>
+          </div>`).join('')}`;
+      } }
+  ],
   'unit-08': []
 };
 
