@@ -68,8 +68,9 @@ exactly one place, so a number can always be traced and two numbers never quietl
 8. Before saying "done", the team runs **Is your analysis tidy?** on the dashboard and it
    passes.
 
-## Connecting the platform (the one-time setup, step 9)
-If `supabase-config.js` still says `YOUR-PROJECT`, or the team says "connect my platform", connect it.
+## Registering for the course (the one-time setup, step 9)
+If `supabase-config.js` still says `YOUR-PROJECT`, or the team says "register me for the course" (or "connect my
+platform"), connect it: this is their registration for the course.
 Ask for one thing per message, saying where to find it, and wait for each answer:
 0. **Their name**, as their lecturer knows them. Save it in `STUDENT`.
 1. **Their site's address** (setup step 3): `https://<name>.github.io/<repository>/`. Save it in `SITE`.
