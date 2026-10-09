@@ -85,8 +85,16 @@
       <li>Your email and a password you choose. Keep <b>Auto Confirm User</b> ticked. Click <b>Create user</b>.</li></ol></div>
 
   <div class="step"><span class="num">7</span><h3>Let the dashboard read your views</h3>
-    <ol><li><b>Project Settings → Data API</b>.</li>
-      <li>Under <b>Exposed schemas</b>, add <code>analysis</code>, and click <b>Save</b>.</li></ol></div>
+    <p>Everything you build in this course is a <b>view</b>, and your views live in their own space in the database,
+      called <code>analysis</code>, apart from the raw data. Out of the box, Supabase only lets a website read the main
+      space (<code>public</code>). This step adds <code>analysis</code>, so your dashboard can show what you build.</p>
+    <ol style="margin-top:10px"><li>Click <b>Project Settings</b>: the gear icon at the bottom of the left sidebar.</li>
+      <li>In the settings menu, click <b>Data API</b> (in some versions it is called <b>API</b>).</li>
+      <li>Find the field <b>Exposed schemas</b>. It already lists <code>public</code> and <code>graphql_public</code>.</li>
+      <li>Click into the field, choose (or type) <code>analysis</code>, and click <b>Save</b>.</li></ol>
+    <p class="see"><code>analysis</code> listed in Exposed schemas, next to <code>public</code>.</p>
+    <p class="note">Skip this and nothing breaks today, but from lesson 1 on, every panel you build says it can't find
+      its view.</p></div>
 
   <div class="part">Part 3 · Your AI assistant (Claude)</div>
 
