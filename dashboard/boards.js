@@ -83,6 +83,16 @@ const BOARDS = {
             <p class="muted" style="margin:2px 0">${esc(n.def)}</p>
             ${n.wrong ? `<p class="muted" style="margin:2px 0">Could be wrong: ${esc(n.wrong)}</p>` : ''}
           </div>`).join('')}`;
+      } },
+    { title: 'Visits with and without a click', view: 'visit_click_groups', own: true, render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('visit_click_groups').select('*').order('visit_group');
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded (as in Visits).</p>
+          <p class="muted">We count visits from the photo app, split between visits with at least one click and visits with no click at all, because we want to find the visits without clicks.</p>${
+          data.map(r => `<div style="margin-top:14px">
+            <div style="font-size:28px;font-weight:600">${esc(r.visits)}</div>
+            <div><b>Visits: ${esc(r.visit_group)}</b></div>
+          </div>`).join('')}`;
       } }
   ],
   'unit-08': []
