@@ -101,6 +101,14 @@ const BOARDS = {
           <p class="muted">We count different accounts that signed in, split by the app of the visit and by whether it was one of the team's own test runs; an account that signed in more than once in a group is counted once, because we want the number of accounts that logged in, not the total logins.</p>
           <div class="scroll"><table><thead><tr><th>app</th><th>visits</th><th>accounts</th></tr></thead><tbody>${
           data.map(r => `<tr><td>${esc(r.app)}</td><td>${esc(r.visit_kind)}</td><td class="num">${esc(r.accounts)}</td></tr>`).join('')}</tbody></table></div>`;
+      } },
+    { title: 'Accounts by number of browsers', view: 'account_browser_groups', own: true, render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('account_browser_groups').select('*').order('browser_group', { ascending: false });
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        el.innerHTML = `<p class="muted">Population: the identities table, every app, practice data included, the team's own test runs excluded.</p>
+          <p class="muted">We count different accounts that signed in, excluding sign-ins made during the team's own test runs, split between accounts that signed in from a single browser and accounts that signed in from more than one browser.</p>
+          <div class="scroll"><table><thead><tr><th>signed in from</th><th>accounts</th></tr></thead><tbody>${
+          data.map(r => `<tr><td>${esc(r.browser_group)}</td><td class="num">${esc(r.accounts)}</td></tr>`).join('')}</tbody></table></div>`;
       } }
   ],
   'unit-08': []
