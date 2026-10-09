@@ -64,14 +64,16 @@ const BOARDS = {
         const numbers = [
           { label: 'Visits', col: 'visits',
             def: 'We count every visit to the photo app, from sessions, excluding the team\'s own test runs, because those are not real visits and other apps\' rows are not ours.',
-            wrong: 'If visits from other apps are not filtered out.' }
+            wrong: 'If visits from other apps are not filtered out.' },
+          { label: 'Browsers', col: 'browsers',
+            def: 'We count different browsers, from the photo app\'s visits, excluding our own test runs.' }
         ];
         el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded.</p>${
           numbers.map(n => `<div style="margin-top:14px">
             <div style="font-size:28px;font-weight:600">${esc(r[n.col])}</div>
             <div><b>${esc(n.label)}</b></div>
             <p class="muted" style="margin:2px 0">${esc(n.def)}</p>
-            <p class="muted" style="margin:2px 0">Could be wrong: ${esc(n.wrong)}</p>
+            ${n.wrong ? `<p class="muted" style="margin:2px 0">Could be wrong: ${esc(n.wrong)}</p>` : ''}
           </div>`).join('')}`;
       } }
   ],
