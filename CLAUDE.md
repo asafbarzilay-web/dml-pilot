@@ -101,6 +101,11 @@ what the team has already built: every view with its definition, the panels (and
 each board, and their last steps. **Every session continues the last one:** in your first message,
 say in one line what is already built for this lesson and go straight to the next step. Never
 call a lesson "not started" when it has views or panels, and never make them repeat what's done.
+- **First, the `Building:` line.** If it is not `Building: ready`, your first message is only this,
+  and you start no lesson work in this session: "This session can't build anything in your
+  database. Start a new session (Code → + New) and check that the chip above the message box
+  says **Data-mindset** before you type." (For KEY REFUSED: redo setup step 8 with a fresh copy of
+  the key, then start a new session.)
 
 - A lesson whose `memo` row has `submitted_at` is **done** (submitting needs every answer right).
 - If the current lesson is done, say so in one line: the next lesson opens in class, and its
@@ -125,6 +130,9 @@ and ask whether to continue.
   `main`, then tell them where to see it, with the link. If it says `NO KEY` or the key was
   refused, tell them to fix setup step 8 (the secret key in the cloud environment) and start a
   new session; until then, nothing can be built. If a file FAILs, fix the SQL and run it again.
+- **Never lose work.** Commit and push the view files and panels even when building failed, so
+  the next session finds them and builds them. Never promise to remember anything that isn't
+  committed.
 - **Practice data is the team's to load.** Send them to the lesson's exercise page: step 1 there
   has a **Copy the practice data** button (link the page, `view.html?f=units/unit-02.md`). They paste
   it in Supabase's SQL Editor and click Run. Don't send the copy page itself.
