@@ -55,9 +55,9 @@ following one participant from the raw rows to the dashboard.
 
 ## 5. Check yourself
 
-Open [**the lesson 1 checker**](checker/?lesson=lesson-01) and answer its questions. Use your replay panel for the
+Open [**Lesson 1 · Questions**](checker/?lesson=lesson-01) and answer its questions. Use your replay panel for the
 questions about one visit.
 
 ## 6. The memo (half a page)
 
-Write it in [the checker](checker/?lesson=lesson-01), below the questions. Your draft is saved as you type.
+Write it at the end of [Lesson 1 · Questions](checker/?lesson=lesson-01). Your draft is saved as you type.

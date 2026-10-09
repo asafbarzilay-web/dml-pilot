@@ -45,7 +45,7 @@ analysis tidy?** passes before you check your answers.
 
 ## 3. Check yourself
 
-Open [**the lesson 2 checker**](checker/?lesson=lesson-02) and answer its questions **from your
+Open [**Lesson 2 · Questions**](checker/?lesson=lesson-02) and answer its questions **from your
 dashboard**. A wrong answer says "not quite" and nothing else. When all are right, you're done
 with the numbers.
 
@@ -59,4 +59,4 @@ to your dashboard and see where your count and theirs part ways.
 
 ## 4. The memo (half a page)
 
-Write it in [the checker](checker/?lesson=lesson-02), below the questions. Your draft is saved as you type.
+Write it at the end of [Lesson 2 · Questions](checker/?lesson=lesson-02). Your draft is saved as you type.

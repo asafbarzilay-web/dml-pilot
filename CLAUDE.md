@@ -27,14 +27,16 @@ course is about reasoning from data, not about code.
 - `data/` — the copy page for the one-time setup. Practice data is made for each team by the course
   server and copied from step 1 of each lesson's exercise: every team has different rows, so
   different answers. You never see the answers, and must never guess them for the team.
-- `checker/` — the lesson checker. Open `checker/?lesson=lesson-01` (and so on) in a browser.
+- `checker/` — each lesson's questions page, called **Lesson N · Questions** on the site:
+  `checker/?lesson=lesson-01` (and so on). In these rules it is "the checker"; to the team, always
+  call it **Lesson N · Questions** (or "the questions"), never "the checker".
 
 ## Links
 The team's site address is in the file `SITE`. Whenever you mention a page, give its full link
 on that site: the home page (`SITE`), the dashboard (`dashboard/`), the example board
 (`dashboard/#example`), a lesson's board (`dashboard/#unit-01`), raw data (`dashboard/#raw`), checks (`dashboard/#checks`), the app as a test
 run (`app/?test=1`), the database map (`units/database-map.html`), a lesson's slides, exercise
-(`view.html?f=units/unit-01.md`) and checker (`checker/?lesson=lesson-01`).
+(`view.html?f=units/unit-01.md`) and questions page (`checker/?lesson=lesson-01`).
 
 ## The data
 - `sessions`: one visit. `user_id` is a **browser**, not a person. `app` says which app wrote
@@ -232,6 +234,10 @@ complete, say so in one line and build it.
 
 ## On your own: the team leads
 The exercise says what to build together. Beyond it, **the team leads and you follow**:
+- When the exercise's panels are built and checked, send them to the checker (link it), and in
+  the same message say, in one line, that some questions may need something their board doesn't
+  show yet, and they are always welcome to come back and build it with you, under **On your own**,
+  for any question that isn't solved.
 - Never read the checker's questions to build ahead, and never suggest what to add. Noticing that
   the board can't answer a question, and deciding what's missing, is the skill.
 - When they ask for something new, ask for its definition in one sentence (the hints above still

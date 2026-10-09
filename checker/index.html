@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lesson Checker</title>
+<title>Lesson Questions</title>
 <!--
   The checker for a lesson: open it as checker/?lesson=lesson-02.
   Answer each question from YOUR dashboard. It tells you which answers
@@ -62,7 +62,7 @@
 </head>
 <body>
 <div class="wrap">
-  <p class="eyebrow" id="eyebrow">Checker</p>
+  <p class="eyebrow" id="eyebrow">Questions</p>
   <h1 id="title">Loading…</h1>
   <p class="lead">Answer from your dashboard, not from a one-off query: the point is that your dashboard
     gets it right. A wrong answer says "not quite", never why — finding out why is the lesson.</p>
@@ -220,7 +220,7 @@
     } catch { return false; }
   }
   opensLater(Number(lesson.replace(/\D/g, ''))).then(later => later
-    ? Promise.reject(Object.assign(new Error('This lesson opens in class. Its checker becomes available when your lecturer opens it.'), { locked: true }))
+    ? Promise.reject(Object.assign(new Error('This lesson opens in class. Its questions become available when your lecturer opens it.'), { locked: true }))
     : Course.questions(lesson))
     .then(async j => {
       spec = j;
@@ -231,8 +231,8 @@
         if (id === 'memo') { memo.text = r.answer || ''; memo.submitted = r.submitted_at; continue; }
         saved[id] = { value: r.answer || '', right: r.is_right, tries: r.tries, checked: r.tries > 0 };
       }
-      document.title = `${j.title} · Checker`;
-      document.getElementById('eyebrow').textContent = `Checker · ${j.lesson.replace('lesson-0', 'Lesson ').replace('lesson-', 'Lesson ')}`;
+      document.title = `Lesson ${Number(j.lesson.replace(/\D/g, ''))} · Questions`;
+      document.getElementById('eyebrow').textContent = `Lesson ${Number(j.lesson.replace(/\D/g, ''))} · Questions`;
       document.getElementById('title').textContent = j.title;
       render();
       renderMemo();
@@ -258,7 +258,7 @@
     .catch(err => {
       if (err.locked) {
         document.getElementById('title').textContent = 'This lesson opens in class';
-        document.querySelector('.lead').innerHTML = 'Its checker becomes available when your lecturer opens the lesson. <a href="../">Back to your home page</a>';
+        document.querySelector('.lead').innerHTML = 'Its questions become available when your lecturer opens the lesson. <a href="../">Back to your home page</a>';
         document.querySelector('.bar').style.display = 'none';
         return;
       }

@@ -163,10 +163,10 @@
       <div class="actions">
         ${focus.slides ? step('1 · Class slides', esc(focus.slides), true, true) : ''}
         ${focus.checker ? step('2 · The exercise', brief(focus), open && !focus.slides, open) : ''}
-        ${focus.checker ? step('3 · Check your answers', checker(focus), false, open) : ''}
+        ${focus.checker ? step(`3 · Lesson ${focus.n} · Questions`, checker(focus), false, open) : ''}
       </div>
-      ${lessons.filter(unfinished).map(l => `<p class="again">Lesson ${l.n} isn't finished yet. You can still finish it: <a href="${checker(l)}">checker and memo</a>.</p>`).join('')}
-      ${open ? '' : `<p class="again">✓ Lesson ${cur.n} done. Go back over it: ${[cur.slides && `<a href="${esc(cur.slides)}">slides</a>`, cur.checker && `<a href="${brief(cur)}">exercise</a>`, cur.checker && `<a href="${checker(cur)}">checker</a>`].filter(Boolean).join(' · ')}</p>`}`;
+      ${lessons.filter(unfinished).map(l => `<p class="again">Lesson ${l.n} isn't finished yet. You can still finish it: <a href="${checker(l)}">its questions and memo</a>.</p>`).join('')}
+      ${open ? '' : `<p class="again">✓ Lesson ${cur.n} done. Go back over it: ${[cur.slides && `<a href="${esc(cur.slides)}">slides</a>`, cur.checker && `<a href="${brief(cur)}">exercise</a>`, cur.checker && `<a href="${checker(cur)}">questions</a>`].filter(Boolean).join(' · ')}</p>`}`;
     // Setup is needed before lesson 1 only: lesson 1 can't be done without it.
     // Before lesson 1 is done: setup in the corner and the assistant's steps in full. After: a small tip.
     const started = cur.n > 1 || isDone(cur);
@@ -178,8 +178,8 @@
         <div class="n">${isDone(l) ? '✓' : l.n}</div>
         <div class="t"><b>${esc(l.title)}</b>${l === focus ? `<span class="tag">${open ? 'now' : 'next'}</span>` : ''}${isDone(l) ? '<span class="tag done">done</span>' : ''}${status(l)}<div>${esc(l.question)}</div></div>
         <div class="go">${!l.unit ? '' : l.n > cur.n
-          ? `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}${l.checker ? '<span class="locked">Exercise and checker open in class</span>' : ''}`
-          : `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}${l.checker ? `<a href="${brief(l)}">Exercise</a><a href="${checker(l)}">Checker</a>` : ''}`}</div>
+          ? `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}${l.checker ? '<span class="locked">Exercise and questions open in class</span>' : ''}`
+          : `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}${l.checker ? `<a href="${brief(l)}">Exercise</a><a href="${checker(l)}">Questions</a>` : ''}`}</div>
       </div>`).join('');
   }).catch(() => { document.getElementById('now').textContent = 'Could not load the lessons.'; });
 </script>

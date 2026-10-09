@@ -28,8 +28,13 @@
   h1 { font-size: 24px; margin: 0; letter-spacing: -0.01em; }
   h2 { font-size: 17px; margin: 0 0 6px; }
   .muted { color: #6B6B66; font-size: 13px; line-height: 1.5; }
-  .part-head { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6B6B66; margin: 22px 0 10px; }
-  .part-head:first-child { margin-top: 0; }
+  .parts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .parts button { padding: 14px 16px; font-size: 16px; font-weight: 700; border-radius: 12px; border: 1px solid #E2E2DE; background: #FAFAF8; color: #6B6B66; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .parts button.on { background: #1C1C1A; color: #fff; border-color: #1C1C1A; }
+  .parts b { display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .parts small { display: block; margin-top: 4px; font-size: 12.5px; font-weight: 500; opacity: .75; }
+  .parts .cnt { font-size: 12px; min-width: 22px; padding: 2px 7px; border-radius: 999px; background: rgba(0,0,0,.08); }
+  .parts button.on .cnt { background: rgba(255,255,255,.2); }
   .card { background: #fff; border: 1px solid #E2E2DE; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; }
   button {
     font: inherit; font-size: 14px; cursor: pointer; border-radius: 8px;
@@ -202,14 +207,26 @@
     }
     const card = (p, i) =>
       `<section class="card"><h2>${esc(p.title)}</h2>${p.view ? `<p class="muted">From <code>analysis.${esc(p.view)}</code></p>` : ''}<div id="panel-${i}"></div></section>`;
-    // A lesson board has two parts: what the exercise asked for, built with the assistant, and
-    // what the team added on its own to answer questions the exercise's panels couldn't (own: true).
-    const shared = panels.map((p, i) => [p, i]).filter(([p]) => !p.own), own = panels.map((p, i) => [p, i]).filter(([p]) => p.own);
-    $('board').innerHTML = !l ? panels.map(card).join('')
-      : `<div class="part-head">Built together</div>${shared.map(([p, i]) => card(p, i)).join('') || '<div class="placeholder">Nothing yet.</div>'}
-         <div class="part-head">On your own</div>${own.map(([p, i]) => card(p, i)).join('') ||
-           `<div class="placeholder">Nothing yet. When a question needs something your board doesn't show, you decide what's missing and ask your assistant to build it here.</div>`}`;
-    panels.forEach((p, i) => p.render($(`panel-${i}`)));
+    // A lesson board has two parts, as two big tabs: what the exercise asked for, built with the
+    // assistant, and what the team added on its own (own: true) to answer questions it couldn't.
+    // Each board reopens on the tab last viewed here (a viewing preference only, no progress).
+    if (!l) { $('board').innerHTML = panels.map(card).join(''); panels.forEach((p, i) => p.render($(`panel-${i}`))); return; }
+    const own = panels.map((p, i) => [p, i]).filter(([p]) => p.own), shared = panels.map((p, i) => [p, i]).filter(([p]) => !p.own);
+    let part = 'together';
+    try { part = localStorage.getItem('part:' + board) || 'together'; } catch {}
+    const list = part === 'own' ? own : shared;
+    $('board').innerHTML = `<div class="parts">
+        <button data-part="together" class="${part === 'together' ? 'on' : ''}"><span><b>Built together<span class="cnt">${shared.length}</span></b><small>The exercise, with your assistant</small></span></button>
+        <button data-part="own" class="${part === 'own' ? 'on' : ''}"><span><b>On your own<span class="cnt">${own.length}</span></b><small>After the exercise, when the questions ask for more</small></span></button></div>` +
+      (list.map(([p, i]) => card(p, i)).join('') || (part === 'own'
+        ? `<div class="placeholder">This part starts after the exercise is built, at the questions. When a question needs something your board doesn't show, you lead: decide what's missing, define it, and ask your assistant to build it here.</div>`
+        : '<div class="placeholder">Nothing yet.</div>'));
+    $('board').querySelectorAll('[data-part]').forEach(b => b.addEventListener('click', () => {
+      try { localStorage.setItem('part:' + board, b.dataset.part); } catch {}
+      renderBoard();
+    }));
+    list.forEach(([p, i]) => p.render($(`panel-${i}`)));
+    return;
   }
 
   // ---- Raw data -------------------------------------------------------
