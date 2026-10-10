@@ -26,3 +26,8 @@ project, and start your assistant in a Claude cloud session.
 
 - With participants: `app/` (add `?src=whatsapp` or similar to know where visits came from).
 - For your own test runs: `app/?test=1` — recorded, but marked as tests.
+
+## Credits
+
+The photo app is adapted from Figma's "Prototyping in Figma" Community file, licensed
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Photos from [Unsplash](https://unsplash.com).
