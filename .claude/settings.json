@@ -20,6 +20,7 @@
       "Bash(sh core/look.sh:*)",
       "Bash(sh core/save.sh)",
       "Bash(sh core/save.sh:*)",
+      "Bash(git remote get-url:*)",
       "Bash(git status:*)",
       "Bash(git log:*)",
       "Bash(git diff:*)",

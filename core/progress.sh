@@ -13,7 +13,7 @@ else
   code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$URL/rest/v1/rpc/analysis_apply" -H "apikey: $SUPABASE_SECRET_KEY" \
     -H "Authorization: Bearer $SUPABASE_SECRET_KEY" -H "Content-Type: application/json" -d '{"p_sql":"select 1"}')
   case "$code" in 200) echo "Building: ready";;
-    401|403) echo "Building: KEY REFUSED. The secret key in the Data-mindset environment is wrong (setup step 8).";;
+    401|403) echo "Building: KEY REFUSED. The secret key in the Data-mindset environment is wrong (setup step 7).";;
     *) echo "Building: NOT READY (the database answered $code; run the setup again, step 5).";; esac
 fi
 L=$(course_lesson 2>/dev/null)

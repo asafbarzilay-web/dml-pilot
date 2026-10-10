@@ -4,26 +4,26 @@
 cd "$(dirname "$0")/.." || exit 1
 URL=$(sed -n "s/^const SUPABASE_URL = '\(.*\)';/\1/p" supabase-config.js)
 KEY=$(sed -n "s/^const SUPABASE_PUBLISHABLE_KEY = '\(.*\)';/\1/p" supabase-config.js)
-case "$URL$KEY" in *YOUR-*) echo "NOT CONNECTED: supabase-config.js still has the placeholders (setup step 9)."; exit 1;; esac
+case "$URL$KEY" in *YOUR-*) echo "NOT CONNECTED: supabase-config.js still has the placeholders (setup step 8)."; exit 1;; esac
 H1="apikey: $KEY"; H2="Content-Type: application/json"
 newid() { python3 -c 'import uuid;print(uuid.uuid4())' 2>/dev/null || cat /proc/sys/kernel/random/uuid 2>/dev/null || uuidgen | tr A-Z a-z; }
 ok=1
 
 # 0. The address and key work at all: a wrong one makes every other check meaningless.
 code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$URL/rest/v1/rpc/capture_arrived" -H "$H1" -H "$H2" -d '{}' 2>/dev/null)
-case "$code" in 000) echo "FAIL connection: the project URL in supabase-config.js can't be reached (step 9)."; exit 1;;
-  401|403) echo "FAIL connection: the publishable key in supabase-config.js is wrong (step 9)."; exit 1;; esac
-echo "OK   connection: project URL and key work (step 9)"
+case "$code" in 000) echo "FAIL connection: the project URL in supabase-config.js can't be reached (step 8)."; exit 1;;
+  401|403) echo "FAIL connection: the publishable key in supabase-config.js is wrong (step 8)."; exit 1;; esac
+echo "OK   connection: project URL and key work (step 8)"
 
 # 1. The database setup ran: the check function exists and answers.
 r=$(curl -s -X POST "$URL/rest/v1/rpc/capture_arrived" -H "$H1" -H "$H2" -d "{\"sid\":\"$(newid)\"}")
 case "$r" in false) echo "OK   database setup (step 5)";;
   *) echo "FAIL database setup (step 5): run the setup again in Supabase's SQL Editor."; ok=0;; esac
 
-# 2. The analysis space is exposed: the database must not answer "schema must be one of".
+# 2. The analysis space is exposed (setup.sql does it): the database must not answer "schema must be one of".
 r=$(curl -s "$URL/rest/v1/nothing_here?select=*" -H "$H1" -H "Accept-Profile: analysis")
-case "$r" in *PGRST106*) echo "FAIL exposed schemas (step 7): add analysis under Project Settings > Data API."; ok=0;;
-  *) echo "OK   analysis is exposed (step 7)";; esac
+case "$r" in *PGRST106*) echo "FAIL analysis can't be read (step 5): run the setup again in Supabase's SQL Editor."; ok=0;;
+  *) echo "OK   analysis is readable (step 5)";; esac
 
 # 3. Capture: write a test visit and a click as the app does, then confirm both arrived.
 [ $ok = 0 ] && { echo "SKIP capture: fix the setup above first."; exit 1; }
@@ -38,13 +38,13 @@ case "$r" in true) echo "OK   capture works: a test visit and click were written
 
 # 4. The assistant can build: create a test view with the secret key, then remove it.
 if [ -z "$SUPABASE_SECRET_KEY" ]; then
-  echo "FAIL assistant can't build (step 8): this cloud environment has no SUPABASE_SECRET_KEY. Add it, then start a new session."; ok=0
+  echo "FAIL assistant can't build (step 7): this cloud environment has no SUPABASE_SECRET_KEY. Add it, then start a new session."; ok=0
 else
   code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$URL/rest/v1/rpc/analysis_apply" -H "apikey: $SUPABASE_SECRET_KEY" \
     -H "Authorization: Bearer $SUPABASE_SECRET_KEY" -H "$H2" \
     -d '{"p_sql":"create or replace view analysis.zz_setup_check as select 1 as ok; drop view analysis.zz_setup_check;"}')
-  case "$code" in 200) echo "OK   your assistant can build in your database (step 8)";;
-    401|403) echo "FAIL assistant can't build (step 8): the secret key was refused. Copy it again from Project Settings > API Keys."; ok=0;;
+  case "$code" in 200) echo "OK   your assistant can build in your database (step 7)";;
+    401|403) echo "FAIL assistant can't build (step 7): the secret key was refused. Copy it again from Project Settings > API Keys."; ok=0;;
     404) echo "FAIL assistant can't build (step 5): run the setup again in Supabase's SQL Editor."; ok=0;;
     *) echo "FAIL assistant can't build: the database answered $code."; ok=0;; esac
 fi

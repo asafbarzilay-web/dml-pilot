@@ -83,6 +83,10 @@ end $$;
 -- Your space. The views you build for your analysis go here.
 -- ----------------------------------------------------------------------
 create schema if not exists analysis;
+-- Let websites (your dashboard) read `analysis`, next to `public`. This replaces the "Exposed
+-- schemas" setting in Project Settings > Data API: from now on this line decides what is exposed.
+alter role authenticator set pgrst.db_schemas = 'public, graphql_public, analysis';
+notify pgrst, 'reload config';
 grant usage on schema analysis to authenticated, service_role;
 alter default privileges in schema analysis grant select on tables to authenticated, service_role;
 grant select on all tables in schema analysis to service_role;   -- your assistant reads views to check them
@@ -138,7 +142,7 @@ grant execute on function public.capture_arrived(uuid) to anon, authenticated;
 
 -- For your AI assistant: builds your analysis (views in `analysis`) from the
 -- files in analysis/, so you never paste SQL. Only your secret key may call it
--- (it lives in your Claude cloud environment, setup step 8); the publishable
+-- (it lives in your Claude cloud environment, setup step 7); the publishable
 -- key on your site cannot.
 create or replace function public.analysis_apply(p_sql text)
 returns text

@@ -22,6 +22,8 @@
   .step .see::before { content: "✓ You should see: "; font-weight: 700; }
   .step .note { margin-top: 10px; font-size: 14px; color: #6B6B66; }
   .step .warn { margin-top: 10px; font-size: 14px; color: #B42318; }
+  .before { background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 12px; padding: 14px 18px; margin: 18px 0 6px; font-size: 15px; line-height: 1.55; }
+  .before ul { margin: 6px 0 0; padding-left: 20px; }
   code { background: #F4F4F2; padding: 1px 6px; border-radius: 5px; font-size: 13px; }
   img { max-width: 100%; border: 1px solid #E2E2DE; border-radius: 10px; margin-top: 12px; display: block; }
   .done { background: #1C1C1A; color: #F4F4F2; border-radius: 14px; padding: 18px 22px; margin-top: 24px; font-size: 15.5px; line-height: 1.6; }
@@ -38,6 +40,10 @@
   <h1>One-time setup</h1>
   <p class="lead">About 20 minutes, once, before lesson 1. Three parts: your copy of the platform on GitHub,
     your database on Supabase, and your AI assistant in Claude. Nothing to install.</p>
+  <div class="before"><b>Before you start: what you need</b>
+    <ul><li><b>A paid Claude plan (Pro or higher), which includes Claude Code.</b> Your AI assistant runs on it; the free
+      plan doesn't include it, and without it you can't do the course.</li>
+      <li>A GitHub account and a Supabase account: both free.</li></ul></div>
 
   <div class="part">Part 1 · Your copy of the platform (GitHub)</div>
 
@@ -57,7 +63,7 @@
       <li>Click <b>Settings</b> (the last tab along the top), then <b>Pages</b> in the menu on the left.</li>
       <li>Under <b>Build and deployment</b>: Source <b>Deploy from a branch</b>, branch <b>main</b>, folder <b>/ (root)</b>. Click <b>Save</b>.</li>
       <li>Wait a minute and refresh the page.</li></ol>
-    <p class="see">"Your site is live at <code>https://your-name.github.io/data-mindset-template/</code>". Keep that address: you need it in step 9.</p>
+    <p class="see">"Your site is live at <code>https://your-name.github.io/data-mindset-template/</code>". That's your site; your assistant finds its address by itself later.</p>
     <p class="note">If Pages says <i>"Upgrade or make this repository public"</i>, you are not on your fork: go back to the first point.</p>
     <img src="../slides/00-tools-and-concepts/img/github-pages.jpg" alt="GitHub Pages settings"></div>
 
@@ -83,21 +89,11 @@
     <ol><li><b>Authentication → Users → Add user → Create new user</b>.</li>
       <li>Your email and a password you choose. Keep <b>Auto Confirm User</b> ticked. Click <b>Create user</b>.</li></ol></div>
 
-  <div class="step"><span class="num">7</span><h3>Let the dashboard read your views</h3>
-    <p>Everything you build in this course is a <b>view</b>, and your views live in their own space in the database,
-      called <code>analysis</code>, apart from the raw data. Out of the box, Supabase only lets a website read the main
-      space (<code>public</code>). This step adds <code>analysis</code>, so your dashboard can show what you build.</p>
-    <ol style="margin-top:10px"><li>Click <b>Project Settings</b>: the gear icon at the bottom of the left sidebar.</li>
-      <li>In the settings menu, click <b>Data API</b> (in some versions it is called <b>API</b>).</li>
-      <li>Find the field <b>Exposed schemas</b>. It already lists <code>public</code> and <code>graphql_public</code>.</li>
-      <li>Click into the field, choose (or type) <code>analysis</code>, and click <b>Save</b>.</li></ol>
-    <p class="see"><code>analysis</code> listed in Exposed schemas, next to <code>public</code>.</p>
-    <p class="note">Skip this and nothing breaks today, but from lesson 1 on, every panel you build says it can't find
-      its view.</p></div>
-
   <div class="part">Part 3 · Your AI assistant (Claude)</div>
 
-  <div class="step"><span class="num">8</span><h3>Start your assistant in the cloud</h3>
+  <div class="step"><span class="num">7</span><h3>Start your assistant in the cloud</h3>
+    <p class="note" style="margin-top:0">No <b>Code</b> tab, or no <b>Cloud</b> option? Your Claude plan doesn't include Claude Code: see
+      <i>Before you start</i>, at the top.</p>
     <ol><li>In the Claude app: <b>Code → + New</b>.</li>
       <li>Click <b>Local</b> (above the message box) → <b>Cloud</b> → <b>Add cloud environment…</b></li>
       <li>Name: <code>Data-mindset</code>. Network access: <b>Full</b> (so it can reach your database).</li>
@@ -115,34 +111,32 @@
     <p class="note">The environment is created once. Next time: <b>+ New</b>, and it remembers Data-mindset and your repository.</p>
     <img src="../slides/00-tools-and-concepts/img/claude-cloud-menu.jpg" alt="Choosing Cloud" style="max-width:420px"></div>
 
-  <div class="step"><span class="num">9</span><h3>Register for the course: your assistant asks, you answer</h3>
+  <div class="step"><span class="num">8</span><h3>Register for the course: your assistant asks, you answer</h3>
     <p>This step connects your platform and <b>registers you for the course</b>: until it's done, your lecturer can't see you
-      or open lessons for you. Your assistant collects your name and three addresses and puts them in the right place.</p>
+      or open lessons for you. Your assistant collects three things and puts them in the right place (your site's address
+      it works out by itself).</p>
     <ol style="margin-top:10px"><li>In the message box, type: <i>"Register me for the course"</i>.</li>
-      <li>It asks you four things, <b>one at a time</b>, and tells you where to find each:
+      <li>It asks you three things, <b>one at a time</b>, and tells you where to find each:
         <br>· <b>your name</b>, as your lecturer knows you
-        <br>· <b>your site's address</b>, from step 3 (<code>https://your-name.github.io/data-mindset-template/</code>)
         <br>· <b>your Supabase project URL</b>: in Supabase, <b>Project Settings → API</b> (starts with <code>https://</code> and ends with <code>.supabase.co</code>)
         <br>· <b>your publishable key</b>: <b>Project Settings → API Keys</b>, the one starting <code>sb_publishable_</code></li>
       <li>Paste each answer when it asks for it.</li></ol>
     <p class="see">it confirms they are saved and that your site is updated (give it a minute).</p>
     <p class="warn">Never paste the <b>secret</b> key (<code>sb_secret_…</code>) in the chat: it belongs only in the environment
-      (step 8). If you paste it by mistake, your assistant will tell you to create a new one in Supabase.</p></div>
+      (step 7). If you paste it by mistake, your assistant will tell you to create a new one in Supabase.</p></div>
 
-  <div class="step"><span class="num">10</span><h3>Your assistant checks everything and confirms you're registered; you sign in once</h3>
-    <p>Right after step 9, your assistant checks your setup by itself and reports one line per check:</p>
+  <div class="step"><span class="num">9</span><h3>Your assistant checks everything, registers you, and you're in</h3>
+    <p>Right after step 8, your assistant checks your setup by itself and reports one line per check:</p>
     <ol style="margin-top:8px"><li><b>database setup</b>: step 5 ran</li>
-      <li><b>analysis is exposed</b>: step 7 is done</li>
+      <li><b>analysis is readable</b>: your dashboard can read your views (step 5 set it up)</li>
       <li><b>capture works</b>: it writes a test visit and a tap exactly as the app does, and finds them in your database</li>
-      <li><b>your assistant can build in your database</b>: step 8's key works (it builds a test view and removes it)</li></ol>
+      <li><b>your assistant can build in your database</b>: step 7's key works (it builds a test view and removes it)</li></ol>
     <p class="see"><b>ALL GOOD</b>, then <i>"Reported to your lecturer: setup done."</i> You're registered. If a line says FAIL, it tells you which step to redo.</p>
     <p style="margin-top:12px">Then open <b>your dashboard</b> (it gives you the link) and sign in with the email and password from step 6.</p>
-    <p class="see">your dashboard, with a board for each lesson.</p></div>
-
-  <div class="step"><span class="num">11</span><h3>Meet your assistant</h3>
-    <ol><li>Back in the Claude app, in the same session, type: <i>"What are we working on?"</i></li></ol>
-    <p class="see">it says you're on <b>lesson 0, Tools and concepts</b>, and gives you the link to its slides.</p>
-    <p class="note">If it talks about something else, you're probably not in your repository: check step 8.</p></div>
+    <p class="see">your dashboard, with a board for each lesson. In the same message, your assistant tells you what you're
+      working on: <b>lesson 0, Tools and concepts</b>, with the link to its slides. That's it: you're set up.</p>
+    <p class="note">Next time, start a new session (<b>Code → + New</b>, with <b>Data-mindset</b> on the chip) and ask
+      <i>"What are we working on?"</i></p></div>
 
   <div class="done">That's it. From now on, every lesson starts from <a href="../">your home page</a>, and your assistant
     starts from <b>+ New</b> in the Claude app.</div>

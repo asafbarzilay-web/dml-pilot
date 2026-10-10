@@ -23,7 +23,7 @@ is missing, why a number is wrong.
    - **`Building:`** If it is not `Building: ready`, your first and only message is: "This session
      can't build anything in your database. Start a new session (Code → + New) and check that the
      chip above the message box says **Data-mindset** before you type." (For KEY REFUSED: redo
-     setup step 8 with a fresh copy of the key, then start a new session.) Do no lesson work.
+     setup step 7 with a fresh copy of the key, then start a new session.) Do no lesson work.
    - The current lesson, and one row per question plus `memo` (`submitted_at` = lesson **done**).
      A question row with `submitted_at` was **given up**: it is closed for good (it scores 0, and the
      team has seen its answer). Don't reopen it or help with it again; it counts as done.
@@ -172,7 +172,7 @@ number can always be traced and two numbers never quietly disagree.
   you changed: `sh core/apply.sh analysis/<name>.sql …` (with no names it builds everything; do that
   only when a session starts on files that may not be built). Then save and publish in one step:
   `sh core/save.sh "what changed"` (commit, merge, push to `main`). Then give the link. A file that
-  FAILs: fix it and run again. `NO KEY` or refused: setup step 8, then a new session.
+  FAILs: fix it and run again. `NO KEY` or refused: setup step 7, then a new session.
 - **Never lose work.** Commit and push files even when building failed, so the next session builds
   them. Never promise to remember anything that isn't committed.
 - **Saving:** the site shows only `main`; `sh core/save.sh` publishes there, whatever branch you are
@@ -199,18 +199,20 @@ The team is new to all of this; overloading them is the most common way to lose 
 - **Plain words, no side remarks:** no curiosities, caveats or ideas from later lessons.
 - **End every message with the single next thing they should do.**
 
-## Registering for the course (setup step 9)
+## Registering for the course (setup step 8)
 If `supabase-config.js` still says `YOUR-PROJECT`, or they say "register me for the course" (or
-"connect my platform"), register them. Ask for one thing per message, saying where to find it:
-0. **Their name**, as their lecturer knows them. Save it in `STUDENT`.
-1. **Their site's address** (setup step 3): `https://<name>.github.io/<repository>/`. Save it in `SITE`.
+"connect my platform"), register them. First work out their site's address yourself: from `git remote get-url origin`
+(`github.com/<owner>/<repository>`) it is `https://<owner>.github.io/<repository>/` (owner in lowercase).
+Save it in `SITE`; don't ask for it. Then ask for one thing per message, saying where to find it:
+1. **Their name**, as their lecturer knows them. Save it in `STUDENT`.
 2. **Their Supabase project URL**: Project Settings → API; `https://….supabase.co`.
 3. **Their publishable key**: Project Settings → API Keys, starting `sb_publishable_`.
 
 Put 2 and 3 into `supabase-config.js` (only those two values). Check each looks right before saving;
 if not, say what looks wrong and ask again. If they paste a key starting `sb_secret_`, don't save
 it: it is now exposed, so they create a new secret key in Supabase (API Keys), delete the old one,
-and put the new one in the cloud environment (step 8). Then commit, push to `main`, and run
+and put the new one in the cloud environment (step 7). Then commit, push to `main`, and run
 `sh core/check-setup.sh`; when everything passes it also tells the lecturer they are set up. Report
 it in plain words, one line per check; for a failure, say which setup step to redo and how. If all
-is good: open their dashboard (link) and sign in once.
+is good, in the same message: open their dashboard (link) and sign in once; and what they're working
+on now (the open lesson, with its slides link).

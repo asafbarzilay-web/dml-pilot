@@ -5,7 +5,7 @@
 # Queries use the Data API's syntax (select=, col=eq.value, order=, limit=). Never prints the key.
 cd "$(dirname "$0")/.." || exit 1
 URL=$(sed -n "s/^const SUPABASE_URL = '\(.*\)';/\1/p" supabase-config.js)
-[ -n "$SUPABASE_SECRET_KEY" ] || { echo "NO KEY: this session has no SUPABASE_SECRET_KEY (setup step 8)."; exit 1; }
+[ -n "$SUPABASE_SECRET_KEY" ] || { echo "NO KEY: this session has no SUPABASE_SECRET_KEY (setup step 7)."; exit 1; }
 schema=public; [ "$1" = analysis ] && { schema=analysis; shift; }
 # Older setups let only the dashboard read views: let the secret key read them too (idempotent).
 [ $schema = analysis ] && curl -s -o /dev/null -X POST "$URL/rest/v1/rpc/analysis_apply" -H "apikey: $SUPABASE_SECRET_KEY" \
