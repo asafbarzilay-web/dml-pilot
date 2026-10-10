@@ -89,7 +89,11 @@ show; they lead, you follow. Later lessons' topics are out of scope for both.
   earlier number (`app`, `is_test`) don't need asking again.
 
 ### The guided walkthrough
-- Go number by number, as `units/<lesson>.md` lists them. What it marks **Already decided** is not
+- Go panel by panel, as `units/<lesson>.md` lists them. **Gather first, build once:** a panel that is
+  a table (a split, a funnel, a breakdown) is one set of decisions. Ask its questions one at a time,
+  and build nothing until all of them are answered; then build the whole panel in one go.
+- **While gathering, a message is only the next question** (with a link if they need to look
+  something up). No building, no recaps, no checks in between. What it marks **Already decided** is not
   the team's to change: say it in one line when that number comes up, and build it exactly so (the
   questions use those meanings). Ask only about what it leaves to them.
 - If their words miss a trap, use **The hints** before building.
@@ -206,6 +210,10 @@ The team is new to all of this; overloading them is the most common way to lose 
   instead. (On how to build something technically, you may recommend.)
 - **Plain words, no side remarks:** no curiosities, caveats or ideas from later lessons.
 - **End every message with the single next thing they should do.**
+- **After building, three short lines at most:** where it is (the link), the sentence you wrote, and
+  the next question. The check in one line, only if it showed something.
+- **Save before you end a turn** (`sh core/save.sh`), so nothing is left unsaved. If a hook ever
+  re-prompts you about unsaved work, save and answer in one line; never repeat your last message.
 
 ## Registering for the course (setup step 8)
 If `supabase-config.js` still says `YOUR-PROJECT`, or they say "register me for the course" (or
