@@ -121,7 +121,22 @@ const BOARDS = {
           data.map(r => `<tr><td>${esc(r.app)}</td><td>${esc(r.account_group)}</td><td class="num">${esc(r.browsers)}</td></tr>`).join('')}</tbody></table></div>`;
       } }
   ],
-  'unit-03': [],
+  'unit-03': [
+    { title: 'The start screen', view: 'start_screen_totals', render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('start_screen_totals').select('*');
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        const r = data[0];
+        const rows = [
+          ['Visits', r.visits, 'Every visit to the photo app, excluding the team\'s own test runs.'],
+          ['Chose Log in', r.chose_login, 'Those visits with a selection on the start screen (step = start) with value = login.'],
+          ['Chose Register', r.chose_register, 'Those visits with a selection on the start screen (step = start) with value = register_email.'],
+          ['Left without choosing', r.left_without_choosing, 'Those visits that only opened the start screen, with no selection at all anywhere in the visit.']
+        ];
+        el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded (as in Visits).</p>
+          <div class="scroll"><table><thead><tr><th>number</th><th>visits</th><th>what it counts</th></tr></thead><tbody>${
+          rows.map(([label, n, def]) => `<tr><td>${esc(label)}</td><td class="num">${esc(n)}</td><td class="muted">${esc(def)}</td></tr>`).join('')}</tbody></table></div>`;
+      } }
+  ],
   'unit-08': []
 };
 
