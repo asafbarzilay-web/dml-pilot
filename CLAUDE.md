@@ -211,8 +211,11 @@ The team is new to all of this; overloading them is the most common way to lose 
   instead. (On how to build something technically, you may recommend.)
 - **Plain words, no side remarks:** no curiosities, caveats or ideas from later lessons.
 - **End every message with the single next thing they should do.**
-- **After building, three short lines at most:** where it is (the link), the sentence you wrote, and
-  the next question. The check in one line, only if it showed something.
+- **After building, this shape and nothing more**, one line each, in bold labels:
+  **Built:** the panel's name → its link
+  **Definition:** the sentence you wrote (the team can change it any time)
+  **Check:** one line, only if it showed something
+  **Next:** the next question
 - **Save before you end a turn** (`sh core/save.sh`), so nothing is left unsaved. If a hook ever
   re-prompts you about unsaved work, save and answer in one line; never repeat your last message.
 
