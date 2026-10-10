@@ -24,27 +24,67 @@
   </section>
 
   <section class="slide">
-    <p class="kicker">What a funnel is</p>
-    <h2>Steps in order, and who reached each</h2>
+    <p class="kicker">A funnel, drawn</p>
+    <h2>An online shop, from product page to payment</h2>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:6px">
+      <div style="width:900px;background:#C2410C;color:#fff;border-radius:12px;padding:14px 22px;font-size:24px;display:flex;justify-content:space-between"><b>Viewed a product</b><span>10,000</span></div>
+      <div style="width:630px;background:#D9622B;color:#fff;border-radius:12px;padding:14px 22px;font-size:24px;display:flex;justify-content:space-between"><b>Added to cart</b><span>3,000 · 30%</span></div>
+      <div style="width:400px;background:#E8834F;color:#fff;border-radius:12px;padding:14px 22px;font-size:24px;display:flex;justify-content:space-between"><b>Checkout</b><span>1,200 · 40%</span></div>
+      <div style="width:300px;background:#F2A677;color:#1C1C1A;border-radius:12px;padding:14px 22px;font-size:24px;display:flex;justify-content:space-between"><b>Paid</b><span>900 · 75%</span></div>
+    </div>
+    <p class="muted small" style="margin-top:22px">Each bar is the people who reached that step. The number after the dot is the share of the step before: the biggest loss here is between product page and cart.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Funnels are everywhere</p>
+    <h2>Any task with steps in order is a funnel</h2>
+    <div class="grid g4">
+      <div class="card"><div class="lbl">A job application</div><p>Opened the ad → started the form → uploaded a CV → submitted</p></div>
+      <div class="card"><div class="lbl">A food delivery app</div><p>Opened a restaurant → added a dish → entered the address → ordered</p></div>
+      <div class="card"><div class="lbl">A newsletter</div><p>Saw the sign-up box → typed an email → confirmed by email</p></div>
+      <div class="card"><div class="lbl">An online course</div><p>Enrolled → watched lesson 1 → handed in the first task → finished</p></div>
+    </div>
+    <p class="muted small" style="margin-top:22px">Mixpanel, Google Analytics and every product team draw them. The questions are always the same: <b>who counts at the top, what counts as reaching a step, and where do people stop?</b></p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Reading a funnel</p>
+    <h2>It tells you where. Not why.</h2>
+    <div class="grid g3">
+      <div class="card"><div class="lbl">Where</div><p>The step with the lowest <b>% of the step before</b> is where to look first.</p></div>
+      <div class="card"><div class="lbl">Not why</div><p>Too long a form? A broken button? Just browsing? The funnel can't say. Screens, taps and time can (later lessons).</p></div>
+      <div class="card"><div class="lbl accent">Its definitions</div><p>Who is at the top, what "reached" means, visits or people. Change one, and every percentage moves.</p></div>
+    </div>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">Now, our app</p>
+    <h1>Registering<br>in the photo app</h1>
+    <p class="muted">The same funnel idea, on the app your data comes from: its screens, and how the data records each step.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Our app · the screens</p>
+    <h2>From the start screen into the app</h2>
+    <div style="display:flex;gap:26px;align-items:flex-start">
+      <figure style="margin:0;text-align:center"><img src="img/app-start.jpg" alt="The start screen" style="height:360px;border-radius:14px;border:2px solid #E5E3DD"><figcaption style="font-size:20px;margin-top:8px"><b class="accent">start</b><br>Log in or Register</figcaption></figure>
+      <figure style="margin:0;text-align:center"><img src="img/app-register-email.jpg" alt="Register, screen 1" style="height:360px;border-radius:14px;border:2px solid #E5E3DD"><figcaption style="font-size:20px;margin-top:8px"><b>register_email</b><br>email, password, Next</figcaption></figure>
+      <figure style="margin:0;text-align:center"><img src="img/app-register-username.jpg" alt="Register, screen 2" style="height:360px;border-radius:14px;border:2px solid #E5E3DD"><figcaption style="font-size:20px;margin-top:8px"><b>register_username</b><br>username, Sign up</figcaption></figure>
+      <figure style="margin:0;text-align:center"><img src="img/app-discover.jpg" alt="Inside the app" style="height:360px;border-radius:14px;border:2px solid #E5E3DD"><figcaption style="font-size:20px;margin-top:8px"><b>discover</b><br>in the app</figcaption></figure>
+    </div>
+    <p class="muted small" style="margin-top:16px">Each move is a row in <b>selections</b>: the screen you leave (<i>step</i>), the screen you go to (<i>value</i>).</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Our app · the funnel in numbers</p>
+    <h2>Registration, step by step</h2>
     <table style="margin-top:6px">
       <tr><th>Step</th><th>Reached it</th><th>% of the step before</th><th>% of the start</th></tr>
       <tr><td>Chose Register</td><td>200</td><td></td><td>100%</td></tr>
       <tr><td>Email and password done</td><td>150</td><td class="bad">75%</td><td>75%</td></tr>
       <tr><td>Username done (in the app)</td><td>120</td><td>80%</td><td>60%</td></tr>
     </table>
-    <p class="muted small" style="margin-top:24px"><b>% of the step before</b> shows where people give up. <b>% of the start</b> shows how many make it all the way.</p>
-  </section>
-
-  <section class="slide">
-    <p class="kicker">Our app</p>
-    <h2>Every visit opens on the start screen</h2>
-    <div class="grid g4">
-      <div class="card"><div class="lbl accent">start</div><p>The start screen. Two buttons: <b>Log in</b> and <b>Register</b>.</p></div>
-      <div class="card"><div class="lbl">register_email</div><p>Register, screen 1: email and password, then <b>Next</b>.</p></div>
-      <div class="card"><div class="lbl">register_username</div><p>Register, screen 2: a username, then <b>Sign up</b>.</p></div>
-      <div class="card"><div class="lbl">discover</div><p>Inside the app. Signing up worked.</p></div>
-    </div>
-    <p class="muted small" style="margin-top:22px">Each move is a row in <b>selections</b>: on the screen you leave (<i>step</i>), the screen you go to (<i>value</i>).</p>
+    <p class="muted small" style="margin-top:24px"><b>% of the step before</b> shows where people give up. <b>% of the start</b> shows how many make it all the way. (Made-up numbers: yours come from your own data.)</p>
   </section>
 
   <section class="slide">
