@@ -147,6 +147,10 @@ team judges the evidence.
 - **Ask the data for exactly that case** with `sh core/look.sh` (read-only):
   `sh core/look.sh "sessions?select=user_id,app,is_test&app=eq.photo&is_test=eq.false&limit=1000"`
   for raw rows, `sh core/look.sh analysis "usage_totals?select=*"` for a view.
+- **One query, filtered at the source.** Put every condition in the query (`label=eq.Register`;
+  through a related table: `select=session_id,sessions!inner(is_test)&sessions.is_test=eq.true`)
+  and read the count from the first line (`0-0/154 rows` = 154; `limit=1` when only the count
+  matters). Never fetch many rows to search through them.
 - **Show the evidence in two or three lines** ("This browser has 5 visits in the raw data. Browsers
   counts it once."), read the number from the view yourself, and link the board.
 - **Then move straight on** to the next number, or the questions page. Don't ask them to confirm
@@ -182,9 +186,11 @@ number can always be traced and two numbers never quietly disagree.
 ## Building, saving, and the team's one paste
 - **You build; the team looks. Be quick: they are waiting.** Write the files, then build only what
   you changed: `sh core/apply.sh analysis/<name>.sql …` (with no names it builds everything; do that
-  only when a session starts on files that may not be built). Then save and publish in one step:
-  `sh core/save.sh "what changed"` (commit, merge, push to `main`). Then give the link. A file that
-  FAILs: fix it and run again. `NO KEY` or refused: setup step 7, then a new session.
+  only when a session starts on files that may not be built). Write the panel in `boards.js`
+  **before** running it: `apply.sh` also saves and publishes everything (it ends with `SAVED`), so
+  there is no separate save step. Then give the link. A file that FAILs: fix it and run again.
+  `NO KEY` or refused: setup step 7, then a new session. Use `sh core/save.sh "what changed"` only
+  when nothing needs building (a panel or wording change alone).
 - **Never lose work.** Commit and push files even when building failed, so the next session builds
   them. Never promise to remember anything that isn't committed.
 - **Saving:** the site shows only `main`; `sh core/save.sh` publishes there, whatever branch you are
