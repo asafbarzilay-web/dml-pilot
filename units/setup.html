@@ -22,6 +22,12 @@
   .step .see::before { content: "✓ You should see: "; font-weight: 700; }
   .step .note { margin-top: 10px; font-size: 14px; color: #6B6B66; }
   .step .warn { margin-top: 10px; font-size: 14px; color: #B42318; }
+  .step .sub { font-size: 13px; font-weight: 700; letter-spacing: .04em; color: #C2410C; margin: 16px 0 6px; }
+  .step .line { font-family: ui-monospace, Menlo, monospace; font-size: 14px; background: #1C1C1A; color: #F4F4F2; border-radius: 8px; padding: 8px 12px; margin: 6px 0 2px; display: inline-block; }
+  .step .line span { color: #FB923C; }
+  .step table.ask { border-collapse: collapse; margin: 6px 0 2px; font-size: 14.5px; }
+  .step table.ask td { padding: 5px 14px 5px 0; border-bottom: 1px solid #EEEEEA; vertical-align: top; }
+  .step table.ask td:first-child { font-weight: 600; white-space: nowrap; }
   .before { background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 12px; padding: 14px 18px; margin: 18px 0 6px; font-size: 15px; line-height: 1.55; }
   .before ul { margin: 6px 0 0; padding-left: 20px; }
   code { background: #F4F4F2; padding: 1px 6px; border-radius: 5px; font-size: 13px; }
@@ -38,7 +44,7 @@
 <div class="wrap">
   <a class="back" href="../">← Your study platform</a>
   <h1>One-time setup</h1>
-  <p class="lead">About 20 minutes, once, before lesson 1. Three parts: your copy of the platform on GitHub,
+  <p class="lead"><b>9 short steps, about 15 minutes.</b> Once, before lesson 1. Three parts: your copy of the platform on GitHub,
     your database on Supabase, and your AI assistant in Claude. Nothing to install.</p>
   <div class="before"><b>Before you start: what you need</b>
     <ul><li><b>A paid Claude plan (Pro or higher), which includes Claude Code.</b> Your AI assistant runs on it; the free
@@ -92,38 +98,42 @@
   <div class="part">Part 3 · Your AI assistant (Claude)</div>
 
   <div class="step"><span class="num">7</span><h3>Start your assistant in the cloud</h3>
-    <p class="note" style="margin-top:0">No <b>Code</b> tab, or no <b>Cloud</b> option? Your Claude plan doesn't include Claude Code: see
-      <i>Before you start</i>, at the top.</p>
+    <p class="note" style="margin-top:0">No <b>Code</b> tab or no <b>Cloud</b> option? Your plan doesn't include Claude Code (see <i>Before you start</i>).</p>
+
+    <div class="sub">A · Create the environment</div>
     <ol><li>In the Claude app: <b>Code → + New</b>.</li>
       <li>Click <b>Local</b> (above the message box) → <b>Cloud</b> → <b>Add cloud environment…</b></li>
-      <li>Name: <code>Data-mindset</code>. Network access: <b>Full</b> (so it can reach your database).</li>
-      <li><b>Give your assistant the key to build in your database.</b> In another tab, in Supabase: <b>Project Settings → API Keys</b>,
-        section <b>Secret keys</b>, the key named <code>default</code> (it starts with <code>sb_secret_</code>). Click its copy icon.
-        Back in the environment form, in <b>Environment variables</b>, type <code>SUPABASE_SECRET_KEY=</code> and paste the key right after it,
-        on one line, no spaces. Click <b>Add environment</b>.
-        <p class="warn">This key is full access to your database. It goes only here, in your own environment: never in the chat,
-          and never anywhere else. With it, your assistant builds every view for you, so you never paste SQL.</p></li>
-      <li><b>Connect Claude to your GitHub account</b> (first time only). Click the <b>&lt;/&gt;</b> button, next to <b>Data-mindset</b>. If the list
-        is empty or it offers to connect GitHub, follow its prompts: sign in to GitHub and allow Claude to access your
-        repositories, at least <code>data-mindset-template</code>. This is how Claude can see your fork from step 2.</li>
-      <li>Back at the <b>&lt;/&gt;</b> button (press <b>Refresh list</b> if needed), pick <code>your-name/data-mindset-template</code>.</li></ol>
-    <p class="see">above the message box: <b>Data-mindset</b> · <b>data-mindset-template</b> · <b>main</b>.</p>
-    <p class="note">The environment is created once. Next time: <b>+ New</b>, and it remembers Data-mindset and your repository.</p>
-    <img src="../slides/00-tools-and-concepts/img/claude-cloud-menu.jpg" alt="Choosing Cloud" style="max-width:420px"></div>
+      <li>Name: <code>Data-mindset</code>. Network access: <b>Full</b>.</li></ol>
+    <img src="../slides/00-tools-and-concepts/img/claude-cloud-menu.jpg" alt="Choosing Cloud" style="max-width:360px">
 
-  <div class="step"><span class="num">8</span><h3>Register for the course: your assistant asks, you answer</h3>
-    <p>This step connects your platform and <b>registers you for the course</b>: until it's done, your lecturer can't see you
-      or open lessons for you. Your assistant collects three things and puts them in the right place (your site's address
-      it works out by itself).</p>
-    <ol style="margin-top:10px"><li>In the message box, type: <i>"Register me for the course"</i>.</li>
-      <li>It asks you three things, <b>one at a time</b>, and tells you where to find each:
-        <br>· <b>your name</b>, as your lecturer knows you
-        <br>· <b>your Supabase project URL</b>: in Supabase, <b>Project Settings → API</b> (starts with <code>https://</code> and ends with <code>.supabase.co</code>)
-        <br>· <b>your publishable key</b>: <b>Project Settings → API Keys</b>, the one starting <code>sb_publishable_</code></li>
-      <li>Paste each answer when it asks for it.</li></ol>
-    <p class="see">it confirms they are saved and that your site is updated (give it a minute).</p>
-    <p class="warn">Never paste the <b>secret</b> key (<code>sb_secret_…</code>) in the chat: it belongs only in the environment
-      (step 7). If you paste it by mistake, your assistant will tell you to create a new one in Supabase.</p></div>
+    <div class="sub">B · Add your secret key (still in the same form)</div>
+    <ol><li>In another tab, in Supabase: <b>Project Settings → API Keys → Secret keys</b>. Copy the key named <code>default</code>.</li>
+      <li>Back in the form, in <b>Environment variables</b>, type this and paste your key right after the <code>=</code>:
+        <div class="line">SUPABASE_SECRET_KEY=<span>sb_secret_…</span></div></li>
+      <li>Click <b>Add environment</b>.</li></ol>
+    <img src="../slides/00-tools-and-concepts/img/claude-env-form.jpg" alt="The environment form: name, network access, environment variables" style="max-width:420px">
+    <p class="note">The form, with the box for your key circled. The grey text in it is only an example: type over it.</p>
+    <p class="warn">This key opens your whole database. Put it only here: never in the chat.</p>
+
+    <div class="sub">C · Pick your repository</div>
+    <ol><li>Click the <b>&lt;/&gt;</b> button next to <b>Data-mindset</b>.</li>
+      <li>First time only: if the list is empty or it offers to connect GitHub, follow its prompts and allow access to
+        <code>data-mindset-template</code>.</li>
+      <li>Pick <code>your-name/data-mindset-template</code> (press <b>Refresh list</b> if needed).</li></ol>
+    <p class="see">above the message box: <b>Data-mindset</b> · <b>data-mindset-template</b> · <b>main</b>.</p>
+    <p class="note">You do this once. Next time: <b>+ New</b>, and it remembers both.</p></div>
+
+  <div class="step"><span class="num">8</span><h3>Register for the course</h3>
+    <ol><li>In the message box, type: <i>"Register me for the course"</i>.</li>
+      <li>Your assistant asks three things, one at a time. Paste each answer:
+        <table class="ask">
+          <tr><td>Your name</td><td>as your lecturer knows you</td></tr>
+          <tr><td>Supabase project URL</td><td><b>Project Settings → API</b> · <code>https://….supabase.co</code></td></tr>
+          <tr><td>Publishable key</td><td><b>Project Settings → API Keys</b> · starts with <code>sb_publishable_</code></td></tr>
+        </table></li></ol>
+    <p class="see">it says your details are saved.</p>
+    <p class="warn">Never paste the <b>secret</b> key here. If you do, your assistant tells you how to replace it.</p>
+    <p class="note">Until you register, your lecturer can't see you or open lessons for you.</p></div>
 
   <div class="step"><span class="num">9</span><h3>Your assistant checks everything, registers you, and you're in</h3>
     <p>Right after step 8, your assistant checks your setup by itself and reports one line per check:</p>
