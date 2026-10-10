@@ -70,6 +70,12 @@ alter table public.clicks     enable row level security;
 alter table public.selections enable row level security;
 alter table public.identities enable row level security;
 
+-- The rights themselves, granted here so the project's "Automatically expose new tables" setting
+-- doesn't matter either way.
+grant usage on schema public to anon, authenticated;
+grant insert on public.sessions, public.clicks, public.selections, public.identities to anon;
+grant select on public.sessions, public.clicks, public.selections, public.identities to authenticated;
+
 do $$
 declare t text;
 begin
@@ -110,6 +116,7 @@ create table if not exists public.coursework (
 alter table public.coursework enable row level security;
 drop policy if exists "coursework open" on public.coursework;
 create policy "coursework open" on public.coursework for all to anon, authenticated using (true) with check (true);
+grant select, insert, update, delete on public.coursework to anon, authenticated;
 
 -- What is in your space (kept for older dashboards; nothing uses it now):
 -- every view and table in `analysis`, its definition (the comment you put on
