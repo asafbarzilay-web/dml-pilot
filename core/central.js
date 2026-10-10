@@ -12,7 +12,7 @@
 (function () {
   var ENABLED = true;
   // While testing: only these teams use the central pages (empty = every team).
-  var ONLY = ['asafbarzilay-web/dml-pilot'];
+  var ONLY = [];
   var HOST = 'asafbarzilay-web.github.io', BASE = '/data-mindset-template/';
   if (!ENABLED) return;
   var onCentral = location.hostname === HOST && location.pathname.indexOf(BASE) === 0;
