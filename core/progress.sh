@@ -18,7 +18,16 @@ else
 fi
 L=$(course_lesson 2>/dev/null)
 case "$L" in *lesson*) echo "Current lesson (set by the lecturer): $L";; *) echo "Current lesson: $(cat units/CURRENT) (the course could not be reached)";; esac
-curl -s "$URL/rest/v1/coursework?select=lesson,question,is_right,submitted_at&order=lesson,question" -H "apikey: $KEY" \
+# Which lesson's practice data is in the database (the data marks itself when it is loaded).
+loaded=$(curl -s "$URL/rest/v1/coursework?select=answer,updated_at&lesson=eq.practice-data&question=eq.loaded" -H "apikey: $KEY" | python3 -c "
+import json, sys
+try:
+    r = json.load(sys.stdin)
+    print(r[0]['answer'] + ' (loaded ' + r[0]['updated_at'][:16].replace('T', ' ') + ' UTC)' if r else 'unknown (none loaded since this check was added)')
+except Exception:
+    print('unknown')")
+echo "Practice data in the database: $loaded"
+curl -s "$URL/rest/v1/coursework?select=lesson,question,is_right,submitted_at&lesson=neq.practice-data&order=lesson,question" -H "apikey: $KEY" \
   || echo "Could not reach the database."
 echo
 

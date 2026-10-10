@@ -178,6 +178,10 @@ number can always be traced and two numbers never quietly disagree.
   them. Never promise to remember anything that isn't committed.
 - **Saving:** the site shows only `main`; `sh core/save.sh` publishes there, whatever branch you are
   on. Never make branches or merging the team's job, or mention them.
+- **Load practice data only when it isn't there.** `sh core/progress.sh` prints *Practice data in the
+  database*. If it names this lesson's `data` (in `units/lessons.json`), it is loaded: say so warmly in
+  one line ("I see you've already loaded lesson 3's practice data. Let's move on.") and go to the next
+  step. If it says unknown or another lesson's, ask them to load it.
 - **Practice data is the team's one paste.** Send them to the lesson's walkthrough page (link,
   `view.html?f=units/unit-02.md`): step 1 has a **Copy the practice data** button; they paste it in
   Supabase's SQL Editor and click Run. It worked if the result shows the row counts listed under the
