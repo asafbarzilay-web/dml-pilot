@@ -89,6 +89,11 @@
   table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
   th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid #EEEEEA; white-space: nowrap; }
   th { color: #6B6B66; font-weight: 600; background: #FAFAF8; position: sticky; top: 0; }
+  .raw th button.sort { border: none; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
+  .raw th button.sort:hover { color: #1C1C1A; }
+  .raw tr.filters th { top: 34px; padding-top: 0; }
+  .raw tr.filters input { width: 100%; min-width: 90px; font-size: 12px; padding: 4px 6px; border: 1px solid #E2E2DE; border-radius: 6px; font-weight: 400; }
+  #table-count select { font: inherit; padding: 1px 4px; }
   td.num { font-variant-numeric: tabular-nums; }
   .empty { padding: 24px; text-align: center; color: #6B6B66; font-size: 14px; }
   .flag { color: #B42318; font-size: 12.5px; }
@@ -136,7 +141,8 @@
   <div id="area-raw" hidden>
     <section class="card">
       <h2>Raw data</h2>
-      <p class="muted">Exactly what is stored, newest first. Nothing is filtered. Times are in your time zone.</p>
+      <p class="muted">Exactly what is stored. Click a column's name to sort by it (again to flip); type in the box under it
+        and press Enter to filter. Times are in your time zone.</p>
       <div class="tabs" id="tabs"></div>
       <p class="muted" id="table-count"></p>
       <div class="scroll"><div id="table"></div></div>
@@ -236,24 +242,79 @@
   }
 
   const v0 = x => typeof x === 'string';
+  // Per table: the sort (a column and a direction), a filter per column, and how many rows to show.
+  // Sorting and filtering happen in the database, so they cover every row, not just the ones shown.
+  const view = {};
+  const viewOf = t => view[t] || (view[t] = { sort: TABLES[t].order, asc: false, filters: {}, show: 50, cols: null, types: {} });
+  const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-/i;
+  // A filter in the column's own terms: words match anywhere in text; ids, numbers and true/false
+  // match exactly; a date (2026-09-15) matches that whole day.
+  function filtered(q, v) {
+    for (const [c, raw] of Object.entries(v.filters)) {
+      const f = raw.trim(); if (!f) continue;
+      const type = v.types[c];
+      if (f === 'null') q = q.is(c, null);
+      else if (c.endsWith('_at')) { const d = new Date(f); if (!isNaN(d)) { const e = new Date(d); e.setDate(e.getDate() + 1); q = q.gte(c, d.toISOString()).lt(c, e.toISOString()); } }
+      else if (type === 'boolean' || type === 'number' || type === 'uuid') q = q.eq(c, f);
+      else q = q.ilike(c, `%${f}%`);
+    }
+    return q;
+  }
 
   async function loadTable() {
     renderTabs();
+    const v = viewOf(current);
     $('table').innerHTML = '<div class="empty">Loading…</div>';
-    const { count } = await db.from(current).select('*', { count: 'exact', head: true });
-    const { data, error } = await db.from(current).select('*')
-      .order(TABLES[current].order, { ascending: false }).limit(50);
-    if (error) { $('table').innerHTML = `<div class="empty bad">${esc(error.message)}</div>`; return; }
-    $('table-count').textContent = `${count ?? '?'} rows in total · showing the newest ${Math.min(50, data.length)}`;
-    if (!data.length) { $('table').innerHTML = '<div class="empty">No rows yet.</div>'; return; }
-    const cols = Object.keys(data[0]);
-    $('table').innerHTML = `<table><thead><tr>${cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${
-      data.map(r => `<tr>${cols.map(c => {
+    const { count, error: cErr } = await filtered(db.from(current).select('*', { count: 'exact', head: true }), v);
+    if (cErr) { $('table').innerHTML = `<div class="empty bad">${esc(cErr.message)}</div>`; return; }
+    // Pages of 999: the database sends at most 1,000 rows per request, so "all" is fetched in pages.
+    // (999, not 1,000, so the row-limit guard doesn't take a full page for a missing-rows warning.)
+    const want = v.show === 'all' ? (count || 0) : Math.min(v.show, count || 0);
+    let data = [];
+    for (let from = 0; from < Math.max(want, 1) && data.length < want; from += 999) {
+      const { data: page, error } = await filtered(db.from(current).select('*'), v)
+        .order(v.sort, { ascending: v.asc, nullsFirst: false }).range(from, Math.min(from + 998, want - 1));
+      if (error) { $('table').innerHTML = `<div class="empty bad">${esc(error.message)}</div>`; return; }
+      data = data.concat(page); if (page.length < 999) break;
+    }
+    if (data.length && !v.cols) {
+      v.cols = Object.keys(data[0]);
+      for (const c of v.cols) { const x = data.find(r => r[c] !== null)?.[c]; v.types[c] = typeof x === 'number' ? 'number' : typeof x === 'boolean' ? 'boolean' : v0(x) && UUID.test(x) ? 'uuid' : 'text'; }
+    }
+    const any = Object.values(v.filters).some(f => f.trim());
+    $('table-count').innerHTML = `${(count ?? 0).toLocaleString()} rows${any ? ' match the filters' : ' in total'} · showing ${data.length.toLocaleString()} · show
+      <select id="raw-show">${[50, 500, 'all'].map(n => `<option value="${n}" ${String(v.show) === String(n) ? 'selected' : ''}>${n === 'all' ? 'all' : n}</option>`).join('')}</select>
+      ${any ? ' · <button class="linkish" id="raw-clear">clear filters</button>' : ''}`;
+    if (!v.cols) { $('table').innerHTML = '<div class="empty">No rows yet.</div>'; return; }
+    const cols = v.cols, arrow = c => v.sort === c ? (v.asc ? ' ▲' : ' ▼') : '';
+    const hint = c => c.endsWith('_at') ? 'a date: 2026-09-15' : v.types[c] === 'text' ? 'contains…' : 'equals…';
+    $('table').innerHTML = `<table class="raw"><thead><tr>${cols.map(c => `<th><button class="sort" data-sort="${esc(c)}" title="Sort by ${esc(c)}">${esc(c)}${arrow(c)}</button></th>`).join('')}</tr>
+      <tr class="filters">${cols.map(c => `<th><input data-filter="${esc(c)}" value="${esc(v.filters[c] || '')}" placeholder="${hint(c)}" autocomplete="off"></th>`).join('')}</tr></thead><tbody>${
+      data.length ? data.map(r => `<tr>${cols.map(c => {
         // Times in the viewer's own time zone, like every other page.
-        const v = c.endsWith('_at') && v0(r[c]) ? new Date(r[c]).toLocaleString('sv-SE') : r[c];
-        return `<td class="${typeof v === 'number' ? 'num' : ''}">${v === null ? '<span class="muted">null</span>' : esc(v)}</td>`;
-      }).join('')}</tr>`).join('')}</tbody></table>`;
+        const x = c.endsWith('_at') && v0(r[c]) ? new Date(r[c]).toLocaleString('sv-SE') : r[c];
+        return `<td class="${typeof x === 'number' ? 'num' : ''}">${x === null ? '<span class="muted">null</span>' : esc(x)}</td>`;
+      }).join('')}</tr>`).join('') : `<tr><td colspan="${cols.length}" class="muted">No rows match these filters.</td></tr>`}</tbody></table>`;
   }
+  // Sorting: click a column's name (again to flip). Filtering: type, then Enter. How many: the menu.
+  $('table').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-sort]'); if (!b) return;
+    const v = viewOf(current), c = b.dataset.sort;
+    if (v.sort === c) v.asc = !v.asc; else { v.sort = c; v.asc = true; }
+    loadTable();
+  });
+  $('table').addEventListener('keydown', (e) => {
+    const i = e.target.closest('[data-filter]'); if (!i || e.key !== 'Enter') return;
+    viewOf(current).filters[i.dataset.filter] = i.value; loadTable();
+  });
+  $('table-count').addEventListener('change', (e) => {
+    if (e.target.id !== 'raw-show') return;
+    viewOf(current).show = e.target.value === 'all' ? 'all' : Number(e.target.value); loadTable();
+  });
+  $('table-count').addEventListener('click', (e) => {
+    if (e.target.id !== 'raw-clear') return;
+    viewOf(current).filters = {}; loadTable();
+  });
 
   // ---- Is the app recording? ------------------------------------------
   // The latest visit that wasn't practice data, shown under the title. No button: it is always
