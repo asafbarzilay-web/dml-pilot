@@ -42,7 +42,7 @@ is missing, why a number is wrong.
 ## The site and the data
 The team's site address is in `SITE`. Whenever you mention a page, give its full link on that
 site: home (`SITE`), the dashboard (`dashboard/`), a lesson's board (`dashboard/#unit-02`), the
-example board (`dashboard/#example`), raw data (`dashboard/#raw`), checks (`dashboard/#checks`), the
+example board (`dashboard/#example`), raw data (`dashboard/#raw`), the
 app as a test run (`app/?test=1`), the database map (`units/database-map.html`), a lesson's slides
 (its `slides` in `units/lessons.json`), guided walkthrough (`view.html?f=units/unit-02.md`) and questions page
 (`checker/?lesson=lesson-02`).

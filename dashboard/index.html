@@ -10,11 +10,11 @@
 <script src="../core/course.js"></script>
 <script src="../core/row-limit-guard.js"></script>
 <!--
-  Your dashboard. Three areas:
+  Your dashboard. Two areas:
     Dashboards  one board per lesson. Your panels go in boards.js,
                 under the lesson they belong to. This page is the course's.
     Raw data    the four tables exactly as stored.
-    Checks      is capture working?
+  The line under the title says whether the app is recording: the latest visit, by itself.
 -->
 <style>
   * { box-sizing: border-box; }
@@ -54,7 +54,11 @@
   .ok { color: #1F7A3F; }
   .bad { color: #B42318; }
 
-  /* The three areas */
+  .recording { margin: -8px 0 16px; font-size: 13.5px; color: #4A4A45; }
+  .recording .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #1F9D55; margin-right: 6px; vertical-align: 1px; }
+  .recording.idle { color: #8A8A85; } .recording.idle .dot { background: #C8C8C2; }
+  .recording a { color: inherit; }
+  /* The areas */
   .areas { display: flex; gap: 4px; background: #E8E8E4; padding: 4px; border-radius: 10px; }
   .areas button { border: none; background: none; padding: 7px 16px; font-weight: 600; color: #4A4A45; }
   .areas button.on { background: #fff; color: #1C1C1A; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
@@ -114,10 +118,10 @@
     <div class="areas" id="areas">
       <button data-area="boards">Dashboards</button>
       <button data-area="raw">Raw data</button>
-      <button data-area="checks">Checks</button>
     </div>
     <div class="row"><a class="linkish" href="../">Home</a><button class="linkish" id="sign-out">Sign out</button></div>
   </header>
+  <p class="recording" id="recording"></p>
 
   <!-- Dashboards: one board per lesson -->
   <div id="area-boards" class="boards">
@@ -139,26 +143,12 @@
     </section>
   </div>
 
-  <!-- Checks -->
-  <div id="area-checks" class="checks" hidden>
-    <section class="card">
-      <h2>Is capture working?</h2>
-      <p class="muted">Records one test visit and one test click as if from the app, then looks for them in the
-        database. If they are not found, the app is recording nothing, even if it looks fine.</p>
-      <div class="row">
-        <button class="primary" id="health-btn">Run the check</button>
-        <span class="result" id="health-result"></span>
-      </div>
     </section>
   </div>
 </div>
 
 <script>
   const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-  // A second client that never signs in: it writes exactly as the app does.
-  const asApp = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false, storageKey: 'health-check' }
-  });
   const $ = id => document.getElementById(id);
   const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 </script>
@@ -265,34 +255,29 @@
       }).join('')}</tr>`).join('')}</tbody></table>`;
   }
 
-  // ---- Checks ---------------------------------------------------------
-  // Writes as the app would, then reads the exact rows back. A check that
-  // only looked for "no error" would pass even when rules silently reject
-  // the write; finding the rows is the only proof.
-  async function healthCheck() {
-    const btn = $('health-btn'), out = $('health-result');
-    btn.disabled = true; out.className = 'result'; out.textContent = 'Checking…';
-    const sid = crypto.randomUUID();
-    const s = await asApp.from('sessions').insert({
-      session_id: sid, user_id: crypto.randomUUID(), app: 'health-check', platform: 'desktop', is_test: true
-    });
-    const c = s.error ? s : await asApp.from('clicks').insert({ session_id: sid, step: 'health', x: 0.5, y: 0.5, seq: 1, hit: 'none' });
-    const back = await db.from('clicks').select('id', { count: 'exact' }).eq('session_id', sid);
-    btn.disabled = false;
-    if (!s.error && !c.error && back.count === 1) {
-      out.className = 'result ok';
-      out.textContent = 'Capture works: the test visit and click were written and found. (Marked as a test, app "health-check".)';
-    } else {
-      out.className = 'result bad';
-      out.textContent = 'Capture is NOT working: ' + ((s.error || c.error || back.error || {}).message
-        || `the rows were written but ${back.count ?? 0} came back.`) + ' Check setup.sql and supabase-config.js.';
+  // ---- Is the app recording? ------------------------------------------
+  // The latest visit that wasn't practice data, shown under the title. No button: it is always
+  // there, and it goes grey when nothing has been recorded yet.
+  async function recording() {
+    const el = $('recording');
+    const { data, error } = await db.from('sessions').select('started_at, is_test')
+      .eq('is_synthetic', false).order('started_at', { ascending: false }).limit(1);
+    if (error) { el.className = 'recording idle'; el.innerHTML = `<span class="dot"></span>Could not check recording: ${esc(error.message)}`; return; }
+    if (!data.length) {
+      el.className = 'recording idle';
+      el.innerHTML = '<span class="dot"></span>No visits recorded yet. <a href="../app/?test=1">Open the app as a test run</a> to try it.';
+      return;
     }
+    const v = data[0], m = Math.max(0, Math.round((Date.now() - new Date(v.started_at)) / 60000));
+    const ago = m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} days ago`;
+    el.className = 'recording';
+    el.innerHTML = `<span class="dot"></span><b>Your app is recording</b> · last visit ${ago} (${v.is_test ? 'a test run' : 'a participant'})`;
   }
 
 
   // ---- Areas, remembered in the address (#raw, #checks, #unit-02) ------
   function showArea(area) {
-    for (const a of ['boards', 'raw', 'checks']) $(`area-${a}`).hidden = a !== area;
+    for (const a of ['boards', 'raw']) $(`area-${a}`).hidden = a !== area;
     $('areas').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.area === area));
     if (area === 'raw') loadTable();
     if (area === 'boards') renderBoard();
@@ -307,7 +292,8 @@
     const h = location.hash.slice(1);
     if (h && h !== 'raw' && h !== 'checks') board = h;
     await loadLessons();
-    showArea(h === 'raw' || h === 'checks' ? h : 'boards');
+    showArea(h === 'raw' ? h : 'boards');
+    recording();
   }
 
   $('login-form').addEventListener('submit', async (e) => {
@@ -320,7 +306,6 @@
   $('areas').addEventListener('click', (e) => { const b = e.target.closest('[data-area]'); if (b) showArea(b.dataset.area); });
   $('lesson-list').addEventListener('click', (e) => { const b = e.target.closest('[data-b]'); if (b) { board = b.dataset.b; showArea('boards'); } });
   $('tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) { current = b.dataset.t; loadTable(); } });
-  $('health-btn').addEventListener('click', healthCheck);
   show();
 </script>
 </body>
