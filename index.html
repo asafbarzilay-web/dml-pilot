@@ -27,6 +27,9 @@
   .btn.ghost { border: 1px solid #55554F; color: #fff; }
   .btn.off { border: 1px dashed #4A4A45; color: #77776F; cursor: default; }
   .now .opens { color: #F6B38A; }
+  .update { background: #EEF4FF; border: 1px solid #C7D7FE; border-radius: 12px; padding: 14px 18px; font-size: 15px; line-height: 1.55; margin: 0 0 16px; }
+  .update a.go { display: inline-block; margin: 6px 0 2px; background: #1C1C1A; color: #fff; text-decoration: none; font-weight: 600; padding: 7px 14px; border-radius: 8px; }
+  .update small { display: block; color: #6B6B66; }
   .unset { background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 12px; padding: 14px 18px; font-size: 15px; line-height: 1.55; margin: 0 0 16px; }
   .unset a { color: #92400E; font-weight: 600; }
   .tag.unfinished { background: #FEF3C7; color: #92400E; }
@@ -99,6 +102,7 @@
     </details>
   </div>
 
+  <div class="update" id="update" hidden></div>
   <div class="unset" id="unset" hidden><b>Not connected to a database yet.</b> This copy can't record or show anything
     until the one-time setup is done. <a href="units/setup.html">Follow the one-time setup →</a></div>
   <div class="now" id="now">Loading…</div>
@@ -131,6 +135,23 @@
   // The team's repository name is the first part of this site's address.
   const repo = location.hostname.endsWith('github.io') ? location.pathname.split('/')[1] : '';
   if (repo) document.querySelectorAll('.team').forEach(el => { el.textContent = repo; });
+  // A course update this copy doesn't have yet: GitHub says how many course changes the fork is missing.
+  // The page can't update the fork itself (only its owner can); it sends them to the two clicks that do.
+  if (repo) {
+    const owner = location.hostname.split('.')[0], COURSE = 'asafbarzilay-web/data-mindset-template';
+    if (`${owner}/${repo}`.toLowerCase() !== COURSE.toLowerCase()) {
+      fetch(`https://api.github.com/repos/${owner}/${repo}/compare/main...${COURSE.replace('/', ':')}:main`)
+        .then(r => r.ok ? r.json() : null).then(c => {
+          if (!c || !c.ahead_by) return;
+          const el = document.getElementById('update');
+          el.innerHTML = `<b>A course update is waiting</b> (${c.ahead_by} change${c.ahead_by === 1 ? '' : 's'}).<br>
+            <a class="go" href="https://github.com/${owner}/${repo}" target="_blank" rel="noopener">Update now</a>
+            <small>It opens your repository on GitHub: click <b>Sync fork</b>, then <b>Update branch</b>. Your site refreshes about
+            a minute later. (Or start a new session with your assistant: it updates by itself.)</small>`;
+          el.hidden = false;
+        }).catch(() => {});
+    }
+  }
   // A copy whose database isn't filled in yet (the course's original, or a new fork) says so.
   document.getElementById('unset').hidden = !/YOUR-PROJECT/.test(SUPABASE_URL);
   const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
