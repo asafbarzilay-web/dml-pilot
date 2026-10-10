@@ -50,9 +50,6 @@ Every button press is a row in `selections`.
 **Yours to decide:** which visits count at all, and why. Your AI assistant asks what each number
 should count, asks about anything you left open, and writes the sentence from what you said.
 
-Every number is a view in `analysis` with its definition as its comment, and **Is your
-analysis tidy?** passes before you check your answers.
-
 **In scope:** the start screen, the registration funnel, and anything you need to check them.
 **Not yet:** time on each screen, heatmaps, segments. Those come in later lessons.
 

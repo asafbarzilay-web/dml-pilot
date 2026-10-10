@@ -14,7 +14,7 @@
     Dashboards  one board per lesson. Your panels go in boards.js,
                 under the lesson they belong to. This page is the course's.
     Raw data    the four tables exactly as stored.
-    Checks      is capture working? is your analysis tidy?
+    Checks      is capture working?
 -->
 <style>
   * { box-sizing: border-box; }
@@ -149,16 +149,6 @@
         <button class="primary" id="health-btn">Run the check</button>
         <span class="result" id="health-result"></span>
       </div>
-    </section>
-    <section class="card">
-      <h2>Is your analysis tidy?</h2>
-      <p class="muted">Every view in your <code>analysis</code> space with its definition. Flags views with no
-        definition, two views with the same definition, and copies of data that will go stale.</p>
-      <div class="row">
-        <button class="primary" id="tidy-btn">Run the check</button>
-        <span class="result" id="tidy-result"></span>
-      </div>
-      <div class="scroll"><div id="tidy-list"></div></div>
     </section>
   </div>
 </div>
@@ -299,40 +289,6 @@
     }
   }
 
-  // Everything in the analysis space, with what is wrong with each. A view's
-  // definition is the comment on it; one definition must live in one place.
-  async function tidyCheck() {
-    const btn = $('tidy-btn'), out = $('tidy-result');
-    btn.disabled = true; out.className = 'result'; out.textContent = 'Checking…';
-    const { data, error } = await db.rpc('analysis_catalog');
-    btn.disabled = false;
-    if (error) {
-      out.className = 'result bad';
-      out.textContent = `Could not read your analysis space: ${error.message}. Run setup.sql again.`;
-      $('tidy-list').innerHTML = ''; return;
-    }
-    const norm = d => (d || '').toLowerCase().replace(/\s+/g, ' ').trim();
-    const byDef = new Map();
-    for (const v of data) if (norm(v.definition)) byDef.set(norm(v.definition), [...(byDef.get(norm(v.definition)) || []), v.name]);
-    const problems = v => [
-      !norm(v.definition) && 'no definition: add one with comment on view',
-      v.kind !== 'view' && `a ${v.kind}: a copy of the data, which goes stale. Make it a view`,
-      norm(v.definition) && byDef.get(norm(v.definition)).length > 1 &&
-        `same definition as ${byDef.get(norm(v.definition)).filter(n => n !== v.name).join(', ')}`
-    ].filter(Boolean);
-    if (!data.length) {
-      out.className = 'result'; out.textContent = 'Nothing in your analysis space yet.';
-      $('tidy-list').innerHTML = ''; return;
-    }
-    const bad = data.filter(v => problems(v).length).length;
-    out.className = bad ? 'result bad' : 'result ok';
-    out.textContent = bad ? `${bad} of ${data.length} need attention.` : `Tidy: ${data.length} view${data.length === 1 ? '' : 's'}, each with its own definition.`;
-    $('tidy-list').innerHTML = `<table><thead><tr><th>name</th><th>definition</th></tr></thead><tbody>${
-      data.map(v => `<tr><td>analysis.${esc(v.name)}</td><td class="def">${v.definition ? esc(v.definition) : '<span class="muted">none</span>'}${
-        problems(v).map(p => `<div class="flag">${esc(p)}</div>`).join('')}${
-        v.sql ? `<details><summary>SQL</summary><pre>${esc(v.sql)}</pre></details>` : ''}</td></tr>`).join('')
-    }</tbody></table>`;
-  }
 
   // ---- Areas, remembered in the address (#raw, #checks, #unit-02) ------
   function showArea(area) {
@@ -365,7 +321,6 @@
   $('lesson-list').addEventListener('click', (e) => { const b = e.target.closest('[data-b]'); if (b) { board = b.dataset.b; showArea('boards'); } });
   $('tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) { current = b.dataset.t; loadTable(); } });
   $('health-btn').addEventListener('click', healthCheck);
-  $('tidy-btn').addEventListener('click', tidyCheck);
   show();
 </script>
 </body>

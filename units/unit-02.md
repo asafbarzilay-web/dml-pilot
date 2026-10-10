@@ -50,9 +50,6 @@ Under **every** number goes one sentence that says exactly what it counts:
 should count, asks about anything you left open (sometimes which column you mean: look it up), and
 writes the sentence from what you said. It's yours to change any time.
 
-Every number is a view in `analysis` with its definition as its comment, and **Is your
-analysis tidy?** passes before you check your answers.
-
 **In scope:** the numbers above, their definitions, and anything you need to check them.
 **Not yet:** charts over time, funnels, heatmaps, segments. Those come in later lessons.
 

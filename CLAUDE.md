@@ -150,7 +150,7 @@ number can always be traced and two numbers never quietly disagree.
    ask for a slice (`.eq('session_id', …)`), never count, filter or join raw rows: the database
    sends at most 1,000 rows per request, so counting in the page silently comes out too small
    (`core/row-limit-guard.js` warns when that happens; never remove it).
-2. **One definition, one view.** Look at what exists first (`analysis/`, the tidiness check). Reuse
+2. **One definition, one view.** Look at what exists first (`analysis/`). Reuse
    it or build on it: a population defined once is used by every number that needs it.
 3. **Each view carries its definition** as its comment: the sentence you wrote.
 4. **Each view's SQL lives in `analysis/<name>.sql`**: `create or replace view analysis.…` and its
@@ -165,7 +165,8 @@ number can always be traced and two numbers never quietly disagree.
    question. Never edit `dashboard/index.html`; never put a panel on
    another lesson's board. Every number states its population: which app, which visits, what was
    excluded.
-8. Before "done", **Is your analysis tidy?** (dashboard → Checks) passes.
+8. `sh core/apply.sh` refuses any file that breaks rules 3–5 (`NOT BUILT …: why`). Fix the file and run
+   it again; never work around it.
 
 ## Building, saving, and the team's one paste
 - **You build; the team looks. Be quick: they are waiting.** Write the files, then build only what

@@ -109,7 +109,7 @@ alter table public.coursework enable row level security;
 drop policy if exists "coursework open" on public.coursework;
 create policy "coursework open" on public.coursework for all to anon, authenticated using (true) with check (true);
 
--- What is in your space, for the dashboard's "Is your analysis tidy?" check:
+-- What is in your space (kept for older dashboards; nothing uses it now):
 -- every view and table in `analysis`, its definition (the comment you put on
 -- it) and its SQL. Read-only; only a signed-in user may call it.
 create or replace function public.analysis_catalog()

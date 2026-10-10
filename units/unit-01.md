@@ -49,8 +49,7 @@ This is your first view. First ask your assistant to build the example view, and
 [the dashboard's **Example** board](dashboard/#example): that is the whole pattern. Then build yours the same way:
 - the timeline is a **view** in the `analysis` schema, with its SQL in `analysis/` and a
   one-sentence definition as its comment (your AI assistant knows the rules);
-- the dashboard only displays it;
-- **Is your analysis tidy?** passes.
+- the dashboard only displays it.
 
 You will use this panel in every lesson after this one: it is how you check a number, by
 following one participant from the raw rows to the dashboard.

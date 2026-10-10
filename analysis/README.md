@@ -16,6 +16,6 @@ comment on view analysis.photo_visits is
 ```
 
 Your assistant puts each view in your database itself (it runs `sh core/apply.sh`), so you never
-paste SQL. Then run **Is your analysis tidy?** on your dashboard.
+paste SQL. It also refuses any file that breaks these rules, so they always hold.
 
 Never a table of copied data here, only views. Never two views that define the same thing.
