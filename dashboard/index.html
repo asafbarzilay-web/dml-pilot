@@ -404,7 +404,7 @@
     $('areas').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.area === area));
     if (area === 'raw') loadTable();
     if (area === 'boards') renderBoard();
-    history.replaceState(null, '', '#' + (area === 'boards' ? board : area));
+    history.replaceState(null, '', '#' + (area === 'boards' ? board : area === 'raw' ? `raw/${current}` : area));
   }
 
   async function show() {
@@ -412,10 +412,12 @@
     $('login-page').hidden = !!session;
     $('dash').hidden = !session;
     if (!session) return;
-    const h = location.hash.slice(1);
-    if (h && h !== 'raw' && h !== 'checks') board = h;
+    // #unit-02 opens a lesson board; #raw opens Raw data; #raw/selections opens one of its tables.
+    const h = location.hash.slice(1), [area, table] = h.split('/');
+    if (area === 'raw' && TABLES[table]) current = table;
+    if (h && area !== 'raw' && h !== 'checks') board = h;
     await loadLessons();
-    showArea(h === 'raw' ? h : 'boards');
+    showArea(area === 'raw' ? 'raw' : 'boards');
     recording();
   }
 
@@ -428,7 +430,7 @@
   $('sign-out').addEventListener('click', async () => { await db.auth.signOut(); show(); });
   $('areas').addEventListener('click', (e) => { const b = e.target.closest('[data-area]'); if (b) showArea(b.dataset.area); });
   $('lesson-list').addEventListener('click', (e) => { const b = e.target.closest('[data-b]'); if (b) { board = b.dataset.b; showArea('boards'); } });
-  $('tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) { current = b.dataset.t; loadTable(); } });
+  $('tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) { current = b.dataset.t; history.replaceState(null, '', `#raw/${current}`); loadTable(); } });
   show();
 </script>
 </body>
