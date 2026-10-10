@@ -1078,6 +1078,14 @@
       return;
     }
 
+    // A button that does nothing in the prototype (See more, Follow Jane, Message, New post) is still
+    // a choice the person made: recorded with its label, and value 'nothing' (it led nowhere).
+    const dead = t.closest('button');
+    if (dead && dead.closest('.phone') && !dead.closest('[data-key]') && !dead.dataset.goto) {
+      record('nothing', labelOf(dead));
+      return;
+    }
+
     // Tapping the search field raises the keyboard, exactly as the
     // prototype does. It is an overlay rather than a screen: the
     // participant is still on Search.

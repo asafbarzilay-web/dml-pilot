@@ -62,7 +62,8 @@ The tables:
   nothing. `seq` is the 1st, 2nd, 3rd click on that screen in that visit.
 - `selections`: a choice in the app: on which screen (`step`), what the person pressed as it reads on
   screen (`label`: `Register`, `Next`, `Sign up`), what the system recorded (`value`: the screen it
-  led to, or what was opened or searched), after how long on that screen (`duration_ms`). Data loaded
+  led to, what was opened or searched, or `nothing` for a button that does nothing, like New post),
+  after how long on that screen (`duration_ms`). Every button press is a row; typing is not. Data loaded
   before `label` existed has it empty.
 - `identities`: a sign-in. `account` is a scrambled id: the same account always gives the same value.
 
