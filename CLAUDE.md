@@ -159,7 +159,8 @@ number can always be traced and two numbers never quietly disagree.
 5. **No copies of data:** no tables or materialized views in `analysis`.
 6. **Names say what one row is:** lowercase, plural, plain (`photo_visits`, `people`).
 7. **Panels** go in that lesson's list in `BOARDS` in `dashboard/boards.js`, following the example
-   panel (`own: true` for On your own). A breakdown (one number per group) is an HTML table with a
+   panel (`own: true` for On your own). **One number per panel:** each number gets its own card
+   (title, the number, its sentence); several numbers share a card only if the team asks. A breakdown (one number per group) is an HTML table with a
    header row and one row per group, so the board's **Copy table** button can copy it into a
    question. Never edit `dashboard/index.html`; never put a panel on
    another lesson's board. Every number states its population: which app, which visits, what was

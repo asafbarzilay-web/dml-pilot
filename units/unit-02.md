@@ -22,7 +22,7 @@ own test runs, and any real visits, are never touched.
 
 ## 2. Build: "Who used the app?"
 
-Add a panel to [your dashboard's **lesson 2** board](dashboard/#unit-02) that shows:
+Build these numbers on [your dashboard's **lesson 2** board](dashboard/#unit-02), **each in its own panel**:
 
 | Number | What it should tell the reader |
 | --- | --- |
