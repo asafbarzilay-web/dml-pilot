@@ -135,6 +135,15 @@ const BOARDS = {
         el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded (as in Visits).</p>
           <div class="scroll"><table><thead><tr><th>number</th><th>visits</th><th>what it counts</th></tr></thead><tbody>${
           rows.map(([label, n, def]) => `<tr><td>${esc(label)}</td><td class="num">${esc(n)}</td><td class="muted">${esc(def)}</td></tr>`).join('')}</tbody></table></div>`;
+      } },
+    { title: 'The registration funnel', view: 'registration_funnel_steps', render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('registration_funnel_steps').select('*').order('n');
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        const pct = x => x === null ? '<span class="muted">–</span>' : `${esc(x)}%`;
+        el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded (as in Visits).</p>
+          <p class="muted">We count visits. Pressed Register: a selection on the start screen with label = Register. Pressed Next: a selection on the email and password screen with label = Next. Pressed Sign up: a selection on the username screen with label = Sign up, which leads into the app.</p>
+          <div class="scroll"><table><thead><tr><th>step</th><th>visits</th><th>% of step before</th><th>% of first step</th></tr></thead><tbody>${
+          data.map(r => `<tr><td>${esc(r.n)}. ${esc(r.step_name)}</td><td class="num">${esc(r.visits)}</td><td class="num">${pct(r.pct_of_step_before)}</td><td class="num">${pct(r.pct_of_first_step)}</td></tr>`).join('')}</tbody></table></div>`;
       } }
   ],
   'unit-08': []
