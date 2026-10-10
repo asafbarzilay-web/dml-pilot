@@ -30,25 +30,17 @@ Build these on [your dashboard's **lesson 3** board](dashboard/#unit-03), **each
 | Panel | What it shows |
 | --- | --- |
 | The start screen | Visits, and how many chose Log in, chose Register, or left without choosing |
-| The registration funnel | One row per step (chose Register · email and password done · username done, in the app): how many visits reached it, its **% of the step before**, and its **% of Register** |
+| The registration funnel | One row per step, from where you decide it starts to getting into the app: how many reached it, its **% of the step before**, and its **% of the first step** |
 
-**Already decided**, because the questions use these exact meanings:
+**Yours to decide**, and they are the point of this lesson. Your assistant asks, and helps you find
+them, but doesn't decide for you:
+- **Where your funnel starts.** Every visit to the start screen, or something narrower?
+- **What counts as reaching a step.** Which record in the data shows that a visit got there?
+- **Visits or clicks.** What exactly does each step count?
+- **Which visits count at all.**
 
-1. **Count visits**, not clicks.
-2. **The funnel starts at Register.** Visits that chose Log in aren't registering, so they're not a
-   loss. They show only on the start screen panel.
-3. **A visit reached a step when it pressed that step's button:**
-
-| Step | The visit pressed… |
-| --- | --- |
-| Chose Register | **Register**, on the start screen |
-| Email and password done | **Next**, on the email and password screen |
-| Username done (in the app) | **Sign up**, on the username screen |
-
-Every button press is a row in `selections`.
-
-**Yours to decide:** which visits count at all, and why. Your AI assistant asks what each number
-should count, asks about anything you left open, and writes the sentence from what you said.
+Your assistant asks what each number should count, asks about anything you left open, and writes
+the sentence from what you said.
 
 **In scope:** the start screen, the registration funnel, and anything you need to check them.
 **Not yet:** time on each screen, heatmaps, segments. Those come in later lessons.
