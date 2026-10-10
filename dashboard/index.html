@@ -28,6 +28,7 @@
   h1 { font-size: 24px; margin: 0; letter-spacing: -0.01em; }
   h2 { font-size: 17px; margin: 0 0 6px; }
   .muted { color: #6B6B66; font-size: 13px; line-height: 1.5; }
+  .copy-table { float: right; font-size: 12.5px; font-weight: 600; padding: 4px 10px; border-radius: 8px; }
   .parts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
   .parts button { padding: 14px 16px; font-size: 16px; font-weight: 700; border-radius: 12px; border: 1px solid #E2E2DE; background: #FAFAF8; color: #6B6B66; display: flex; align-items: center; justify-content: center; gap: 10px; }
   .parts button.on { background: #1C1C1A; color: #fff; border-color: #1C1C1A; }
@@ -202,30 +203,41 @@
     const panels = BOARDS[board] || [];
     if (!panels.length) {
       $('board').innerHTML = `<div class="placeholder">Nothing built for this lesson yet.<br>
-        What to build is in <a href="../view.html?f=units/${esc(board)}.md">the exercise</a>. Your panels for it go here.</div>`;
+        What to build is in <a href="../view.html?f=units/${esc(board)}.md">the guided walkthrough</a>. Your panels for it go here.</div>`;
       return;
     }
     const card = (p, i) =>
       `<section class="card"><h2>${esc(p.title)}</h2>${p.view ? `<p class="muted">From <code>analysis.${esc(p.view)}</code></p>` : ''}<div id="panel-${i}"></div></section>`;
-    // A lesson board has two parts, as two big tabs: what the exercise asked for, built with the
+    // A lesson board has two parts, as two big tabs: what the guided walkthrough asks for, built with the
     // assistant, and what the team added on its own (own: true) to answer questions it couldn't.
     // Each board reopens on the tab last viewed here (a viewing preference only, no progress).
-    if (!l) { $('board').innerHTML = panels.map(card).join(''); panels.forEach((p, i) => p.render($(`panel-${i}`))); return; }
+    // A panel that shows a table gets a "Copy table" button, for pasting into a breakdown question.
+    const show = (p, i) => Promise.resolve(p.render($(`panel-${i}`))).then(() => {
+      const body = $(`panel-${i}`); if (!body || !body.querySelector('table')) return;
+      const btn = document.createElement('button'); btn.className = 'copy-table'; btn.textContent = 'Copy table';
+      btn.addEventListener('click', async () => {
+        const rows = [...body.querySelectorAll('table tr')].map(tr => [...tr.children].map(c => c.innerText.trim()).join('\t'));
+        try { await navigator.clipboard.writeText(rows.join('\n')); btn.textContent = 'Copied'; } catch { btn.textContent = 'Copy blocked'; }
+        setTimeout(() => { btn.textContent = 'Copy table'; }, 1500);
+      });
+      body.parentElement.querySelector('h2').append(btn);
+    }).catch(() => {});
+    if (!l) { $('board').innerHTML = panels.map(card).join(''); panels.forEach(show); return; }
     const own = panels.map((p, i) => [p, i]).filter(([p]) => p.own), shared = panels.map((p, i) => [p, i]).filter(([p]) => !p.own);
     let part = 'together';
     try { part = localStorage.getItem('part:' + board) || 'together'; } catch {}
     const list = part === 'own' ? own : shared;
     $('board').innerHTML = `<div class="parts">
-        <button data-part="together" class="${part === 'together' ? 'on' : ''}"><span><b>Built together<span class="cnt">${shared.length}</span></b><small>The exercise, with your assistant</small></span></button>
-        <button data-part="own" class="${part === 'own' ? 'on' : ''}"><span><b>On your own<span class="cnt">${own.length}</span></b><small>After the exercise, when the questions ask for more</small></span></button></div>` +
+        <button data-part="together" class="${part === 'together' ? 'on' : ''}"><span><b>Guided walkthrough<span class="cnt">${shared.length}</span></b><small>Built step by step with your assistant</small></span></button>
+        <button data-part="own" class="${part === 'own' ? 'on' : ''}"><span><b>On your own<span class="cnt">${own.length}</span></b><small>After the walkthrough, when the questions ask for more</small></span></button></div>` +
       (list.map(([p, i]) => card(p, i)).join('') || (part === 'own'
-        ? `<div class="placeholder">This part starts after the exercise is built, at the questions. When a question needs something your board doesn't show, you lead: decide what's missing, define it, and ask your assistant to build it here.</div>`
+        ? `<div class="placeholder">This part starts after the walkthrough, at the questions. When a question needs something your board doesn't show, you lead: decide what's missing, define it, and ask your assistant to build it here.</div>`
         : '<div class="placeholder">Nothing yet.</div>'));
     $('board').querySelectorAll('[data-part]').forEach(b => b.addEventListener('click', () => {
       try { localStorage.setItem('part:' + board, b.dataset.part); } catch {}
       renderBoard();
     }));
-    list.forEach(([p, i]) => p.render($(`panel-${i}`)));
+    list.forEach(([p, i]) => show(p, i));
     return;
   }
 

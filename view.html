@@ -51,7 +51,7 @@
       return !!c && n > c.n;
     } catch { return false; }
   }
-  // A lesson's practice data, copied with one button right in the exercise. It is made for
+  // A lesson's practice data, copied with one button right in the guided walkthrough. It is made for
   // this team by the course server: other teams get different rows. The counts are what Run must report.
   function dataButton(a) {
     const name = new URL(a.href).searchParams.get('f').replace(/[^a-z0-9-]/g, '');
@@ -90,7 +90,7 @@
       document.querySelectorAll('#doc a[href^="data/copy.html?f="]').forEach(dataButton);
     })
     .catch(e => {
-      if (e.locked) document.getElementById('doc').innerHTML = '<h1>This lesson opens in class</h1><p>Its exercise becomes available when your lecturer opens the lesson.</p>';
+      if (e.locked) document.getElementById('doc').innerHTML = '<h1>This lesson opens in class</h1><p>Its guided walkthrough becomes available when your lecturer opens the lesson.</p>';
       else document.getElementById('doc').textContent = e.message;
     });
 </script>

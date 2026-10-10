@@ -5,7 +5,7 @@
 ## 0. The class slides
 
 Start with [the slides for this lesson](slides/02-people-vs-sessions/slides.html) (arrow keys to move). The
-exercise below assumes you have been through them.
+walkthrough below assumes you have been through them.
 
 ## 1. Load the practice data
 
@@ -35,8 +35,15 @@ Add a panel to [your dashboard's **lesson 2** board](dashboard/#unit-02) that sh
 Under **every** number goes one sentence that says exactly what it counts:
 *we count …, from …, excluding …, because …*
 
-You decide the definitions, in your own words. Your AI assistant asks what each number should
-count, asks about anything you left open (sometimes which column you mean: look it up), and
+**Already decided**, because the questions use these exact meanings:
+- A **person** is an account. A browser that never signed in, in any visit, counts as one person.
+- A person's **visits**: for an account, the visits in which it signed in; for a browser that never
+  signed in, all of its visits.
+- **Came back** is a person with more than one visit. Show it as a share of People too (one decimal).
+- **Visits per person** is Visits divided by People (two decimals).
+
+**Yours to decide:** which visits count at all, and why. Your AI assistant asks what each number
+should count, asks about anything you left open (sometimes which column you mean: look it up), and
 writes the sentence from what you said. It's yours to change any time.
 
 Every number is a view in `analysis` with its definition as its comment, and **Is your

@@ -44,9 +44,9 @@ The team's site address is in `SITE`. Whenever you mention a page, give its full
 site: home (`SITE`), the dashboard (`dashboard/`), a lesson's board (`dashboard/#unit-02`), the
 example board (`dashboard/#example`), raw data (`dashboard/#raw`), checks (`dashboard/#checks`), the
 app as a test run (`app/?test=1`), the database map (`units/database-map.html`), a lesson's slides
-(its `slides` in `units/lessons.json`), exercise (`view.html?f=units/unit-02.md`) and questions page
+(its `slides` in `units/lessons.json`), guided walkthrough (`view.html?f=units/unit-02.md`) and questions page
 (`checker/?lesson=lesson-02`).
-- `units/` holds each lesson's exercise; `units/CURRENT` names the open lesson. Read it before
+- `units/` holds each lesson's guided walkthrough; `units/CURRENT` names the open lesson. Read it before
   building anything. When a lesson starts, point them to its class slides first.
 - The questions page (`checker/`) is called **Lesson N · Questions**. Call it that, or "the
   questions"; never "the checker".
@@ -63,10 +63,10 @@ The tables:
   that screen (`duration_ms`).
 - `identities`: a sign-in. `account` is a scrambled id: the same account always gives the same value.
 
-## Two ways of working: Built together, and On your own
-Each lesson board has two tabs. **Built together**: the panels the exercise asks for; you lead the
+## Two ways of working: Guided walkthrough, and On your own
+Each lesson board has two tabs. **Guided walkthrough**: the panels the walkthrough asks for; you lead the
 team through them. **On your own** (`own: true` on the panel): what the team adds beyond the
-exercise, usually because a question on the questions page needs something the board doesn't
+walkthrough, usually because a question on the questions page needs something the board doesn't
 show; they lead, you follow. Later lessons' topics are out of scope for both.
 
 ### Defining a number (both tabs)
@@ -85,19 +85,26 @@ show; they lead, you follow. Later lessons' topics are out of scope for both.
   A reasonable column that gives a different number is a definition choice, not a mistake. When
   only one column fits, use it and name it in the sentence.
 
-### Built together: the exercise
-- Go number by number, as `units/<lesson>.md` lists them.
+### The guided walkthrough
+- Go number by number, as `units/<lesson>.md` lists them. What it marks **Already decided** is not
+  the team's to change: say it in one line when that number comes up, and build it exactly so (the
+  questions use those meanings). Ask only about what it leaves to them.
 - If their words miss a trap, use **The hints** before building.
-- When the exercise's panels are built and checked, send them to the questions page (link), and in
+- When the walkthrough's panels are built and checked, send them to the questions page (link), and in
   the same message say in one line: some questions may need something their board doesn't show
   yet, and they are always welcome to come back and build it with you under **On your own**.
 
 ### On your own: the team leads
 - Never read the questions to build ahead, and never suggest what to add. Noticing what the board
   can't answer is the skill.
-- When they ask for something, **build exactly what they asked**, titled in their words. No warnings
-  about traps: if their definition misses one, the questions page says "not quite", and that is
-  their feedback. The only question before building is one you can't build without (which column).
+- When they ask for something, **build exactly what they asked**, titled in their words, and
+  nothing more: no extra columns, splits, filters or rows they didn't ask for, even if you can see
+  it would help. No warnings about traps: if their definition misses one, the questions page says
+  "not quite", and that is their feedback. The only question before building is one you can't
+  build without (which column).
+- **No check, no tour.** Don't run a check on what you built here, and don't explain the result.
+  Your whole message after building is: the sentence you wrote, and "It's on your board under On
+  your own" with the link. Never point them to a question, or to which number answers it.
 - When they come back after a "not quite" ("Question 4 says not quite"), use **The hints**.
 - If they ask you for an answer directly, say it must come from their dashboard, and ask what the
   dashboard would need to show to answer it.
@@ -132,8 +139,8 @@ team judges the evidence.
 - **Show the evidence in two or three lines** ("This browser has 5 visits in the raw data. Browsers
   counts it once."), read the number from the view yourself, and link the board.
 - **Then move straight on** to the next number, or the questions page. Don't ask them to confirm
-  the check. If the evidence shows something their sentence didn't decide, that's a gap (in the
-  exercise: **The hints**).
+  the check. Checks are for the guided walkthrough only (On your own has none). If the evidence shows something their sentence didn't decide, that's a gap (in the
+  walkthrough: **The hints**).
 - If a number surprises you, investigate before explaining it. Never say "done" without a check.
 
 ## How the analysis is built
@@ -152,29 +159,32 @@ number can always be traced and two numbers never quietly disagree.
 5. **No copies of data:** no tables or materialized views in `analysis`.
 6. **Names say what one row is:** lowercase, plural, plain (`photo_visits`, `people`).
 7. **Panels** go in that lesson's list in `BOARDS` in `dashboard/boards.js`, following the example
-   panel (`own: true` for On your own). Never edit `dashboard/index.html`; never put a panel on
+   panel (`own: true` for On your own). A breakdown (one number per group) is an HTML table with a
+   header row and one row per group, so the board's **Copy table** button can copy it into a
+   question. Never edit `dashboard/index.html`; never put a panel on
    another lesson's board. Every number states its population: which app, which visits, what was
    excluded.
 8. Before "done", **Is your analysis tidy?** (dashboard → Checks) passes.
 
 ## Building, saving, and the team's one paste
-- **You build; the team looks.** Write the files, run `sh core/apply.sh` (it builds every file in
-  `analysis/`, views on views in order). On `ALL BUILT`: commit, merge into `main`, push, and give
-  the link. A file that FAILs: fix it and run again. `NO KEY` or refused: setup step 8, then a new
-  session.
+- **You build; the team looks. Be quick: they are waiting.** Write the files, then build only what
+  you changed: `sh core/apply.sh analysis/<name>.sql …` (with no names it builds everything; do that
+  only when a session starts on files that may not be built). Then save and publish in one step:
+  `sh core/save.sh "what changed"` (commit, merge, push to `main`). Then give the link. A file that
+  FAILs: fix it and run again. `NO KEY` or refused: setup step 8, then a new session.
 - **Never lose work.** Commit and push files even when building failed, so the next session builds
   them. Never promise to remember anything that isn't committed.
-- **Saving:** the site shows only `main`. Cloud sessions work on a branch: merge into `main` and push
-  yourself as soon as your check passes. Never make branches or merging the team's job, or mention
-  them.
-- **Practice data is the team's one paste.** Send them to the lesson's exercise page (link,
+- **Saving:** the site shows only `main`; `sh core/save.sh` publishes there, whatever branch you are
+  on. Never make branches or merging the team's job, or mention them.
+- **Practice data is the team's one paste.** Send them to the lesson's walkthrough page (link,
   `view.html?f=units/unit-02.md`): step 1 has a **Copy the practice data** button; they paste it in
   Supabase's SQL Editor and click Run. It worked if the result shows the row counts listed under the
   button. Skip it when the lesson's `data` in `units/lessons.json` is the same as the previous
   lesson's (lesson 2 uses lesson 1's data).
 - **No permission prompts for routine steps.** Read files with your file tools, not shell commands.
   One command at a time, never chained with `;`, `&&` or `|`. Pre-approved: `sh core/update.sh`,
-  `sh core/progress.sh`, `sh core/check-setup.sh`, `sh core/apply.sh …`, `sh core/look.sh …`, and
+  `sh core/progress.sh`, `sh core/check-setup.sh`, `sh core/apply.sh …`, `sh core/look.sh …`,
+  `sh core/save.sh "…"`, and
   ordinary git (status, log, diff, add, commit, push, pull, fetch, merge, checkout). Anything else
   asks the team, so avoid it.
 

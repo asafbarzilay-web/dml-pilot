@@ -45,7 +45,8 @@ const Course = (() => {
   }
   const data = (dataId) => server({ action: 'data', data: dataId }).then(j => j.sql);
   const questions = (lessonId) => server({ action: 'questions', lesson: lessonId });
-  const check = (lessonId, question, value) => server({ action: 'check', lesson: lessonId, question, value }).then(j => j.right);
+  // { right } — and for a breakdown question, { right, cells: { row: true/false } }.
+  const check = (lessonId, question, value) => server({ action: 'check', lesson: lessonId, question, value });
   // After 3 wrong tries: close the question for good (it scores 0) and get its right answer.
   const giveUp = (lessonId, question, text) => server({ action: 'giveup', lesson: lessonId, question, text }).then(j => j.answer);
   // Reports never block the student: if the course can't be reached, the page carries on.

@@ -1,0 +1,10 @@
+#!/bin/sh
+# Saves the team's work and publishes it to their site, in one step: commit everything, bring in
+# whatever is already on main, push to main. DO NOT EDIT.
+# Run it as: sh core/save.sh "what changed, in a few words"
+cd "$(dirname "$0")/.." || exit 1
+msg=${1:-"Update the analysis"}
+git add -A
+git diff --cached --quiet || git commit -q -m "$msg" || { echo "Could not save."; exit 1; }
+git fetch -q origin main 2>/dev/null && { git merge -q --no-edit FETCH_HEAD >/dev/null 2>&1 || { git merge --abort 2>/dev/null; echo "Could not combine with what is on main: resolve it, then run this again."; exit 1; }; }
+git push -q origin HEAD:main && echo "SAVED: published to the site (it may take a minute to show)." || { echo "Could not publish. Try again."; exit 1; }

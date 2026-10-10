@@ -29,6 +29,12 @@
   .q { background: #fff; border: 1px solid #E2E2DE; border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; display: grid; grid-template-columns: 28px 1fr; gap: 4px 12px; }
   .q.right { border-color: #9FD3B0; background: #F5FBF7; }
   .q.gaveup { border-color: #E2E2DE; background: #F7F7F5; }
+  .tbl { grid-column: 2; margin-top: 10px; }
+  .cells { border-collapse: collapse; }
+  .cells td { padding: 4px 10px 4px 0; font-size: 14.5px; }
+  .cells input { width: 140px; }
+  .cells .ok { color: #1F7A3F; font-weight: 700; } .cells .no { color: #B42318; font-weight: 700; }
+  textarea.paste { display: block; width: 100%; max-width: 420px; margin-top: 8px; font: inherit; font-size: 13px; padding: 6px 10px; border: 1px dashed #CFCFCA; border-radius: 8px; resize: vertical; }
   .gaveup-note { grid-column: 2; margin: 8px 0 0; font-size: 13.5px; color: #4A4A45; }
   .gaveup-note i { color: #6B6B66; }
   details.giveup { grid-column: 2; margin-top: 8px; font-size: 13.5px; }
@@ -124,7 +130,7 @@
     if (value === s.value && s.checked) { results[q.id] = false; return; }
     s.value = value; s.tries += 1; s.checked = true;
     // The course server checks it against your team's own data; your lecturer sees each try.
-    try { s.right = await Course.check(lesson, q.id, value); }
+    try { const r = await Course.check(lesson, q.id, q.kind === 'table' ? JSON.parse(value) : value); s.right = r.right; s.cells = r.cells; }
     catch (e) { s.tries -= 1; s.checked = false; const el = document.getElementById('check-error'); el.textContent = `Could not check: ${e.message}`; el.hidden = false; return; }
     document.getElementById('check-error').hidden = true;
     results[q.id] = s.right;
@@ -146,10 +152,18 @@
             <textarea data-gu="${q.id}" placeholder="What did you try, and where do you think the gap is? (at least ${GIVE_UP_WORDS} words)">${esc(giveText[q.id] || '')}</textarea>
             <div class="row"><button type="button" class="gu-go" data-q="${q.id}" ${wordsIn(giveText[q.id]) < GIVE_UP_WORDS ? 'disabled' : ''}>Give up for good</button>
             <span class="muted small">It's final: the question closes and scores 0, and you see its right answer.</span></div></details>` : '';
+      const ro = s.right || s.gaveUp ? 'readonly' : '';
+      const tv = q.kind === 'table' ? tableOf(s) : null;
+      const box = q.kind === 'table'
+        ? `<table class="cells">${q.rows.map((r, k) => `<tr><td>${esc(r)}</td><td><input name="${q.id}::${k}" value="${esc(tv[r] ?? '')}" placeholder="${hint[q.cell]}" autocomplete="off" ${ro}></td>
+            <td class="mark">${s.cells && !s.gaveUp ? (s.cells[r] ? '<span class="ok">✓</span>' : '<span class="no">✗</span>') : ''}</td></tr>`).join('')}</table>
+          ${ro ? '' : `<textarea class="paste" data-paste="${q.id}" rows="1" placeholder="Or paste the table here (Copy table on your board's panel)"></textarea>`}`
+        : `<input name="${q.id}" value="${esc(s.value || '')}" placeholder="${hint[q.kind]}" autocomplete="off" ${ro}>`;
       return `<div class="q ${state}">
         <span class="n">${i + 1}</span><div class="text">${esc(q.text)}</div>
+        ${q.kind === 'table' ? `<div class="tbl">${box}</div>` : ''}
         <div class="answer">
-          <input name="${q.id}" value="${esc(s.value || '')}" placeholder="${hint[q.kind]}" autocomplete="off" ${s.right || s.gaveUp ? 'readonly' : ''}>
+          ${q.kind === 'table' ? '' : box}
           ${s.gaveUp ? '' : `<button type="button" class="one" data-q="${q.id}">Check</button>`}
           <span class="verdict">${state === 'right' ? '✓ Right' : state === 'wrong' ? 'Not quite' : ''}</span>
           ${s.tries ? `<span class="tries">${s.tries} ${s.tries === 1 ? 'try' : 'tries'}</span>` : ''}
@@ -211,22 +225,44 @@
 
   // Keep what is typed in other boxes when one question re-renders the page.
   const typed = () => Object.fromEntries([...document.querySelectorAll('#form input')].map(i => [i.name, i.value]));
+  // A breakdown question's answer: { row: value } as JSON, from its boxes ('' when all are empty).
+  const tableValue = (q, values) => {
+    const o = Object.fromEntries(q.rows.map((r, k) => [r, String(values[`${q.id}::${k}`] || '').trim()]));
+    return Object.values(o).some(Boolean) ? JSON.stringify(o) : '';
+  };
+  const tableOf = s => { try { return JSON.parse(s.value || '{}'); } catch { return {}; } };
   async function checkIds(ids) {
     const values = typed();
     for (const q of spec.questions.filter(q => ids.includes(q.id))) {
       const before = JSON.stringify(saved[q.id] || null);
-      await checkOne(q, String(values[q.id] || '').trim());
+      await checkOne(q, q.kind === 'table' ? tableValue(q, values) : String(values[q.id] || '').trim());
       if (saved[q.id] && JSON.stringify(saved[q.id]) !== before) await saveAnswer(q.id);
     }
     render();
     for (const [id, v] of Object.entries(values)) {
       const el = document.querySelector(`#form input[name="${id}"]`);
-      if (el && !el.readOnly && !ids.includes(id)) el.value = v;
+      if (el && !el.readOnly && !ids.includes(id.split('::')[0])) el.value = v;
     }
   }
   const form = document.getElementById('form');
   form.addEventListener('submit', (e) => { e.preventDefault(); checkIds(spec.questions.map(q => q.id)); });
   form.addEventListener('click', (e) => { const b = e.target.closest('button.one'); if (b) checkIds([b.dataset.q]); });
+  // Pasting a table (from "Copy table" on a dashboard panel, or a spreadsheet) fills the boxes by row
+  // name: each line is a row name and its number, separated by a tab or spaces.
+  form.addEventListener('input', (e) => {
+    const t = e.target.closest('textarea[data-paste]'); if (!t) return;
+    const q = spec.questions.find(x => x.id === t.dataset.paste);
+    const key = x => String(x).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    let filled = 0;
+    for (const line of t.value.split(/\r?\n/)) {
+      const m = line.trim().match(/^(.*?)[\t ]+([-0-9.,%]+)$/); if (!m) continue;
+      const k = q.rows.findIndex(r => key(r) === key(m[1]) || key(r).startsWith(key(m[1]) + ' ') || key(m[1]).startsWith(key(r)));
+      const box = k >= 0 && form.querySelector(`input[name="${q.id}::${k}"]`);
+      if (box && !box.readOnly) { box.value = m[2].replace(',', ''); filled++; }
+    }
+    t.placeholder = filled ? `Filled ${filled} of ${q.rows.length} rows. Press Check.` : t.placeholder;
+    if (filled) t.value = '';
+  });
   // Giving up: typing keeps the words (the page re-renders often), the button opens at 20 words.
   form.addEventListener('input', (e) => {
     const t = e.target.closest('textarea[data-gu]'); if (!t) return;
@@ -255,7 +291,7 @@
   });
   // Enter in a box checks that one question.
   form.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && e.target.matches('input')) { e.preventDefault(); checkIds([e.target.name]); }
+    if (e.key === 'Enter' && e.target.matches('input')) { e.preventDefault(); checkIds([e.target.name.split('::')[0]]); }
   });
 
   const ROOT = '../';
@@ -302,7 +338,7 @@
         if (me && cur && me.n < cur.n && me.data && me.data !== curData && !spec.questions.every(q => (saved[q.id] || {}).right)) {
           const el = document.getElementById('earlier');
           el.innerHTML = `This is an earlier lesson. Its answers come from its own practice data, and a later lesson's
-            data has replaced it. <a href="../view.html?f=units/${me.unit}.md">Load lesson ${me.n}'s practice data</a> (step 1 of its exercise) again first,
+            data has replaced it. <a href="../view.html?f=units/${me.unit}.md">Load lesson ${me.n}'s practice data</a> (step 1 of its guided walkthrough) again first,
             then load the current lesson's data back when you are done.`;
           el.hidden = false;
         }
