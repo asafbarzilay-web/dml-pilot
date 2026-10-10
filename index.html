@@ -93,7 +93,7 @@
       <summary><b>Your AI assistant</b><span>How to start it ↓</span></summary>
       <ol>
         <li>Claude app → <b>Code</b> → <b>+ New</b></li>
-        <li><b>Cloud → Data-mindset</b> → <b class="team">your team's repository</b></li>
+        <li>Check the chips say <b>Data-mindset</b> and <b class="team">your repository</b></li>
         <li>Ask: <i>"What are we working on?"</i></li>
       </ol>
     </details>
@@ -117,8 +117,8 @@
   <h2>Start your AI assistant</h2>
   <ol class="steps">
     <li><span class="h">Open the Claude app.</span> Click <b>Code</b>, then <b>+ New</b>.</li>
-    <li><span class="h">Choose your repository.</span> Switch <b>Local</b> to <b>Cloud → Data-mindset</b>,
-      then pick <b class="team">your team's repository</b>.</li>
+    <li><span class="h">Check it's yours.</span> Above the message box: <b>Data-mindset</b> and <b class="team">your repository</b>.
+      If not, click the cloud chip → <b>Cloud → Data-mindset</b>, and <b>+ Select repository…</b></li>
     <li><span class="h">Start.</span> Ask: <i>"What are we working on?"</i> It should answer with your current lesson.</li>
   </ol>
   </div>
@@ -166,7 +166,7 @@
       <div class="actions">
         ${focus.slides ? step('1 · Class slides', esc(focus.slides), true, true) : ''}
         ${focus.checker ? step('2 · Guided walkthrough', brief(focus), open && !focus.slides, open) : ''}
-        ${focus.checker ? step(`3 · Lesson ${focus.n} · Questions`, checker(focus), false, open) : ''}
+        ${focus.checker ? step('3 · Questions', checker(focus), false, open) : ''}
       </div>
       ${lessons.filter(unfinished).map(l => `<p class="again">Lesson ${l.n} isn't finished yet. You can still finish it: <a href="${checker(l)}">its questions and memo</a>.</p>`).join('')}
       ${open ? '' : `<p class="again">✓ Lesson ${cur.n} done. Go back over it: ${[cur.slides && `<a href="${esc(cur.slides)}">slides</a>`, cur.checker && `<a href="${brief(cur)}">walkthrough</a>`, cur.checker && `<a href="${checker(cur)}">questions</a>`].filter(Boolean).join(' · ')}</p>`}`;
