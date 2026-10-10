@@ -91,8 +91,17 @@
   th { color: #6B6B66; font-weight: 600; background: #FAFAF8; position: sticky; top: 0; }
   .raw th button.sort { border: none; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
   .raw th button.sort:hover { color: #1C1C1A; }
-  .raw tr.filters th { top: 34px; padding-top: 0; }
-  .raw tr.filters input { width: 100%; min-width: 90px; font-size: 12px; padding: 4px 6px; border: 1px solid #E2E2DE; border-radius: 6px; font-weight: 400; }
+  .raw .colhead { display: inline-flex; align-items: center; gap: 4px; }
+  .raw th button.funnel { border: 1px solid transparent; background: none; padding: 0 5px; border-radius: 5px; font-size: 12px; color: #A8A8A2; cursor: pointer; }
+  .raw th button.funnel:hover { border-color: #E2E2DE; color: #1C1C1A; }
+  .raw th button.funnel.on { background: #1C1C1A; color: #fff; }
+  .filterpop { position: absolute; z-index: 50; width: 290px; background: #fff; border: 1px solid #E2E2DE; border-radius: 10px; box-shadow: 0 10px 28px rgba(0,0,0,.12); padding: 10px; font-size: 13px; }
+  .filterpop .search { width: 100%; padding: 6px 8px; border: 1px solid #E2E2DE; border-radius: 6px; font-size: 13px; margin-bottom: 8px; }
+  .filterpop label { display: flex; align-items: center; gap: 8px; padding: 3px 2px; cursor: pointer; }
+  .filterpop .vals { max-height: 260px; overflow-y: auto; border-top: 1px solid #EEEEEA; border-bottom: 1px solid #EEEEEA; margin: 4px 0 8px; padding: 4px 0; }
+  .filterpop .k { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .filterpop .n { color: #8A8A85; font-variant-numeric: tabular-nums; }
+  .filterpop .actions { display: flex; gap: 8px; justify-content: flex-end; }
   #table-count select { font: inherit; padding: 1px 4px; }
   td.num { font-variant-numeric: tabular-nums; }
   .empty { padding: 24px; text-align: center; color: #6B6B66; font-size: 14px; }
@@ -141,8 +150,8 @@
   <div id="area-raw" hidden>
     <section class="card">
       <h2>Raw data</h2>
-      <p class="muted">Exactly what is stored. Click a column's name to sort by it (again to flip); type in the box under it
-        and press Enter to filter. Times are in your time zone.</p>
+      <p class="muted">Exactly what is stored. Click a column's name to sort by it (again to flip); click the ▾ next to it to
+        pick which values to show, like a spreadsheet filter. Times are in your time zone.</p>
       <div class="tabs" id="tabs"></div>
       <p class="muted" id="table-count"></p>
       <div class="scroll"><div id="table"></div></div>
@@ -242,23 +251,32 @@
   }
 
   const v0 = x => typeof x === 'string';
-  // Per table: the sort (a column and a direction), a filter per column, and how many rows to show.
+  // Per table: the sort, the chosen values per column (Excel-style filters), and how many rows to show.
   // Sorting and filtering happen in the database, so they cover every row, not just the ones shown.
   const view = {};
-  const viewOf = t => view[t] || (view[t] = { sort: TABLES[t].order, asc: false, filters: {}, show: 50, cols: null, types: {} });
-  const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-/i;
-  // A filter in the column's own terms: words match anywhere in text; ids, numbers and true/false
-  // match exactly; a date (2026-09-15) matches that whole day.
-  function filtered(q, v) {
-    for (const [c, raw] of Object.entries(v.filters)) {
-      const f = raw.trim(); if (!f) continue;
-      const type = v.types[c];
-      if (f === 'null') q = q.is(c, null);
-      else if (c.endsWith('_at')) { const d = new Date(f); if (!isNaN(d)) { const e = new Date(d); e.setDate(e.getDate() + 1); q = q.gte(c, d.toISOString()).lt(c, e.toISOString()); } }
-      else if (type === 'boolean' || type === 'number' || type === 'uuid') q = q.eq(c, f);
-      else q = q.ilike(c, `%${f}%`);
+  const viewOf = t => view[t] || (view[t] = { sort: TABLES[t].order, asc: false, filters: {}, show: 50, cols: null });
+  const dayOf = x => new Date(x).toLocaleDateString('sv-SE');           // times are filtered by day, in your time zone
+  const keyOf = (c, x) => x === null ? '(empty)' : c.endsWith('_at') ? dayOf(x) : String(x);
+  // One column's chosen values as a database filter. Times: whole days. Empty cells: "(empty)".
+  function onColumn(q, c, keys) {
+    const vals = keys.filter(k => k !== '(empty)'), parts = [];
+    if (c.endsWith('_at')) for (const d of vals) {
+      const a = new Date(d + 'T00:00'), b = new Date(a); b.setDate(b.getDate() + 1);
+      parts.push(`and(${c}.gte.${a.toISOString()},${c}.lt.${b.toISOString()})`);
+    } else if (vals.length) parts.push(`${c}.in.(${vals.map(v => `"${v.replace(/"/g, '\\"')}"`).join(',')})`);
+    if (keys.includes('(empty)')) parts.push(`${c}.is.null`);
+    return parts.length ? q.or(parts.join(',')) : q;
+  }
+  const filtered = (q, v, except) => Object.entries(v.filters).reduce((q2, [c, keys]) => c === except || !keys ? q2 : onColumn(q2, c, keys), q);
+  // Every row's value in one column (pages of 999, see below), with the other columns' filters applied.
+  async function columnValues(c) {
+    const v = viewOf(current), out = [];
+    for (let from = 0; ; from += 999) {
+      const { data, error } = await filtered(db.from(current).select(c), v, c).range(from, from + 998);
+      if (error) throw error;
+      out.push(...data.map(r => r[c])); if (data.length < 999) break;
     }
-    return q;
+    return out;
   }
 
   async function loadTable() {
@@ -271,41 +289,83 @@
     // (999, not 1,000, so the row-limit guard doesn't take a full page for a missing-rows warning.)
     const want = v.show === 'all' ? (count || 0) : Math.min(v.show, count || 0);
     let data = [];
-    for (let from = 0; from < Math.max(want, 1) && data.length < want; from += 999) {
+    for (let from = 0; data.length < want; from += 999) {
       const { data: page, error } = await filtered(db.from(current).select('*'), v)
         .order(v.sort, { ascending: v.asc, nullsFirst: false }).range(from, Math.min(from + 998, want - 1));
       if (error) { $('table').innerHTML = `<div class="empty bad">${esc(error.message)}</div>`; return; }
       data = data.concat(page); if (page.length < 999) break;
     }
-    if (data.length && !v.cols) {
-      v.cols = Object.keys(data[0]);
-      for (const c of v.cols) { const x = data.find(r => r[c] !== null)?.[c]; v.types[c] = typeof x === 'number' ? 'number' : typeof x === 'boolean' ? 'boolean' : v0(x) && UUID.test(x) ? 'uuid' : 'text'; }
-    }
-    const any = Object.values(v.filters).some(f => f.trim());
-    $('table-count').innerHTML = `${(count ?? 0).toLocaleString()} rows${any ? ' match the filters' : ' in total'} · showing ${data.length.toLocaleString()} · show
-      <select id="raw-show">${[50, 500, 'all'].map(n => `<option value="${n}" ${String(v.show) === String(n) ? 'selected' : ''}>${n === 'all' ? 'all' : n}</option>`).join('')}</select>
-      ${any ? ' · <button class="linkish" id="raw-clear">clear filters</button>' : ''}`;
+    if (data.length && !v.cols) v.cols = Object.keys(data[0]);
+    const on = Object.entries(v.filters).filter(([, k]) => k);
+    $('table-count').innerHTML = `${(count ?? 0).toLocaleString()} rows${on.length ? ' match the filters' : ' in total'} · showing ${data.length.toLocaleString()} · show
+      <select id="raw-show">${[50, 500, 'all'].map(n => `<option value="${n}" ${String(v.show) === String(n) ? 'selected' : ''}>${n}</option>`).join('')}</select>
+      ${on.length ? ` · filtered by ${on.map(([c]) => `<b>${esc(c)}</b>`).join(', ')} · <button class="linkish" id="raw-clear">clear filters</button>` : ''}`;
     if (!v.cols) { $('table').innerHTML = '<div class="empty">No rows yet.</div>'; return; }
     const cols = v.cols, arrow = c => v.sort === c ? (v.asc ? ' ▲' : ' ▼') : '';
-    const hint = c => c.endsWith('_at') ? 'a date: 2026-09-15' : v.types[c] === 'text' ? 'contains…' : 'equals…';
-    $('table').innerHTML = `<table class="raw"><thead><tr>${cols.map(c => `<th><button class="sort" data-sort="${esc(c)}" title="Sort by ${esc(c)}">${esc(c)}${arrow(c)}</button></th>`).join('')}</tr>
-      <tr class="filters">${cols.map(c => `<th><input data-filter="${esc(c)}" value="${esc(v.filters[c] || '')}" placeholder="${hint(c)}" autocomplete="off"></th>`).join('')}</tr></thead><tbody>${
+    $('table').innerHTML = `<table class="raw"><thead><tr>${cols.map(c => `<th><span class="colhead">
+        <button class="sort" data-sort="${esc(c)}" title="Sort by ${esc(c)}">${esc(c)}${arrow(c)}</button>
+        <button class="funnel ${v.filters[c] ? 'on' : ''}" data-filter="${esc(c)}" title="Filter ${esc(c)}">▾</button></span></th>`).join('')}</tr></thead><tbody>${
       data.length ? data.map(r => `<tr>${cols.map(c => {
         // Times in the viewer's own time zone, like every other page.
         const x = c.endsWith('_at') && v0(r[c]) ? new Date(r[c]).toLocaleString('sv-SE') : r[c];
         return `<td class="${typeof x === 'number' ? 'num' : ''}">${x === null ? '<span class="muted">null</span>' : esc(x)}</td>`;
       }).join('')}</tr>`).join('') : `<tr><td colspan="${cols.length}" class="muted">No rows match these filters.</td></tr>`}</tbody></table>`;
   }
-  // Sorting: click a column's name (again to flip). Filtering: type, then Enter. How many: the menu.
+
+  // ---- The filter list of one column: every value, with how many rows have it; tick to keep ----
+  async function openFilter(btn) {
+    closeFilter();
+    const c = btn.dataset.filter, v = viewOf(current);
+    const pop = document.createElement('div'); pop.className = 'filterpop'; pop.id = 'filterpop';
+    pop.innerHTML = '<div class="muted">Loading values…</div>';
+    const r = btn.getBoundingClientRect();
+    pop.style.left = Math.max(8, Math.min(r.left + scrollX, innerWidth - 300)) + 'px'; pop.style.top = (r.bottom + scrollY + 4) + 'px';
+    document.body.append(pop);
+    let counts;
+    try {
+      counts = new Map();
+      for (const x of await columnValues(c)) { const k = keyOf(c, x); counts.set(k, (counts.get(k) || 0) + 1); }
+    } catch (e) { pop.innerHTML = `<div class="bad">${esc(e.message)}</div>`; return; }
+    const keys = [...counts.keys()].sort((a, b) => a === '(empty)' ? 1 : b === '(empty)' ? -1 : a.localeCompare(b, undefined, { numeric: true }));
+    const chosen = new Set(v.filters[c] || keys);
+    const draw = (needle = '') => {
+      const shown = keys.filter(k => k.toLowerCase().includes(needle.toLowerCase())).slice(0, 500);
+      pop.querySelector('.vals').innerHTML = shown.map(k => `<label><input type="checkbox" data-k="${esc(k)}" ${chosen.has(k) ? 'checked' : ''}>
+        <span class="k">${esc(k)}</span><span class="n">${counts.get(k).toLocaleString()}</span></label>`).join('') +
+        (keys.length > 500 && shown.length === 500 ? '<div class="muted">First 500 shown: search to narrow.</div>' : '');
+    };
+    pop.innerHTML = `<input class="search" placeholder="Search ${keys.length.toLocaleString()} values" autocomplete="off">
+      <label class="all"><input type="checkbox" id="fp-all" ${chosen.size === keys.length ? 'checked' : ''}> <b>Select all</b></label>
+      <div class="vals"></div>
+      <div class="actions"><button class="primary" id="fp-ok">Filter</button><button id="fp-cancel">Cancel</button></div>`;
+    draw();
+    pop.querySelector('.search').addEventListener('input', e => draw(e.target.value));
+    pop.addEventListener('change', e => {
+      if (e.target.id === 'fp-all') {
+        const vis = [...pop.querySelectorAll('.vals [data-k]')].map(i => i.dataset.k);
+        vis.forEach(k => e.target.checked ? chosen.add(k) : chosen.delete(k));
+        pop.querySelectorAll('.vals [data-k]').forEach(i => { i.checked = e.target.checked; });
+      } else if (e.target.dataset.k !== undefined) {
+        e.target.checked ? chosen.add(e.target.dataset.k) : chosen.delete(e.target.dataset.k);
+      }
+    });
+    pop.querySelector('#fp-cancel').addEventListener('click', closeFilter);
+    pop.querySelector('#fp-ok').addEventListener('click', () => {
+      v.filters[c] = chosen.size === keys.length ? null : [...chosen];   // everything ticked = no filter
+      closeFilter(); loadTable();
+    });
+    pop.querySelector('.search').focus();
+  }
+  function closeFilter() { const p = $('filterpop'); if (p) p.remove(); }
+  document.addEventListener('click', (e) => { if (!e.target.closest('#filterpop, .funnel')) closeFilter(); });
+
+  // Sorting: click a column's name (again to flip). Filtering: the ▾ next to it. How many: the menu.
   $('table').addEventListener('click', (e) => {
+    const f = e.target.closest('[data-filter]'); if (f) { openFilter(f); return; }
     const b = e.target.closest('[data-sort]'); if (!b) return;
     const v = viewOf(current), c = b.dataset.sort;
     if (v.sort === c) v.asc = !v.asc; else { v.sort = c; v.asc = true; }
     loadTable();
-  });
-  $('table').addEventListener('keydown', (e) => {
-    const i = e.target.closest('[data-filter]'); if (!i || e.key !== 'Enter') return;
-    viewOf(current).filters[i.dataset.filter] = i.value; loadTable();
   });
   $('table-count').addEventListener('change', (e) => {
     if (e.target.id !== 'raw-show') return;
