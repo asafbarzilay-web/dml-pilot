@@ -30,9 +30,20 @@
     return;
   }
 
-  // On the course's copy: which team is this for?
-  var site = new URLSearchParams(location.search).get('site');
-  if (!site || !/^[\w.-]+\/[\w.-]+$/.test(site)) return;            // the course's own original
+  // On the course's copy: which team is this for? This tab remembers it (until the tab is closed), so
+  // a page opened here without ?site still shows the same team.
+  var site = new URLSearchParams(location.search).get('site'), KEY = 'course-site';
+  var valid = function (x) { return !!x && /^[\w.-]+\/[\w.-]+$/.test(x); };
+  if (!valid(site)) {
+    var kept = null;
+    try { kept = sessionStorage.getItem(KEY); } catch (e) {}
+    if (valid(kept)) {
+      var back = new URLSearchParams(location.search); back.set('site', kept);
+      location.replace(location.pathname + '?' + back.toString() + location.hash);
+    }
+    return;                                                        // the course's own original
+  }
+  try { sessionStorage.setItem(KEY, site); } catch (e) {}
   var teamBase = 'https://' + site.split('/')[0].toLowerCase() + '.github.io/' + site.split('/')[1] + '/';
   window.COURSE_TEAM = { site: site, base: teamBase };
 
