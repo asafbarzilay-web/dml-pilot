@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- The course's up-to-date copy of this page (see core/central.js). -->
+<script src="https://asafbarzilay-web.github.io/data-mindset-template/core/central.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Study Platform</title>
 <!-- The team's home page: the current lesson, the tools, every lesson. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
+<script src="core/team.js" data-file="supabase-config.js"></script>
 <script src="core/coursework.js"></script>
 <script src="core/course-config.js"></script>
 <script src="core/course.js"></script>
@@ -133,11 +135,14 @@
 </div>
 <script>
   // The team's repository name is the first part of this site's address.
-  const repo = location.hostname.endsWith('github.io') ? location.pathname.split('/')[1] : '';
+  // The team's repository: from ?site on the course's central copy, else from this site's address.
+  const repo = window.COURSE_TEAM ? window.COURSE_TEAM.site.split('/')[1]
+    : location.hostname.endsWith('github.io') ? location.pathname.split('/')[1] : '';
   if (repo) document.querySelectorAll('.team').forEach(el => { el.textContent = repo; });
   // A course update this copy doesn't have yet: GitHub says how many course changes the fork is missing.
   // The page can't update the fork itself (only its owner can); it sends them to the two clicks that do.
-  if (repo) {
+  // (Only on a local copy: the course's central copy is always current.)
+  if (repo && !window.COURSE_TEAM) {
     const owner = location.hostname.split('.')[0], COURSE = 'asafbarzilay-web/data-mindset-template';
     if (`${owner}/${repo}`.toLowerCase() !== COURSE.toLowerCase()) {
       fetch(`https://api.github.com/repos/${owner}/${repo}/compare/main...${COURSE.replace('/', ':')}:main`)

@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- The course's up-to-date copy of this page (see core/central.js). -->
+<script src="https://asafbarzilay-web.github.io/data-mindset-template/core/central.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Study Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../supabase-config.js"></script>
+<script src="../core/team.js" data-file="supabase-config.js"></script>
 <script src="../core/course-config.js"></script>
 <script src="../core/course.js"></script>
 <script src="../core/row-limit-guard.js"></script>
@@ -170,7 +172,7 @@
   const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 </script>
 <!-- Your panels, one list per lesson. That file is yours; this page is the course's. -->
-<script src="boards.js"></script>
+<script src="../core/team.js" data-file="dashboard/boards.js"></script>
 <script>
 
   // ---- Dashboards ----------------------------------------------------
