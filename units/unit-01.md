@@ -34,6 +34,10 @@ four tables and how they connect on paper, in your own words, and compare your d
 
 ## 4. Build: "Replay a visit"
 
+> **Build it with your AI assistant.** In the Claude app (or [claude.ai/code](https://claude.ai/code)): **Code → + New**,
+> check the chip above the message box says **Data-mindset**, and type: *"Let's start lesson 1"*.
+> It walks you through everything below, one step at a time.
+
 Add a panel to [your dashboard's **lesson 1** board](dashboard/#unit-01): paste a `session_id`, and it shows that visit as one timeline,
 oldest first: every click, choice and sign-in, with the time, the screen and what happened.
 

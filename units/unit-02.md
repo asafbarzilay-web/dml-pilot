@@ -22,6 +22,10 @@ own test runs, and any real visits, are never touched.
 
 ## 2. Build: "Who used the app?"
 
+> **Build it with your AI assistant.** In the Claude app (or [claude.ai/code](https://claude.ai/code)): **Code → + New**,
+> check the chip above the message box says **Data-mindset**, and type: *"Let's start lesson 2"*.
+> It walks you through everything below, one step at a time.
+
 Build these numbers on [your dashboard's **lesson 2** board](dashboard/#unit-02), **each in its own panel**:
 
 | Number | What it should tell the reader |

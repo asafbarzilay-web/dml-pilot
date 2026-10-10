@@ -18,6 +18,10 @@ This replaces the previous practice data. Your own test runs and real visits sta
 
 ## 2. Build: segments, everywhere
 
+> **Build it with your AI assistant.** In the Claude app (or [claude.ai/code](https://claude.ai/code)): **Code → + New**,
+> check the chip above the message box says **Data-mindset**, and type: *"Let's start lesson 8"*.
+> It walks you through everything below, one step at a time.
+
 The metric for this lesson is **activation**: a visit in which the person got into the app.
 In the data, that is a visit with a choice (a row in `selections`) whose value is `discover`:
 they logged in or signed up and reached the home screen.

@@ -16,6 +16,10 @@ practice data; your own test runs and real visits stay.
 
 ## 2. Build: the start screen, and the registration funnel
 
+> **Build it with your AI assistant.** In the Claude app (or [claude.ai/code](https://claude.ai/code)): **Code → + New**,
+> check the chip above the message box says **Data-mindset**, and type: *"Let's start lesson 3"*.
+> It walks you through everything below, one step at a time.
+
 Every visit opens on the **start screen** (`start`), and goes one of three ways: **Log in**, for
 people who already have an account; **Register**, the registration funnel; or neither. Registering
 takes two screens: **email and password** (`register_email`), then **username** (`register_username`),
