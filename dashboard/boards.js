@@ -121,6 +121,16 @@ const BOARDS = {
           data.map(r => `<tr><td>${esc(r.app)}</td><td>${esc(r.account_group)}</td><td class="num">${esc(r.browsers)}</td></tr>`).join('')}</tbody></table></div>`;
       } }
   ],
+  'unit-03': [
+    { title: 'The start screen', view: 'start_screen_choices', render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('start_screen_choices').select('*').order('n');
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded (as in photo_visits).</p>
+          <p class="muted">We count visits to the photo app (every visit that belongs to the photo app and is not one of the team's own test runs), then split them by what the visit pressed on the start screen: Log in, Register, or neither.</p>
+          <div class="scroll"><table><thead><tr><th>start screen</th><th>visits</th></tr></thead><tbody>${
+          data.map(r => `<tr><td>${esc(r.choice)}</td><td class="num">${esc(r.visits)}</td></tr>`).join('')}</tbody></table></div>`;
+      } }
+  ],
   'unit-08': []
 };
 
