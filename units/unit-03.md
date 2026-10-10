@@ -29,12 +29,19 @@ Build these on [your dashboard's **lesson 3** board](dashboard/#unit-03), **each
 | The registration funnel | One row per step (chose Register · email and password done · username done, in the app): how many visits reached it, its **% of the step before**, and its **% of Register** |
 
 **Already decided**, because the questions use these exact meanings:
-- The funnel counts **visits**.
-- A visit **reached** a step when it has the choice (a row in `selections`) that moves into it: on
-  `start` the value `register_email`; on `register_email` the value `register_username`; on
-  `register_username` the value `discover`.
-- The funnel starts at **chose Register**. People who chose Log in aren't registering, so they are not
-  a loss: they appear on the start screen panel only.
+
+1. **Count visits**, not clicks.
+2. **The funnel starts at Register.** Visits that chose Log in aren't registering, so they're not a
+   loss. They show only on the start screen panel.
+3. **A visit reached a step when it pressed that step's button:**
+
+| Step | The visit pressed… |
+| --- | --- |
+| Chose Register | **Register**, on the start screen |
+| Email and password done | **Next**, on the email and password screen |
+| Username done (in the app) | **Sign up**, on the username screen |
+
+Every button press is a row in `selections`.
 
 **Yours to decide:** which visits count at all, and why. Your AI assistant asks what each number
 should count, asks about anything you left open, and writes the sentence from what you said.
