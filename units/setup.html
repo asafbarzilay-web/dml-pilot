@@ -156,10 +156,16 @@
     <p class="note">Next time, start a new session (<b>Code → + New</b>, with <b>Data-mindset</b> on the chip) and ask
       <i>"What are we working on?"</i></p></div>
 
-  <div class="done">That's it. From now on, every lesson starts from <a href="../">your home page</a>, and your assistant
+  <div class="done">That's it. From now on, every lesson starts from <a href="../" id="home-link">your home page</a>, and your assistant
     starts from <b>+ New</b> in the Claude app.</div>
 </div>
 <script>
+  // The shared guide (the course's own copy, with no team) can't link to "your" home page: say where it is.
+  if (location.hostname === 'asafbarzilay-web.github.io' && location.pathname.startsWith('/data-mindset-template/') && !window.COURSE_TEAM) {
+    document.querySelector('a.back').hidden = true;
+    const h = document.getElementById('home-link');
+    h.outerHTML = `your home page: your site's address from step 3 (<code>your-name.github.io/data-mindset-template</code>)`;
+  }
   // The setup SQL, copied whole: selecting it by hand often copies only the part on screen.
   let sql = '';
   fetch('../setup.sql', { cache: 'no-store' }).then(r => r.text()).then(t => { sql = t; document.getElementById('copy-setup').disabled = false; });
