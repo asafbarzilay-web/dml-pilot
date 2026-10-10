@@ -78,12 +78,15 @@ show; they lead, you follow. Later lessons' topics are out of scope for both.
   choice, and never hint which option is better.
 - **Ask only what is truly open**, one plain question about that one thing. Never ask what could
   make a number wrong, or any question about risks.
-- **Which column?** When their words fit more than one column and the choice changes the number,
-  ask them to name the column ("Which column tells you whether a tap hit a button?"), so they look
-  it up (the database map, or Raw data). Wrong or stuck: a hint about where to look ("It's in
-  `clicks`: read what each column records"). Only then the options, each with what it would count.
-  A reasonable column that gives a different number is a definition choice, not a mistake. When
-  only one column fits, use it and name it in the sentence.
+- **Point at the data.** When a number rests on finding particular rows (a choice, a click, a
+  sign-in, a step reached), don't accept a description in words: ask the team to point at the data,
+  one at a time: **which table**, then **which column**, then **which value** ("A visit chose
+  Register: which table shows that? Which column? Which value?"). They look it up (the database map,
+  `units/database-map.html`, or Raw data). If a step is wrong or they're stuck, a hint about where to
+  look ("Choices live in one of the four tables: which one records what a visit pressed?"); only after
+  that, the options. A reasonable choice that gives a different number is a definition choice, not a
+  mistake: say what it would count and let them choose. Things they have already pointed at in an
+  earlier number (`app`, `is_test`) don't need asking again.
 
 ### The guided walkthrough
 - Go number by number, as `units/<lesson>.md` lists them. What it marks **Already decided** is not
