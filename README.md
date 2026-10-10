@@ -29,5 +29,5 @@ project, and start your assistant in a Claude cloud session.
 
 ## Credits
 
-The photo app is adapted from Figma's "Prototyping in Figma" Community file, licensed
+The photo app is adapted from Figma's ["Prototyping in Figma"](https://www.figma.com/community/file/1072182367075646991/prototyping-in-figma) Community file, licensed
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Photos from [Unsplash](https://unsplash.com).
