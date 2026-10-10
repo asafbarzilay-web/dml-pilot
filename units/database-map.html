@@ -105,8 +105,9 @@
       <div class="head"><div class="name">selections</div><div class="is">one row = <b>one choice</b></div></div>
       <dl>
         <dt class="key">session_id</dt><dd><span class="ty">id</span> the visit it belongs to</dd>
-        <dt>step</dt><dd><span class="ty">text</span> the screen</dd>
-        <dt>value</dt><dd><span class="ty">text</span> what was chosen</dd>
+        <dt>step</dt><dd><span class="ty">text</span> the screen the choice was made on</dd>
+        <dt>label</dt><dd><span class="ty">text</span> what the person pressed, as it reads on screen: <code>Register</code>, <code>Next</code></dd>
+        <dt>value</dt><dd><span class="ty">text</span> what the system recorded: the screen it led to (<code>register_email</code>), or what was opened or searched</dd>
         <dt>duration_ms</dt><dd><span class="ty">number</span> time on the screen before choosing</dd>
         <dt>created_at</dt><dd><span class="ty">time</span> when</dd>
       </dl>

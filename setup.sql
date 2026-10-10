@@ -38,10 +38,12 @@ create table if not exists public.selections (
   id           bigint generated always as identity primary key,
   session_id   uuid not null references public.sessions(session_id) on delete cascade,
   step         text not null,          -- the screen the choice was made on
-  value        text not null,          -- what was chosen
+  value        text not null,          -- what was recorded: the screen it led to, or what was opened or searched
   duration_ms  integer not null,       -- time on that screen before choosing
   created_at   timestamptz not null default now()
 );
+-- What the person saw and pressed ("Register", "Next", "Sign up"). Added later, so older setups get it here.
+alter table public.selections add column if not exists label text;
 
 -- A sign-in. `account` is a scrambled id: the same account always gives the
 -- same value, but it cannot be turned back into an email.

@@ -297,7 +297,11 @@
       if (error) { $('table').innerHTML = `<div class="empty bad">${esc(error.message)}</div>`; return; }
       data = data.concat(page); if (page.length < 999) break;
     }
-    if (data.length && !v.cols) v.cols = Object.keys(data[0]);
+    if (data.length && !v.cols) {
+      v.cols = Object.keys(data[0]);
+      // label reads before value: what the person pressed, then what the system recorded.
+      if (v.cols.includes('label') && v.cols.includes('value')) { v.cols = v.cols.filter(c => c !== 'label'); v.cols.splice(v.cols.indexOf('value'), 0, 'label'); }
+    }
     const on = Object.entries(v.filters).filter(([, k]) => k);
     $('table-count').innerHTML = `${(count ?? 0).toLocaleString()} rows${on.length ? ' match the filters' : ' in total'} · showing ${data.length.toLocaleString()} · show
       <select id="raw-show">${[50, 500, 'all'].map(n => `<option value="${n}" ${String(v.show) === String(n) ? 'selected' : ''}>${n}</option>`).join('')}</select>

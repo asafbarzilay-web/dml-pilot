@@ -60,8 +60,10 @@ The tables:
   the visit came from (`?src=` in the link).
 - `clicks`: x and y are relative to the app's frame (0–1). `hit = 'none'` means the tap landed on
   nothing. `seq` is the 1st, 2nd, 3rd click on that screen in that visit.
-- `selections`: a choice in the app: on which screen (`step`), what (`value`), after how long on
-  that screen (`duration_ms`).
+- `selections`: a choice in the app: on which screen (`step`), what the person pressed as it reads on
+  screen (`label`: `Register`, `Next`, `Sign up`), what the system recorded (`value`: the screen it
+  led to, or what was opened or searched), after how long on that screen (`duration_ms`). Data loaded
+  before `label` existed has it empty.
 - `identities`: a sign-in. `account` is a scrambled id: the same account always gives the same value.
 
 ## Two ways of working: Guided walkthrough, and On your own
