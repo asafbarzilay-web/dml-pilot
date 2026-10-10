@@ -559,7 +559,7 @@
   // single place the screen list exists — the database no longer
   // constrains it.
   // =====================================================================
-  const SCREENS = ['logged_out', 'login', 'register_1', 'register_2',
+  const SCREENS = ['start', 'login', 'register_email', 'register_username',
                    'discover', 'search', 'search_results',
                    'chats', 'chat', 'profile'];
 
@@ -581,9 +581,9 @@
   const TABBED = new Set(['discover', 'search', 'search_results', 'chats', 'chat', 'profile']);
 
   // The splash is the one screen whose artwork runs behind the status bar.
-  const BLEED = new Set(['logged_out']);
+  const BLEED = new Set(['start']);
 
-  let screen = 'logged_out';
+  let screen = 'start';
   let overlay = null;          // 'photo_open' | 'keyboard' | null
   let openPhoto = null;        // which photo the overlay is showing
   let chatWith = null;
@@ -673,11 +673,11 @@
     // snapshot from that step is restored over the defaults when the task
     // has one. Tasks saved before snapshots existed get the defaults.
     resetApp: (entryStep, entryState) => {
-      screen = SCREENS.includes(entryStep) ? entryStep : 'logged_out';
+      screen = SCREENS.includes(entryStep) ? entryStep : 'start';
       overlay = null;
       chatWith = null;
       searchText = '';
-      if (entryState && screen !== 'logged_out') {
+      if (entryState && screen !== 'start') {
         if (typeof entryState.chatWith === 'string') chatWith = entryState.chatWith;
         if (typeof entryState.searchText === 'string') searchText = entryState.searchText;
       }
@@ -780,7 +780,7 @@
   }
 
   const SCREEN_BODY = {
-    logged_out: () => `
+    start: () => `
       <div class="splash">
         <img class="bg" src="${IMG('lo01')}" alt="">
         <div class="wordmark">
@@ -793,13 +793,13 @@
         ${creditMarkup('lo03', 'Pawel Czerwinski', '@pawel_czerwinski')}
         <div class="actions">
           <button class="btn" data-goto="login">Log in</button>
-          <button class="btn solid" data-goto="register_1">Register</button>
+          <button class="btn solid" data-goto="register_email">Register</button>
         </div>
       </div>`,
 
     login: () => `
       <div class="pad">
-        <button class="back" data-back="logged_out" aria-label="Back">&#8592;</button>
+        <button class="back" data-back="start" aria-label="Back">&#8592;</button>
         <h1 class="title">Log in</h1>
         <div style="margin-top:32px">
           <input class="field" type="email" placeholder="jane@example.com" autocomplete="off">
@@ -809,21 +809,21 @@
       </div>
       ${keyboardMarkup()}`,
 
-    register_1: () => `
+    register_email: () => `
       <div class="pad">
-        <button class="back" data-back="logged_out" aria-label="Back">&#8592;</button>
+        <button class="back" data-back="start" aria-label="Back">&#8592;</button>
         <h1 class="title">Register</h1>
         <div style="margin-top:32px">
           <input class="field" type="email" placeholder="jane@example.com" autocomplete="off">
           <input class="field" type="password" placeholder="••••••••••••" autocomplete="off">
-          <div style="margin-top:16px"><button class="btn solid" data-goto="register_2">Next</button></div>
+          <div style="margin-top:16px"><button class="btn solid" data-goto="register_username">Next</button></div>
         </div>
       </div>
       ${keyboardMarkup()}`,
 
-    register_2: () => `
+    register_username: () => `
       <div class="pad">
-        <button class="back" data-back="register_1" aria-label="Back">&#8592;</button>
+        <button class="back" data-back="register_email" aria-label="Back">&#8592;</button>
         <h1 class="title">Register</h1>
         <div style="margin-top:32px">
           <input class="field" type="text" placeholder="the_jane" autocomplete="off">
@@ -1066,10 +1066,10 @@
       // Signing in: the email typed on Log in or Register is handed to the
       // core, which records only a scrambled account id. This is how one
       // person on two devices can be recognised as one.
-      if (goto.dataset.goto === 'discover' && (screen === 'login' || screen === 'register_2')) {
+      if (goto.dataset.goto === 'discover' && (screen === 'login' || screen === 'register_username')) {
         Study.identify(screen === 'login' ? (document.querySelector('input[type="email"]') || {}).value : signupEmail);
       }
-      if (screen === 'register_1' && goto.dataset.goto === 'register_2') {
+      if (screen === 'register_email' && goto.dataset.goto === 'register_username') {
         signupEmail = (document.querySelector('input[type="email"]') || {}).value || '';
       }
       go(goto.dataset.goto, goto.dataset.who || undefined);

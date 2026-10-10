@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Funnels and Drop-off</title>
+<link rel="stylesheet" href="../deck.css">
+</head>
+<body>
+<div class="stage">
+
+  <section class="slide dark">
+    <p class="kicker">Lesson 3 · Funnels and drop-off</p>
+    <h1>Where do people<br>give up?</h1>
+    <p class="muted">A funnel follows people through the steps of a task, and shows where they stop.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">A simple question</p>
+    <h2>Stride's sign-up "converts 12%"</h2>
+    <p><span class="big accent">1,000</span></p>
+    <p>visits to the start screen, and 120 new accounts. So 88% of visitors gave up on signing up?</p>
+    <p class="muted small">Write down what's wrong with that before the next slide.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">What a funnel is</p>
+    <h2>Steps in order, and who reached each</h2>
+    <table style="margin-top:6px">
+      <tr><th>Step</th><th>Reached it</th><th>% of the step before</th><th>% of the start</th></tr>
+      <tr><td>Chose Register</td><td>200</td><td></td><td>100%</td></tr>
+      <tr><td>Email and password done</td><td>150</td><td class="bad">75%</td><td>75%</td></tr>
+      <tr><td>Username done (in the app)</td><td>120</td><td>80%</td><td>60%</td></tr>
+    </table>
+    <p class="muted small" style="margin-top:24px"><b>% of the step before</b> shows where people give up. <b>% of the start</b> shows how many make it all the way.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Our app</p>
+    <h2>Every visit opens on the start screen</h2>
+    <div class="grid g4">
+      <div class="card"><div class="lbl accent">start</div><p>The start screen. Two buttons: <b>Log in</b> and <b>Register</b>.</p></div>
+      <div class="card"><div class="lbl">register_email</div><p>Register, screen 1: email and password, then <b>Next</b>.</p></div>
+      <div class="card"><div class="lbl">register_username</div><p>Register, screen 2: a username, then <b>Sign up</b>.</p></div>
+      <div class="card"><div class="lbl">discover</div><p>Inside the app. Signing up worked.</p></div>
+    </div>
+    <p class="muted small" style="margin-top:22px">Each move is a row in <b>selections</b>: on the screen you leave (<i>step</i>), the screen you go to (<i>value</i>).</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Where does the funnel start?</p>
+    <h2>Log in is not a loss</h2>
+    <div class="grid g3">
+      <div class="card"><div class="num">300</div><div class="lbl">visits to start</div><p>everyone</p></div>
+      <div class="card"><div class="num">120</div><div class="lbl">chose Log in</div><p>they have an account: never registering</p></div>
+      <div class="card"><div class="num accent">120</div><div class="lbl">chose Register</div><p>the registration funnel starts here</p></div>
+    </div>
+    <p style="margin-top:24px">Start the funnel at 300 and the first step "loses" 60% of people. Most of them were never registering. <b>Back to Stride:</b> its 12% hid the same mistake.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Count visits, not clicks</p>
+    <h2>The back button counts twice</h2>
+    <table>
+      <tr><th>step</th><th>value</th><th></th></tr>
+      <tr><td>start</td><td>register_email</td><td></td></tr>
+      <tr><td>register_email</td><td>register_username</td><td class="bad">1st</td></tr>
+      <tr><td>register_username</td><td>back</td><td></td></tr>
+      <tr><td>register_email</td><td>register_username</td><td class="bad">2nd</td></tr>
+      <tr><td>register_username</td><td>discover</td><td></td></tr>
+    </table>
+    <p class="muted small" style="margin-top:20px">One visit, two choices into the username screen. Count rows and this visit reaches it twice. Count <b>visits that have the choice</b>, and it's once.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Visits or people?</p>
+    <h2>Gave up today, signed up tomorrow</h2>
+    <div class="grid g2">
+      <div class="card"><div class="lbl">Counted in visits</div><p>Monday's visit stops at email and password: <b class="bad">a loss</b>. Tuesday's visit signs up: a success. One of two visits made it.</p></div>
+      <div class="card"><div class="lbl">Counted by browser</div><p>The same browser chose Register, and got in: <b class="good">a success</b>. It just took two visits.</p></div>
+    </div>
+    <p class="muted small" style="margin-top:22px">Both are true. They answer different questions: <i>how well does one visit go?</i> and <i>how many people make it in the end?</i></p>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">Principle · Where does it start?</p>
+    <p class="quote">A funnel's drop-off is only as honest as its <span class="accent">first step</span>.</p>
+    <p class="muted" style="margin-top:22px">Start it with people who were never on the path, and every step looks worse than it is. Decide who belongs at the top, and say it next to the funnel.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Your guided walkthrough</p>
+    <h2>Build the start screen and the funnel</h2>
+    <ul>
+      <li>Load the lesson's practice data into your database.</li>
+      <li><b>The start screen:</b> visits, and how many chose Log in, chose Register, or left.</li>
+      <li><b>The registration funnel:</b> one row per step, with its % of the step before and % of Register.</li>
+      <li>Answer the questions. Some need you to build more, on your own. Then write the memo.</li>
+    </ul>
+    <p class="muted small" style="margin-top:18px">The practice data has traps in it. The questions know where. They won't tell you.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Lesson 3 · Summary</p>
+    <div class="summary">
+      <div>
+        <p class="lbl">What you learnt</p>
+        <ul>
+        <li>A <b>funnel</b> counts who reached each step; <b>% of the step before</b> shows where people give up.</li>
+        <li>The <b>first step is a decision</b>: people who chose Log in were never registering.</li>
+        <li>Count <b>visits that reached a step</b>, not choices: the back button counts twice.</li>
+        <li><b>Visits or people</b> give different funnels; both are true, and the label must say which.</li>
+        <li>Test runs that sail through every step make a funnel look better than it is.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="lbl">Your self-study</p>
+        <div class="links">
+        <a data-site="view.html?f=units/unit-03.md">Guided walkthrough <span>what to build, step by step</span></a>
+        <a data-site="units/database-map.html">The database on one page <span>the map</span></a>
+        <a data-site="dashboard/">Your dashboard <span>build here</span></a>
+        <a data-site="checker/?lesson=lesson-03">Lesson 3 · Questions <span>6</span></a>
+        </div>
+        <div class="handin"><b>Hand in:</b> the questions, all correct, and the half-page memo. Its questions are at the end of the walkthrough.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script src="../deck.js"></script>
+</body>
+</html>

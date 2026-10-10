@@ -7,18 +7,18 @@
     "slides": "slides/00-tools-and-concepts/slides.html"
   },
   {
+    "n": 1,
     "unit": "unit-01",
     "checker": "lesson-01",
-    "n": 1,
     "title": "The data you start with",
     "question": "What exactly does the app record, and can you follow one visit through it?",
     "slides": "slides/01-the-data-you-start-with/slides.html",
     "data": "lesson-02"
   },
   {
+    "n": 2,
     "unit": "unit-02",
     "checker": "lesson-02",
-    "n": 2,
     "title": "People vs sessions",
     "question": "How many people used your app, and how many came back?",
     "slides": "slides/02-people-vs-sessions/slides.html",
@@ -26,8 +26,12 @@
   },
   {
     "n": 3,
+    "unit": "unit-03",
+    "checker": "lesson-03",
     "title": "Funnels and drop-off",
-    "question": "Where do people give up on registration?"
+    "question": "Where do people give up on registration?",
+    "slides": "slides/03-funnels/slides.html",
+    "data": "lesson-03"
   },
   {
     "n": 4,
@@ -50,9 +54,9 @@
     "question": "What if the answer isn't in the data?"
   },
   {
+    "n": 8,
     "unit": "unit-08",
     "checker": "lesson-08",
-    "n": 8,
     "title": "Segmentation",
     "question": "Do some groups do better than others, and is the difference real?",
     "slides": "slides/08-segmentation/slides.html",
