@@ -121,24 +121,7 @@ const BOARDS = {
           data.map(r => `<tr><td>${esc(r.app)}</td><td>${esc(r.account_group)}</td><td class="num">${esc(r.browsers)}</td></tr>`).join('')}</tbody></table></div>`;
       } }
   ],
-  'unit-03': [
-    { title: 'The start screen', view: 'start_screen_totals', render: async (el) => {
-        const { data, error } = await db.schema('analysis').from('start_screen_totals').select('*');
-        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
-        const r = data[0];
-        // One entry per number: its column in start_screen_totals and its definition.
-        const numbers = [
-          { label: 'Visits', col: 'visits',
-            def: 'We count every visit to the photo app, from sessions, excluding the team\'s own test runs, because every visit opens on the start screen.' }
-        ];
-        el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded.</p>${
-          numbers.map(n => `<div style="margin-top:14px">
-            <div style="font-size:28px;font-weight:600">${esc(r[n.col])}${n.suffix || ''}</div>
-            <div><b>${esc(n.label)}</b></div>
-            <p class="muted" style="margin:2px 0">${esc(n.def)}</p>
-          </div>`).join('')}`;
-      } }
-  ],
+  'unit-03': [],
   'unit-08': []
 };
 
