@@ -260,19 +260,28 @@
     const q = spec.questions.find(x => x.id === input.name.split('::')[0]); if (!q) return;
     e.preventDefault();
     const key = x => String(x).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-    let filled = 0;
+    const boxes = q.rows.map((r, k) => form.querySelector(`input[name="${q.id}::${k}"]`));
+    const done = new Set(), rest = [];
     for (const line of text.split(/\r?\n/)) {
       const cells = line.split('\t').map(c => c.trim()), num = c => /^-?[0-9][0-9.,]*%?$/.test(c);
       const at = cells.findIndex((c, i) => i > 0 && num(c));
       const m = at > 0 ? [line, cells.slice(0, at).join(' '), cells[at]] : line.trim().match(/^(.*?)[\t ]+([-0-9.,%]+)$/);
       if (!m) continue;
       const k = q.rows.findIndex(r => key(r) === key(m[1]) || key(r).startsWith(key(m[1]) + ' ') || key(m[1]).startsWith(key(r)));
-      const box = k >= 0 && form.querySelector(`input[name="${q.id}::${k}"]`);
-      if (box && !box.readOnly) { box.value = m[2].replace(',', ''); filled++; }
+      if (k >= 0 && !done.has(k)) { done.add(k); if (boxes[k] && !boxes[k].readOnly) boxes[k].value = m[2].replace(',', ''); }
+      else rest.push(m[2]);
     }
+    // Rows the team named their own way: when the lines left over are exactly as many as the boxes
+    // left empty, they go in order (a funnel's steps are in order); the team checks they line up.
+    const open = q.rows.map((r, k) => k).filter(k => !done.has(k));
+    const byOrder = open.length > 0 && rest.length === open.length;
+    if (byOrder) open.forEach((k, i) => { if (boxes[k] && !boxes[k].readOnly) boxes[k].value = rest[i].replace(',', ''); });
+    const filled = done.size + (byOrder ? open.length : 0);
     const msg = form.querySelector(`[data-pastemsg="${q.id}"]`);
-    if (msg) msg.innerHTML = filled ? `Filled ${filled} of ${q.rows.length} rows. Press <b>Check</b>.`
-      : `None of the pasted lines matched this question's rows (${q.rows.map(esc).join(', ')}). Is it the right panel?`;
+    if (msg) msg.innerHTML = !filled
+      ? `The pasted table doesn't fit this question's rows (${q.rows.map(esc).join(', ')}). Is it the right panel?`
+      : byOrder ? `Filled ${filled} of ${q.rows.length} rows${done.size ? ', some' : ''} in the order you pasted them: check each number is on the right row, then press <b>Check</b>.`
+      : `Filled ${filled} of ${q.rows.length} rows. Press <b>Check</b>.`;
   });
   // Giving up: typing keeps the words (the page re-renders often), the button opens at 20 words.
   form.addEventListener('input', (e) => {
