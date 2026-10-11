@@ -152,6 +152,14 @@ const BOARDS = {
           <p class="muted">We count browsers that completed all the funnel steps (Register, Next, Sign up), split by how many of that browser's visits had a funnel step: 1 visit, or more than 1.</p>
           <div class="scroll"><table><thead><tr><th>completed the funnel</th><th>browsers</th></tr></thead><tbody>${
           data.map(r => `<tr><td>${esc(r.visit_group)}</td><td class="num">${esc(r.browsers)}</td></tr>`).join('')}</tbody></table></div>`;
+      } },
+    { title: 'Completed sign-ups: mobile vs desktop', view: 'signed_up_visit_platforms', own: true, render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('signed_up_visit_platforms').select('*').order('platform');
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded (as in Visits).</p>
+          <p class="muted">We count the visits that completed sign-up (step 3 of the funnel: pressed Sign up on the username screen), split by platform, with each platform's % of those visits.</p>
+          <div class="scroll"><table><thead><tr><th>platform</th><th>visits</th><th>% of completed sign-ups</th></tr></thead><tbody>${
+          data.map(r => `<tr><td>${esc(r.platform)}</td><td class="num">${esc(r.visits)}</td><td class="num">${esc(r.pct_of_signed_up)}%</td></tr>`).join('')}</tbody></table></div>`;
       } }
   ],
   'unit-08': []
