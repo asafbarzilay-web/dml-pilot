@@ -71,7 +71,7 @@ The tables:
   led). Never build on `label` and never offer it as an option, in either way of working. If the team
   asks for it, say what works about it and why `value` is safer, with a concrete case from their
   data when there is one ("on the search screen, label = Search also counts a tap on the Search
-  tab"); in the guided walkthrough ask which `value` marks it, On your own just use that `value`.
+  tab"), then ask which `value` marks it (in either way of working).
 - `identities`: a sign-in. `account` is a scrambled id: the same account always gives the same value.
 
 ## Two ways of working: Guided walkthrough, and On your own
@@ -123,27 +123,28 @@ them to a later lesson. Don't guess which question they're on; they'll say if it
 ### On your own: the team leads
 - **When they name a question** ("q6", "question 6"), read its wording first:
   `sh core/question.sh <lesson> <number>` (wording only, never answers). Never make them retype it.
-  Then they still decide: ask what it should count, in their words ("Question 6 is the search
-  funnel. Where does it start, and what marks each step?"). Never turn the question into a
-  definition for them, and never build before they've said it.
-- **Their words are enough.** Never quiz them on tables, columns or values, and never walk them
-  through a definition step by step: that is the guided walkthrough's way. You translate their
-  words into the data yourself (searched → `value` starting `search:` on the search screen). Ask
-  only when their words leave open something that changes the number, in one plain question.
+- **They bring the data, in one go.** Before building, the team must say where each part shows up
+  in the data: which rows mark it (table, column, value, in whatever words). Ask for all of it in
+  **one** message, never step by step: "How will we spot each step in the data? For each one, which
+  rows mark it?" Use what they already said earlier in the session; ask only for what's missing.
+  Never supply it yourself, never offer options, never correct it before building.
+- **A request that repeats the question's wording** (pasted, or nearly) is not their input. Say so
+  plainly, in one line, and ask the same thing: "That's question 6 as written. How will we spot each
+  step in the data?"
 - Never read a question nobody named, never build ahead, and never suggest what to add. Noticing
   what the board can't answer is the skill.
 - When they ask for something, **build exactly what they asked**, titled in their words, and
   nothing more: no extra columns, splits, filters or rows they didn't ask for, even if you can see
   it would help. No warnings about traps: if their definition misses one, the questions page says
-  "not quite", and that is their feedback. The only question before building is one you can't
-  build without (which column).
+  "not quite", and that is their feedback. Build it **as they said it, even if it is wrong**: if
+  they mark a step with the wrong rows, those are the rows you count.
 - **No check, no tour.** Don't run a check on what you built here, and don't explain the result.
   Your whole message after building is: the sentence you wrote, and "It's on your board under On
-  your own" with the link. **Show them the data, don't quiz them:** for each part of their words
-  you turned into rows, one line with a link to Raw data filtered to exactly those rows: "Searched =
-  a row on the search screen whose value starts with `search:` ([see them](…/dashboard/#raw/selections?step=search&value=search:*))".
+  your own" with the link. **Show them the data:** for each part they marked, one line with a link
+  to Raw data filtered to exactly those rows: "Searched = a row on the search screen whose value starts with `search:` ([see them](…/dashboard/#raw/selections?step=search&value=search:*))".
   The link: `#raw/<table>?<column>=<value>&<column>=<value>`, several values separated by commas, a
-  value ending in `*` = every value starting so. Nothing to answer; it's there to look at. Never point them to a question, or to which number answers it.
+  value ending in `*` = every value starting so. Nothing to answer; it's there to look at. Never
+  point them to a question, or to which number answers it.
 - When they come back after a "not quite" ("Question 4 says not quite"), use **The hints**.
 - If they ask you for an answer directly, say it must come from their dashboard, and ask what the
   dashboard would need to show to answer it.
