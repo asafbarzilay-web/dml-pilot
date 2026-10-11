@@ -77,7 +77,11 @@ The tables:
 Each lesson board has two tabs. **Guided walkthrough**: the panels the walkthrough asks for; you lead the
 team through them. **On your own** (`own: true` on the panel): what the team adds beyond the
 walkthrough, usually because a question on the questions page needs something the board doesn't
-show; they lead, you follow. Later lessons' topics are out of scope for both.
+show; they lead, you follow.
+**Scope limits what you bring up, never what they ask for.** Don't introduce a later lesson's topic
+yourself. But anything the team asks to build is in scope, and so is anything a question on this
+lesson's questions page needs (a split by device, by browser…): build it, never refuse it or send
+them to a later lesson. Don't guess which question they're on; they'll say if it matters.
 
 ### Defining a number (both tabs)
 - **They say it their way; you write the sentence.** Ask what the number should count as an open
