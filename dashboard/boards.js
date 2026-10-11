@@ -196,13 +196,13 @@ const BOARDS = {
           <div class="scroll"><table><thead><tr><th>step</th><th>visits</th></tr></thead><tbody>${
           data.map(r => `<tr><td>${esc(r.n)}. ${esc(r.step_name)}</td><td class="num">${esc(r.visits)}</td></tr>`).join('')}</tbody></table></div>`;
       } },
-    { title: 'Visits (not tests)', view: 'visit_totals', own: true, render: async (el) => {
-        const { data, error } = await db.schema('analysis').from('visit_totals').select('*');
+    { title: 'Visits (not tests)', view: 'photo_visit_totals', own: true, render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('photo_visit_totals').select('*');
         if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
-        el.innerHTML = `<p class="muted">Population: every app, practice data included, the team's own test runs excluded.</p>
+        el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded.</p>
           <div style="margin-top:14px"><div style="font-size:28px;font-weight:600">${esc(data[0].visits)}</div>
           <div><b>Visits</b></div>
-          <p class="muted" style="margin:2px 0">We count visits, from sessions, excluding the team's own test runs (is_test), every app included.</p></div>`;
+          <p class="muted" style="margin:2px 0">We count visits to the photo app, from photo_visits (sessions of the photo app), excluding the team's own test runs (is_test).</p></div>`;
       } }
   ],
   'unit-08': []
