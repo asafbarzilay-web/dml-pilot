@@ -160,6 +160,15 @@ const BOARDS = {
           <p class="muted">We count the visits that completed sign-up (step 3 of the funnel: pressed Sign up on the username screen), split by platform, with each platform's % of those visits.</p>
           <div class="scroll"><table><thead><tr><th>platform</th><th>visits</th><th>% of completed sign-ups</th></tr></thead><tbody>${
           data.map(r => `<tr><td>${esc(r.platform)}</td><td class="num">${esc(r.visits)}</td><td class="num">${esc(r.pct_of_signed_up)}%</td></tr>`).join('')}</tbody></table></div>`;
+      } },
+    { title: 'The registration funnel: desktop vs mobile', view: 'registration_funnel_platform_steps', own: true, render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('registration_funnel_platform_steps').select('*').order('platform').order('n');
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        const pct = x => x === null ? '<span class="muted">–</span>' : `${esc(x)}%`;
+        el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded (as in Visits).</p>
+          <p class="muted">The registration funnel, split by platform. We count visits, each step marked by where the visit got to: Chose Register (start → register_email), got past email and password (register_email → register_username), got past the username into the app (register_username → discover). The % are within each platform.</p>
+          <div class="scroll"><table><thead><tr><th>platform</th><th>step</th><th>visits</th><th>% of step before</th><th>% of first step</th></tr></thead><tbody>${
+          data.map(r => `<tr><td>${esc(r.platform)}</td><td>${esc(r.n)}. ${esc(r.step_name)}</td><td class="num">${esc(r.visits)}</td><td class="num">${pct(r.pct_of_step_before)}</td><td class="num">${pct(r.pct_of_first_step)}</td></tr>`).join('')}</tbody></table></div>`;
       } }
   ],
   'unit-08': []
