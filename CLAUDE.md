@@ -187,7 +187,9 @@ number can always be traced and two numbers never quietly disagree.
    panel (`own: true` for On your own). **One number per panel:** each number gets its own card
    (title, the number, its sentence); several numbers share a card only if the team asks. A breakdown (one number per group) is an HTML table with a
    header row and one row per group, so the board's **Copy table** button can copy it into a
-   question. Never edit `dashboard/index.html`; never put a panel on
+   question. Split by a second thing (a funnel by device, totals by browser and app): **side by
+   side**, one row per step and one group of columns per segment (`colspan` header), never the
+   segment repeated down the rows. Never edit `dashboard/index.html`; never put a panel on
    another lesson's board. Every number states its population: which app, which visits, what was
    excluded.
 8. `sh core/apply.sh` refuses any file that breaks rules 3–5 (`NOT BUILT …: why`). Fix the file and run

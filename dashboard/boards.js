@@ -167,8 +167,18 @@ const BOARDS = {
         const pct = x => x === null ? '<span class="muted">–</span>' : `${esc(x)}%`;
         el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded (as in Visits).</p>
           <p class="muted">The registration funnel, split by platform. We count visits, each step marked by where the visit got to: Chose Register (start → register_email), got past email and password (register_email → register_username), got past the username into the app (register_username → discover). The % are within each platform.</p>
-          <div class="scroll"><table><thead><tr><th>platform</th><th>step</th><th>visits</th><th>% of step before</th><th>% of first step</th></tr></thead><tbody>${
-          data.map(r => `<tr><td>${esc(r.platform)}</td><td>${esc(r.n)}. ${esc(r.step_name)}</td><td class="num">${esc(r.visits)}</td><td class="num">${pct(r.pct_of_step_before)}</td><td class="num">${pct(r.pct_of_first_step)}</td></tr>`).join('')}</tbody></table></div>`;
+          ${(() => {
+            // Side by side: one row per step, one group of columns per platform.
+            const plats = [...new Set(data.map(r => r.platform))], steps = [...new Set(data.map(r => r.n))].sort((a, b) => a - b);
+            const at = (p, n) => data.find(r => r.platform === p && r.n === n) || {};
+            return `<div class="scroll"><table><thead>
+              <tr><th rowspan="2">step</th>${plats.map(p => `<th colspan="3" class="grp">${esc(p)}</th>`).join('')}</tr>
+              <tr>${plats.map(() => '<th class="num grp">visits</th><th class="num">% of step before</th><th class="num">% of first step</th>').join('')}</tr>
+              </thead><tbody>${steps.map(n => `<tr><td>${esc(n)}. ${esc(at(plats[0], n).step_name)}</td>${plats.map(p => { const r = at(p, n);
+                return `<td class="num grp">${esc(r.visits ?? '')}</td><td class="num">${pct(r.pct_of_step_before ?? null)}</td><td class="num">${pct(r.pct_of_first_step ?? null)}</td>`; }).join('')}</tr>`).join('')}
+              </tbody></table></div>
+              <style>th.grp { text-align: left; } .grp { border-left: 1px solid #E4E4DF; }</style>`;
+          })()}`;
       } }
   ],
   'unit-08': []
