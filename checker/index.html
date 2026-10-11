@@ -132,7 +132,10 @@
   async function checkOne(q, value) {
     const s = saved[q.id] = saved[q.id] || { tries: 0 };
     if (s.right || s.gaveUp || !value) return;
-    if (value === s.value && s.checked) { if (!partial.has(q.id)) results[q.id] = false; return; }
+    // The same answer again is the same verdict, without a try. (A table with empty rows is checked
+    // again: while its filled rows are right, that costs nothing.)
+    const gaps = q.kind === 'table' && Object.values(JSON.parse(value)).some(v => !v);
+    if (value === s.value && s.checked && !gaps) { results[q.id] = false; return; }
     s.value = value; s.tries += 1; s.checked = true;
     // The course server checks it against your team's own data; your lecturer sees each try.
     try {
