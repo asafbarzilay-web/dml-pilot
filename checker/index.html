@@ -128,17 +128,20 @@
   const results = {};
 
   // Checks one answer. The same wrong answer again does not count as a new try.
-  const incomplete = new Set();
+  const partial = new Set();
   async function checkOne(q, value) {
     const s = saved[q.id] = saved[q.id] || { tries: 0 };
     if (s.right || s.gaveUp || !value) return;
-    // A table with a row left empty isn't checked (and isn't a try): every row first.
-    if (q.kind === 'table' && Object.values(JSON.parse(value)).some(v => !v)) { incomplete.add(q.id); return; }
-    incomplete.delete(q.id);
-    if (value === s.value && s.checked) { results[q.id] = false; return; }
+    if (value === s.value && s.checked) { if (!partial.has(q.id)) results[q.id] = false; return; }
     s.value = value; s.tries += 1; s.checked = true;
     // The course server checks it against your team's own data; your lecturer sees each try.
-    try { const r = await Course.check(lesson, q.id, q.kind === 'table' ? JSON.parse(value) : value); s.right = r.right; s.cells = r.cells; }
+    try {
+      const r = await Course.check(lesson, q.id, q.kind === 'table' ? JSON.parse(value) : value);
+      s.right = r.right; s.cells = r.cells;
+      // A table checked row by row: every filled row right so far is progress, not a try.
+      if (r.partial) { s.tries -= 1; partial.add(q.id); results[q.id] = null; document.getElementById('check-error').hidden = true; return; }
+      partial.delete(q.id);
+    }
     catch (e) { s.tries -= 1; s.checked = false; const el = document.getElementById('check-error'); el.textContent = `Could not check: ${e.message}`; el.hidden = false; return; }
     document.getElementById('check-error').hidden = true;
     results[q.id] = s.right;
@@ -164,7 +167,7 @@
       const tv = q.kind === 'table' ? tableOf(s) : null;
       const box = q.kind === 'table'
         ? `<table class="cells">${q.rows.map((r, k) => `<tr><td>${esc(r)}</td><td><input name="${q.id}::${k}" value="${esc(tv[r] ?? '')}" placeholder="${hint[q.cell]}" autocomplete="off" ${ro}></td>
-            <td class="mark">${s.cells && !s.gaveUp ? (s.cells[r] ? '<span class="ok">✓</span>' : '<span class="no">✗</span>') : ''}</td></tr>`).join('')}</table>
+            <td class="mark">${s.cells && !s.gaveUp ? (s.cells[r] === true ? '<span class="ok">✓</span>' : s.cells[r] === false ? '<span class="no">✗</span>' : '') : ''}</td></tr>`).join('')}</table>
           ${ro ? '' : `<p class="muted small paste-tip" data-pastemsg="${q.id}">Tip: press <b>Copy table</b> on your board's panel, then paste into any box above: it fills them all.</p>`}`
         : `<input name="${q.id}" value="${esc(s.value || '')}" placeholder="${hint[q.kind]}" autocomplete="off" ${ro}>`;
       return `<div class="q ${state}">
@@ -173,7 +176,7 @@
         <div class="answer">
           ${q.kind === 'table' ? '' : box}
           ${s.gaveUp ? '' : `<button type="button" class="one" data-q="${q.id}">Check</button>`}
-          <span class="verdict">${state === 'right' ? '✓ Right' : incomplete.has(q.id) ? '<span class="muted">Fill in every row, then check.</span>' : state === 'wrong' ? 'Not quite' : ''}</span>
+          <span class="verdict">${state === 'right' ? '✓ Right' : partial.has(q.id) ? '<span class="ok">So far so good: fill in the next row.</span>' : state === 'wrong' ? 'Not quite' : ''}</span>
           ${s.tries ? `<span class="tries">${s.tries} ${s.tries === 1 ? 'try' : 'tries'}</span>` : ''}
         </div>${s.gaveUp ? `<p class="gaveup-note"><b>Gave up.</b> The answer was <b>${esc(s.gaveUp.answer)}</b>.<br><i>${esc(s.gaveUp.text)}</i></p>`
         : s.tries >= 2 && !s.right ? `<p class="stuck">Stuck? Tell your assistant: <i>"Question ${i + 1} says not quite."</i>
