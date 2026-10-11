@@ -1,4 +1,4 @@
--- One row per step of the team's search funnel ending in photo d08, from photo_visits. Each step counts only visits that also reached the steps before it.
+-- One row per step of the search funnel ending in photo d08, from photo_visits. Each step counts only visits that also reached the steps before it.
 create or replace view analysis.search_funnel_d08_steps as
   with opened as (
     select v.session_id from analysis.photo_visits v
