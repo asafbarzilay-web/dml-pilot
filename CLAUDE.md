@@ -8,7 +8,7 @@ is missing, why a number is wrong.
 ## Never
 - Edit anything under `core/`, `setup.sql`, `data/` or `checker/`. Capture and the course's
   material live there; if they break, every number after them is wrong and nothing will say so.
-- Delete, truncate or rewrite rows in `sessions`, `clicks`, `selections`, `identities`.
+- Delete, truncate or rewrite rows in `sessions`, `clicks`, `selections`, `identities`, `task_runs`.
 - Answer a question from the questions page for the team, compute its answer outside their
   dashboard, say what the right answer is, or say which value is wrong.
 - Ask the team to paste SQL, to fill in a definition form, or to scan raw rows by hand.
@@ -73,6 +73,12 @@ The tables:
   but it's only the button's wording; value says where the press led."). No list of reasons, no
   paragraph. Then ask which `value` marks it (in either way of working).
 - `identities`: a sign-in. `account` is a scrambled id: the same account always gives the same value.
+- `task_runs` (from lesson 4): one try at a task. `task` is the task in words, `started_at` when it
+  was shown. The app knows the task, so the run ends by itself at the choice that completes it
+  (`ended_by` = `success`, `ended_at` = that moment); `gave_up` = they pressed Give up. No end =
+  interrupted (page reloaded or closed).
+- On an open photo, **Like** works (`like:p02`, again `unlike:p02`) and **Share** does nothing
+  (`nothing`).
 
 ## Two ways of working: Guided walkthrough, and On your own
 Each lesson board has two tabs. **Guided walkthrough**: the panels the walkthrough asks for; you lead the
@@ -171,6 +177,33 @@ The traps to watch for: test runs, rows from another app, a browser counted as a
 on two devices, two people on one device, visits with no clicks, one source under two names,
 missing values, segments too small to trust.
 
+## Lesson 4: the team's task
+Lesson 4's data and questions are made from **one task the team chooses**. Before anything else in
+lesson 4, run `sh core/task.sh show`.
+- **No task yet:** explain in two lines what a task is (a goal you give a participant), then ask:
+  pick a suggested one, or say their own in words. For suggestions, run `sh core/task.sh menu` and
+  show them the tasks **in words only**, numbered.
+- **Their own task:** turn their words into success criteria yourself (the marks: the choices, in
+  order, that mean they got there, as `step`/`value` in selections; never `label`; a value ending
+  in `*` means "starts with"). A task can name one photo ("like the three puppies": `like:d07`) or
+  any ("like a photo": `like:*`); both are fine. You can't see the photos: `sh core/task.sh photos`
+  lists them with what they show; if their words fit more than one, ask which. Run
+  `sh core/task.sh route '<marks>'` and show them, in plain words: the **best route**, step by step,
+  and **what counts as success**. Ask one question: *"Is this the task you mean?"*
+  - **Yes:** `sh core/task.sh save "<their task, in their words>" '<marks>'`, then send them to the
+    walkthrough's practice data button (`view.html?f=units/unit-04.md`, step 2).
+  - **No:** they say it again differently, say another, or pick a suggested one. Never argue for
+    your reading.
+- **Something the app doesn't record** (typed text, "a photo they like", anything without a screen
+  or a choice): say so in one line, and ask what *reaching it* would look like in the app.
+  `UNREACHABLE` from the script: nobody could do it in this app; say so plainly and ask for another.
+  `TOO SIMPLE` (under 3 choices, like "open your profile"): it would say nothing about the app; ask
+  them to take it further.
+- Never pick the task for them, and never mention a "twin": they meet it in their questions.
+- Once a question has been checked, the task is **locked**: it can't change.
+- Their panels then follow the walkthrough (`units/unit-04.md`) like any lesson. A run's choices
+  are the selections of its session between `started_at` and `ended_at`.
+
 ## Checking a number you built
 Check it the way a data person does: **ask the data a pointed question**. You run the check; the
 team judges the evidence.
@@ -242,7 +275,7 @@ number can always be traced and two numbers never quietly disagree.
 - **No permission prompts for routine steps.** Read files with your file tools, not shell commands.
   One command at a time, never chained with `;`, `&&` or `|`. Pre-approved: `sh core/update.sh`,
   `sh core/progress.sh`, `sh core/check-setup.sh`, `sh core/apply.sh …`, `sh core/look.sh …`,
-  `sh core/question.sh …`,
+  `sh core/question.sh …`, `sh core/task.sh …`,
   `sh core/save.sh "…"`, and
   ordinary git (status, log, diff, add, commit, push, pull, fetch, merge, checkout). Anything else
   asks the team, so avoid it.
