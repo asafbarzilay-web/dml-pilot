@@ -1,4 +1,4 @@
--- The funnel's completed sign-ups (step 3 visits), split by platform.
+-- The completed sign-ups of the funnel (step 3 visits), split by platform.
 create or replace view analysis.signed_up_visit_platforms as
   with signed_up as (
     select v.platform
