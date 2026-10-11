@@ -62,6 +62,7 @@
   .err { color: #B42318; }
   .earlier { background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 12px; padding: 14px 18px; font-size: 15px; line-height: 1.55; margin: 0 0 18px; }
   .memo { margin-top: 34px; }
+  .memo-later { margin-top: 28px; }
   .memo h2 { font-size: 22px; margin: 0 0 4px; }
   .lead.small { font-size: 14px; margin-bottom: 16px; }
   .guide { margin: 0 0 14px; padding-left: 20px; font-size: 15px; line-height: 1.6; color: #4A4A45; }
@@ -89,6 +90,7 @@
   <p class="earlier" id="check-error" hidden></p>
   <div class="all" id="all" hidden>Every question is done. Now finish your memo below.</div>
 
+  <p class="muted memo-later" id="memo-later" hidden>Your memo opens here when every question is right or given up.</p>
   <section class="memo" id="memo" hidden>
     <h2>Your memo</h2>
     <p class="lead small">Half a page, written as one piece. Let these questions guide it:</p>
@@ -194,7 +196,6 @@
 
   function renderMemo() {
     if (!spec.memo || !spec.memo.length) return;
-    document.getElementById('memo').hidden = false;
     document.getElementById('memo-guide').innerHTML = spec.memo.map(q => `<li>${esc(q)}</li>`).join('');
     document.getElementById('memo-text').value = memo.text || '';
     renderMemoState();
@@ -204,6 +205,10 @@
     if (!spec || !spec.memo || !spec.memo.length) return;
     const allRight = spec.questions.every(closed);
     const allWritten = words() >= MIN_WORDS;
+    // The memo opens once every question is right or given up (a memo already begun stays open).
+    const open = allRight || !!(memo.text || '').trim() || !!memo.submitted;
+    document.getElementById('memo').hidden = !open;
+    document.getElementById('memo-later').hidden = open;
     document.getElementById('memo-text').readOnly = !!memo.submitted;
     const btn = document.getElementById('submit-memo'), st = document.getElementById('memo-status');
     document.getElementById('done').hidden = !(allRight && memo.submitted);

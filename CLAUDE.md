@@ -255,7 +255,9 @@ The team is new to all of this; overloading them is the most common way to lose 
   **Built:** the panel's name → its link
   **Definition:** the sentence you wrote (the team can change it any time)
   **Check:** one line, only if it showed something
-  **Next:** the next question
+  **Next:** the next question. When pointing them to the questions page or the memo, go by
+  `sh core/progress.sh` (it lists the questions still open): never send them to the memo while a
+  question is open.
 - **Save before you end a turn** (`sh core/save.sh`), so nothing is left unsaved. If a hook ever
   re-prompts you about unsaved work, save and answer in one line; never repeat your last message.
 
