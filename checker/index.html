@@ -128,9 +128,13 @@
   const results = {};
 
   // Checks one answer. The same wrong answer again does not count as a new try.
+  const incomplete = new Set();
   async function checkOne(q, value) {
     const s = saved[q.id] = saved[q.id] || { tries: 0 };
     if (s.right || s.gaveUp || !value) return;
+    // A table with a row left empty isn't checked (and isn't a try): every row first.
+    if (q.kind === 'table' && Object.values(JSON.parse(value)).some(v => !v)) { incomplete.add(q.id); return; }
+    incomplete.delete(q.id);
     if (value === s.value && s.checked) { results[q.id] = false; return; }
     s.value = value; s.tries += 1; s.checked = true;
     // The course server checks it against your team's own data; your lecturer sees each try.
@@ -169,7 +173,7 @@
         <div class="answer">
           ${q.kind === 'table' ? '' : box}
           ${s.gaveUp ? '' : `<button type="button" class="one" data-q="${q.id}">Check</button>`}
-          <span class="verdict">${state === 'right' ? '✓ Right' : state === 'wrong' ? 'Not quite' : ''}</span>
+          <span class="verdict">${state === 'right' ? '✓ Right' : incomplete.has(q.id) ? '<span class="muted">Fill in every row, then check.</span>' : state === 'wrong' ? 'Not quite' : ''}</span>
           ${s.tries ? `<span class="tries">${s.tries} ${s.tries === 1 ? 'try' : 'tries'}</span>` : ''}
         </div>${s.gaveUp ? `<p class="gaveup-note"><b>Gave up.</b> The answer was <b>${esc(s.gaveUp.answer)}</b>.<br><i>${esc(s.gaveUp.text)}</i></p>`
         : s.tries >= 2 && !s.right ? `<p class="stuck">Stuck? Tell your assistant: <i>"Question ${i + 1} says not quite."</i>
