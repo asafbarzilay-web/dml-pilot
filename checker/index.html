@@ -36,7 +36,7 @@
   .cells td { padding: 4px 10px 4px 0; font-size: 14.5px; }
   .cells input { width: 140px; }
   .cells .ok { color: #1F7A3F; font-weight: 700; } .cells .no { color: #B42318; font-weight: 700; }
-  textarea.paste { display: block; width: 100%; max-width: 420px; margin-top: 8px; font: inherit; font-size: 13px; padding: 6px 10px; border: 1px dashed #CFCFCA; border-radius: 8px; resize: vertical; }
+  .paste-tip { margin: 6px 0 0; }
   .gaveup-note { grid-column: 2; margin: 8px 0 0; font-size: 13.5px; color: #4A4A45; }
   .gaveup-note i { color: #6B6B66; }
   details.giveup { grid-column: 2; margin-top: 8px; font-size: 13.5px; }
@@ -159,7 +159,7 @@
       const box = q.kind === 'table'
         ? `<table class="cells">${q.rows.map((r, k) => `<tr><td>${esc(r)}</td><td><input name="${q.id}::${k}" value="${esc(tv[r] ?? '')}" placeholder="${hint[q.cell]}" autocomplete="off" ${ro}></td>
             <td class="mark">${s.cells && !s.gaveUp ? (s.cells[r] ? '<span class="ok">✓</span>' : '<span class="no">✗</span>') : ''}</td></tr>`).join('')}</table>
-          ${ro ? '' : `<textarea class="paste" data-paste="${q.id}" rows="1" placeholder="Or paste the table here (Copy table on your board's panel)"></textarea>`}`
+          ${ro ? '' : `<p class="muted small paste-tip" data-pastemsg="${q.id}">Tip: press <b>Copy table</b> on your board's panel, then paste into any box above: it fills them all.</p>`}`
         : `<input name="${q.id}" value="${esc(s.value || '')}" placeholder="${hint[q.kind]}" autocomplete="off" ${ro}>`;
       return `<div class="q ${state}">
         <span class="n">${i + 1}</span><div class="text">${esc(q.text)}</div>
@@ -249,15 +249,19 @@
   const form = document.getElementById('form');
   form.addEventListener('submit', (e) => { e.preventDefault(); checkIds(spec.questions.map(q => q.id)); });
   form.addEventListener('click', (e) => { const b = e.target.closest('button.one'); if (b) checkIds([b.dataset.q]); });
-  // Pasting a table (from "Copy table" on a dashboard panel, or a spreadsheet) fills the boxes by row
-  // name: each line is a row name and its number, separated by a tab or spaces. Tab-separated lines
-  // may have more columns (a panel's "what it counts"): the first number after the name is used.
-  form.addEventListener('input', (e) => {
-    const t = e.target.closest('textarea[data-paste]'); if (!t) return;
-    const q = spec.questions.find(x => x.id === t.dataset.paste);
+  // Pasting a table (from "Copy table" on a dashboard panel, or a spreadsheet) into any of a table
+  // question's boxes fills them all by row name: each line is a row name and its number, separated
+  // by a tab or spaces. Tab-separated lines may have more columns (a panel's "what it counts"): the
+  // first number after the name is used. A single number pastes as usual.
+  form.addEventListener('paste', (e) => {
+    const input = e.target.closest('input[name*="::"]'); if (!input) return;
+    const text = (e.clipboardData || window.clipboardData).getData('text');
+    if (!/[\t\n]/.test(text.trim())) return;
+    const q = spec.questions.find(x => x.id === input.name.split('::')[0]); if (!q) return;
+    e.preventDefault();
     const key = x => String(x).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
     let filled = 0;
-    for (const line of t.value.split(/\r?\n/)) {
+    for (const line of text.split(/\r?\n/)) {
       const cells = line.split('\t').map(c => c.trim()), num = c => /^-?[0-9][0-9.,]*%?$/.test(c);
       const at = cells.findIndex((c, i) => i > 0 && num(c));
       const m = at > 0 ? [line, cells.slice(0, at).join(' '), cells[at]] : line.trim().match(/^(.*?)[\t ]+([-0-9.,%]+)$/);
@@ -266,8 +270,9 @@
       const box = k >= 0 && form.querySelector(`input[name="${q.id}::${k}"]`);
       if (box && !box.readOnly) { box.value = m[2].replace(',', ''); filled++; }
     }
-    t.placeholder = filled ? `Filled ${filled} of ${q.rows.length} rows. Press Check.` : t.placeholder;
-    if (filled) t.value = '';
+    const msg = form.querySelector(`[data-pastemsg="${q.id}"]`);
+    if (msg) msg.innerHTML = filled ? `Filled ${filled} of ${q.rows.length} rows. Press <b>Check</b>.`
+      : `None of the pasted lines matched this question's rows (${q.rows.map(esc).join(', ')}). Is it the right panel?`;
   });
   // Giving up: typing keeps the words (the page re-renders often), the button opens at 20 words.
   form.addEventListener('input', (e) => {
