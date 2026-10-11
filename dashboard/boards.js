@@ -210,7 +210,7 @@ const BOARDS = {
         el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded.</p>
           <div style="margin-top:14px"><div style="font-size:28px;font-weight:600">${esc(data[0].visits)}</div>
           <div><b>Visits that got to the discover page</b></div>
-          <p class="muted" style="margin:2px 0">We count visits to the photo app that got to the discover page, from photo_visits (the photo app's visits, excluding the team's own test runs): visits with a selection on the register_username screen (step = register_username) whose value = discover.</p></div>`;
+          <p class="muted" style="margin:2px 0">We count visits to the photo app that got to the discover page, from photo_visits (the photo app's visits, excluding the team's own test runs): visits with a selection on the register_username screen or the login screen (step = register_username or login) whose value = discover, each visit counted once.</p></div>`;
       } }
   ],
   'unit-08': []
