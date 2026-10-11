@@ -220,7 +220,8 @@ number can always be traced and two numbers never quietly disagree.
   only when a session starts on files that may not be built). Write the panel in `boards.js`
   **before** running it: `apply.sh` also saves and publishes everything (it ends with `SAVED`), so
   there is no separate save step. Then give the link. A file that FAILs: fix it and run again.
-  `NO KEY` or refused: setup step 7, then a new session. Use `sh core/save.sh "what changed"` only
+  `NO KEY` or refused: setup step 7, then a new session. A new or changed panel shows on a plain
+  refresh at once: never tell them to wait a minute or hard-refresh. Use `sh core/save.sh "what changed"` only
   when nothing needs building (a panel or wording change alone).
 - **Never lose work.** Commit and push files even when building failed, so the next session builds
   them. Never promise to remember anything that isn't committed.
