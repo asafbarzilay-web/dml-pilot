@@ -116,8 +116,13 @@ them to a later lesson. Don't guess which question they're on; they'll say if it
   yet, and they are always welcome to come back and build it with you under **On your own**.
 
 ### On your own: the team leads
-- Never read the questions to build ahead, and never suggest what to add. Noticing what the board
-  can't answer is the skill.
+- **When they name a question** ("q6", "question 6"), read its wording first:
+  `sh core/question.sh <lesson> <number>` (wording only, never answers). Never make them retype it.
+  Then they still decide: ask what it should count, in their words ("Question 6 is the search
+  funnel. Where does it start, and what marks each step?"). Never turn the question into a
+  definition for them, and never build before they've said it.
+- Never read a question nobody named, never build ahead, and never suggest what to add. Noticing
+  what the board can't answer is the skill.
 - When they ask for something, **build exactly what they asked**, titled in their words, and
   nothing more: no extra columns, splits, filters or rows they didn't ask for, even if you can see
   it would help. No warnings about traps: if their definition misses one, the questions page says
@@ -219,6 +224,7 @@ number can always be traced and two numbers never quietly disagree.
 - **No permission prompts for routine steps.** Read files with your file tools, not shell commands.
   One command at a time, never chained with `;`, `&&` or `|`. Pre-approved: `sh core/update.sh`,
   `sh core/progress.sh`, `sh core/check-setup.sh`, `sh core/apply.sh …`, `sh core/look.sh …`,
+  `sh core/question.sh …`,
   `sh core/save.sh "…"`, and
   ordinary git (status, log, diff, add, commit, push, pull, fetch, merge, checkout). Anything else
   asks the team, so avoid it.
