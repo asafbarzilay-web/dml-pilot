@@ -144,6 +144,14 @@ const BOARDS = {
           <p class="muted">We count visits. Pressed Register: a selection on the start screen with label = Register. Pressed Next: a selection on the email and password screen with label = Next. Pressed Sign up: a selection on the username screen with label = Sign up, which leads into the app.</p>
           <div class="scroll"><table><thead><tr><th>step</th><th>visits</th><th>% of step before</th><th>% of first step</th></tr></thead><tbody>${
           data.map(r => `<tr><td>${esc(r.n)}. ${esc(r.step_name)}</td><td class="num">${esc(r.visits)}</td><td class="num">${pct(r.pct_of_step_before)}</td><td class="num">${pct(r.pct_of_first_step)}</td></tr>`).join('')}</tbody></table></div>`;
+      } },
+    { title: 'Browsers that completed the funnel, by visits it took', view: 'signed_up_browser_groups', own: true, render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('signed_up_browser_groups').select('*').order('n');
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded (as in Visits).</p>
+          <p class="muted">We count browsers that completed all the funnel steps (Register, Next, Sign up), split by how many of that browser's visits had a funnel step: 1 visit, or more than 1.</p>
+          <div class="scroll"><table><thead><tr><th>completed the funnel</th><th>browsers</th></tr></thead><tbody>${
+          data.map(r => `<tr><td>${esc(r.visit_group)}</td><td class="num">${esc(r.browsers)}</td></tr>`).join('')}</tbody></table></div>`;
       } }
   ],
   'unit-08': []
