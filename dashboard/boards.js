@@ -141,7 +141,7 @@ const BOARDS = {
         if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
         const pct = x => x === null ? '<span class="muted">–</span>' : `${esc(x)}%`;
         el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded (as in Visits).</p>
-          <p class="muted">We count visits. Pressed Register: a selection on the start screen with label = Register. Pressed Next: a selection on the email and password screen with label = Next. Pressed Sign up: a selection on the username screen with label = Sign up, which leads into the app.</p>
+          <p class="muted">We count visits, each step marked by where the visit got to: Chose Register (start → register_email), got past email and password (register_email → register_username), got past the username into the app (register_username → discover).</p>
           <div class="scroll"><table><thead><tr><th>step</th><th>visits</th><th>% of step before</th><th>% of first step</th></tr></thead><tbody>${
           data.map(r => `<tr><td>${esc(r.n)}. ${esc(r.step_name)}</td><td class="num">${esc(r.visits)}</td><td class="num">${pct(r.pct_of_step_before)}</td><td class="num">${pct(r.pct_of_first_step)}</td></tr>`).join('')}</tbody></table></div>`;
       } }
