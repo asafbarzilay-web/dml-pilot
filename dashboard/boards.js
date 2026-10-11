@@ -179,6 +179,14 @@ const BOARDS = {
               </tbody></table></div>
               <style>th.grp { text-align: left; } .grp { border-left: 1px solid #E4E4DF; }</style>`;
           })()}`;
+      } },
+    { title: 'The search funnel', view: 'search_funnel_steps', own: true, render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('search_funnel_steps').select('*').order('n');
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded (as in Visits).</p>
+          <p class="muted">We count visits, each step only among the visits of the step before: opened Search (value = search), searched for something (on the search screen, value starts with search:), opened a photo from the search results (on search_results, value starts with open:).</p>
+          <div class="scroll"><table><thead><tr><th>step</th><th>visits</th></tr></thead><tbody>${
+          data.map(r => `<tr><td>${esc(r.n)}. ${esc(r.step_name)}</td><td class="num">${esc(r.visits)}</td></tr>`).join('')}</tbody></table></div>`;
       } }
   ],
   'unit-08': []
