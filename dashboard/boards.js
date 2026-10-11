@@ -203,6 +203,14 @@ const BOARDS = {
           <div style="margin-top:14px"><div style="font-size:28px;font-weight:600">${esc(data[0].visits)}</div>
           <div><b>Visits</b></div>
           <p class="muted" style="margin:2px 0">We count visits to the photo app, from photo_visits (sessions of the photo app), excluding the team's own test runs (is_test).</p></div>`;
+      } },
+    { title: 'Visits that got to the discover page', view: 'discover_visit_totals', own: true, render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('discover_visit_totals').select('*');
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        el.innerHTML = `<p class="muted">Population: the photo app only, practice data included, the team's own test runs excluded.</p>
+          <div style="margin-top:14px"><div style="font-size:28px;font-weight:600">${esc(data[0].visits)}</div>
+          <div><b>Visits that got to the discover page</b></div>
+          <p class="muted" style="margin:2px 0">We count visits to the photo app that got to the discover page, from photo_visits (the photo app's visits, excluding the team's own test runs): visits with a selection on the login_username screen (step = login_username) whose value = discover.</p></div>`;
       } }
   ],
   'unit-08': []
