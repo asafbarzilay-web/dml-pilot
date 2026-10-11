@@ -195,6 +195,14 @@ const BOARDS = {
           <p class="muted">We count visits, each step only among the visits of the step before: opened Search (value = search), searched for something (value starts with search:), opened a photo from the search results (on search_results, value starts with open:, any photo).</p>
           <div class="scroll"><table><thead><tr><th>step</th><th>visits</th></tr></thead><tbody>${
           data.map(r => `<tr><td>${esc(r.n)}. ${esc(r.step_name)}</td><td class="num">${esc(r.visits)}</td></tr>`).join('')}</tbody></table></div>`;
+      } },
+    { title: 'Visits (not tests)', view: 'visit_totals', own: true, render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('visit_totals').select('*');
+        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        el.innerHTML = `<p class="muted">Population: every app, practice data included, the team's own test runs excluded.</p>
+          <div style="margin-top:14px"><div style="font-size:28px;font-weight:600">${esc(data[0].visits)}</div>
+          <div><b>Visits</b></div>
+          <p class="muted" style="margin:2px 0">We count visits, from sessions, excluding the team's own test runs (is_test), every app included.</p></div>`;
       } }
   ],
   'unit-08': []
