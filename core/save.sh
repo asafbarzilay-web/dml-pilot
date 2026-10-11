@@ -11,4 +11,4 @@ git fetch -q origin main 2>/dev/null && { git merge -q --no-edit FETCH_HEAD >/de
 # push its branch separately afterwards.
 branch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$branch" = main ] || [ "$branch" = HEAD ]; then targets="HEAD:main"; else targets="HEAD:main HEAD:refs/heads/$branch"; fi
-git push -q origin $targets && echo "SAVED: published to the site (it may take a minute to show)." || { echo "Could not publish. Try again."; exit 1; }
+git push -q origin $targets && echo "SAVED: published. The dashboard shows new panels at once (refresh it)." || { echo "Could not publish. Try again."; exit 1; }
