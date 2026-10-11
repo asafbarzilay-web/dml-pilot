@@ -250,14 +250,18 @@
   form.addEventListener('submit', (e) => { e.preventDefault(); checkIds(spec.questions.map(q => q.id)); });
   form.addEventListener('click', (e) => { const b = e.target.closest('button.one'); if (b) checkIds([b.dataset.q]); });
   // Pasting a table (from "Copy table" on a dashboard panel, or a spreadsheet) fills the boxes by row
-  // name: each line is a row name and its number, separated by a tab or spaces.
+  // name: each line is a row name and its number, separated by a tab or spaces. Tab-separated lines
+  // may have more columns (a panel's "what it counts"): the first number after the name is used.
   form.addEventListener('input', (e) => {
     const t = e.target.closest('textarea[data-paste]'); if (!t) return;
     const q = spec.questions.find(x => x.id === t.dataset.paste);
     const key = x => String(x).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
     let filled = 0;
     for (const line of t.value.split(/\r?\n/)) {
-      const m = line.trim().match(/^(.*?)[\t ]+([-0-9.,%]+)$/); if (!m) continue;
+      const cells = line.split('\t').map(c => c.trim()), num = c => /^-?[0-9][0-9.,]*%?$/.test(c);
+      const at = cells.findIndex((c, i) => i > 0 && num(c));
+      const m = at > 0 ? [line, cells.slice(0, at).join(' '), cells[at]] : line.trim().match(/^(.*?)[\t ]+([-0-9.,%]+)$/);
+      if (!m) continue;
       const k = q.rows.findIndex(r => key(r) === key(m[1]) || key(r).startsWith(key(m[1]) + ' ') || key(m[1]).startsWith(key(r)));
       const box = k >= 0 && form.querySelector(`input[name="${q.id}::${k}"]`);
       if (box && !box.readOnly) { box.value = m[2].replace(',', ''); filled++; }
