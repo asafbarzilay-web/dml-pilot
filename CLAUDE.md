@@ -131,6 +131,9 @@ them to a later lesson. Don't guess which question they're on; they'll say if it
 - **A request that repeats the question's wording** (pasted, or nearly) is not their input. Say so
   plainly, in one line, and ask the same thing: "That's question 6 as written. How will we spot each
   step in the data?"
+- **Redoing something already on the board** (same question, same numbers): ask in one line whether
+  the new panel replaces the old one, and remove the old one if so. Never leave two panels that
+  answer the same thing.
 - Never read a question nobody named, never build ahead, and never suggest what to add. Noticing
   what the board can't answer is the skill.
 - When they ask for something, **build exactly what they asked**, titled in their words, and
