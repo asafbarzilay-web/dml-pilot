@@ -81,22 +81,22 @@
 <div class="wrap">
   <p class="eyebrow" id="eyebrow">Questions</p>
   <h1 id="title">Loading…</h1>
-  <p class="lead">Answer from <a id="board-link" href="../dashboard/">your dashboard</a>, never from a one-off count.
-    If your board doesn't show something a question needs, decide what's missing and build it with your assistant
-    under <b>On your own</b>. A wrong answer says "not quite", never why: finding out why is the lesson.</p>
+  <p class="lead">Answer every question from <a id="board-link" href="../dashboard/">your dashboard</a>, never from a one-off
+    count. Some ask about things your board doesn't show yet: then you lead. Decide what's missing, and build it with your
+    assistant under <b>On your own</b>. A wrong answer says "not quite", never why: finding out why is the lesson.</p>
   <p class="earlier" id="earlier" hidden></p>
   <form id="form"></form>
   <div class="bar"><button form="form" type="submit">Check all answers</button><span class="score" id="score"></span></div>
   <p class="earlier" id="check-error" hidden></p>
-  <div class="all" id="all" hidden>Every question is done. Now your memo, below.</div>
+  <div class="all" id="all" hidden>Every question is done. Now finish your memo below.</div>
 
   <p class="muted memo-later" id="memo-later" hidden>Your memo opens here when every question is right or given up.</p>
   <section class="memo" id="memo" hidden>
     <h2>Your memo</h2>
-    <p class="lead small">Half a page, as one piece. Let these questions guide it:</p>
+    <p class="lead small">Half a page, written as one piece. Let these questions guide it:</p>
     <ul class="guide" id="memo-guide"></ul>
     <textarea id="memo-text" placeholder="Your memo…"></textarea>
-    <p class="muted small">Your draft saves as you type.</p>
+    <p class="muted small">Your draft is saved in your team's database as you type.</p>
     <div class="memo-bar">
       <button type="button" id="submit-memo">Submit memo</button>
       <span class="muted" id="memo-status"></span>
@@ -104,7 +104,7 @@
   </section>
 
   <div class="done" id="done" hidden>
-    <b>Lesson done.</b> Every question answered, memo in.
+    <b>Lesson done.</b> Every question is done and your memo is in.
     <span id="next"></span>
     <a class="home" href="../">Back to your home page →</a>
   </div>
@@ -163,15 +163,15 @@
       const state = s.gaveUp ? 'gaveup' : results[q.id] === true || s.right ? 'right' : results[q.id] === false ? 'wrong' : '';
       const giveUp = !s.right && !s.gaveUp && s.tries >= GIVE_UP_AFTER
         ? `<details class="giveup" data-q="${q.id}" ${giveText[q.id] !== undefined ? 'open' : ''}><summary>Give up on this question</summary>
-            <textarea data-gu="${q.id}" placeholder="What did you try, and where is the gap? (at least ${GIVE_UP_WORDS} words)">${esc(giveText[q.id] || '')}</textarea>
+            <textarea data-gu="${q.id}" placeholder="What did you try, and where do you think the gap is? (at least ${GIVE_UP_WORDS} words)">${esc(giveText[q.id] || '')}</textarea>
             <div class="row"><button type="button" class="gu-go" data-q="${q.id}" ${wordsIn(giveText[q.id]) < GIVE_UP_WORDS ? 'disabled' : ''}>Give up for good</button>
-            <span class="muted small">Final: the question closes, scores 0, and shows its answer.</span></div></details>` : '';
+            <span class="muted small">It's final: the question closes and scores 0, and you see its right answer.</span></div></details>` : '';
       const ro = s.right || s.gaveUp ? 'readonly' : '';
       const tv = q.kind === 'table' ? tableOf(s) : null;
       const box = q.kind === 'table'
         ? `<table class="cells">${q.rows.map((r, k) => `<tr><td>${esc(r)}</td><td><input name="${q.id}::${k}" value="${esc(tv[r] ?? '')}" placeholder="${hint[q.cell]}" autocomplete="off" ${ro}></td>
             <td class="mark">${s.cells && !s.gaveUp ? (s.cells[r] === true ? '<span class="ok">✓</span>' : s.cells[r] === false ? '<span class="no">✗</span>' : '') : ''}</td></tr>`).join('')}</table>
-          ${ro ? '' : `<p class="muted small paste-tip" data-pastemsg="${q.id}">Tip: <b>Copy table</b> on your board's panel, then paste into any box above.</p>`}`
+          ${ro ? '' : `<p class="muted small paste-tip" data-pastemsg="${q.id}">Tip: press <b>Copy table</b> on your board's panel, then paste into any box above: it fills them all.</p>`}`
         : `<input name="${q.id}" value="${esc(s.value || '')}" placeholder="${hint[q.kind]}" autocomplete="off" ${ro}>`;
       return `<div class="q ${state}">
         <span class="n">${i + 1}</span><div class="text">${esc(q.text)}</div>
@@ -183,7 +183,7 @@
           ${s.tries ? `<span class="tries">${s.tries} ${s.tries === 1 ? 'try' : 'tries'}</span>` : ''}
         </div>${s.gaveUp ? `<p class="gaveup-note"><b>Gave up.</b> The answer was <b>${esc(s.gaveUp.answer)}</b>.<br><i>${esc(s.gaveUp.text)}</i></p>`
         : s.tries >= 2 && !s.right ? `<p class="stuck">Stuck? Tell your assistant: <i>"Question ${i + 1} says not quite."</i>
-          It helps you find out why, without giving the answer.</p>` : ''}${giveUp}</div>`;
+          It will help you find out why, without giving you the answer.</p>` : ''}${giveUp}</div>`;
     }).join('');
     const right = spec.questions.filter(q => (saved[q.id] || {}).right).length;
     const gaveUp = spec.questions.filter(q => (saved[q.id] || {}).gaveUp).length;
@@ -295,7 +295,7 @@
     const msg = form.querySelector(`[data-pastemsg="${q.id}"]`);
     if (msg) msg.innerHTML = !filled
       ? `The pasted table doesn't fit this question's rows (${q.rows.map(esc).join(', ')}). Is it the right panel?`
-      : byOrder ? `Filled ${filled} of ${q.rows.length} rows in the order pasted: check each is on the right row, then press <b>Check</b>.`
+      : byOrder ? `Filled ${filled} of ${q.rows.length} rows${done.size ? ', some' : ''} in the order you pasted them: check each number is on the right row, then press <b>Check</b>.`
       : `Filled ${filled} of ${q.rows.length} rows. Press <b>Check</b>.`;
   });
   // Giving up: typing keeps the words (the page re-renders often), the button opens at 20 words.
@@ -372,8 +372,9 @@
         const curData = cur && cur.data;
         if (me && cur && me.n < cur.n && me.data && me.data !== curData && !spec.questions.every(q => (saved[q.id] || {}).right)) {
           const el = document.getElementById('earlier');
-          el.innerHTML = `An earlier lesson: its answers need its own practice data, which a later lesson replaced.
-            <a href="../view.html?f=units/${me.unit}.md">Load lesson ${me.n}'s practice data</a> again first, then the current lesson's when you're done.`;
+          el.innerHTML = `This is an earlier lesson. Its answers come from its own practice data, and a later lesson's
+            data has replaced it. <a href="../view.html?f=units/${me.unit}.md">Load lesson ${me.n}'s practice data</a> (on its lesson page) again first,
+            then load the current lesson's data back when you are done.`;
           el.hidden = false;
         }
         const next = list.slice(i + 1).find(l => l.unit);

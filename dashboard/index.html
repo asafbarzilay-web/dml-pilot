@@ -158,8 +158,8 @@
   <div id="area-raw" hidden>
     <section class="card">
       <h2>Raw data</h2>
-      <p class="muted">Exactly what is stored. Click a column name to sort (again to flip), or its ▾ to filter by value.
-        Times are in your time zone.</p>
+      <p class="muted">Exactly what is stored. Click a column's name to sort by it (again to flip); click the ▾ next to it to
+        pick which values to show, like a spreadsheet filter. Times are in your time zone.</p>
       <div class="tabs" id="tabs"></div>
       <p class="muted" id="table-count"></p>
       <div class="scroll"><div id="table"></div></div>
@@ -208,13 +208,13 @@
       // An empty lesson board says what fills it: the slides first, then the walkthrough with the assistant.
       const say = l ? `Let's practice lesson ${l.n}` : '';
       $('board').innerHTML = l ? `<div class="placeholder start">
-        <b>This board is empty.</b> Your lesson ${l.n} panels appear here as you build them.
+        <b>This board is still empty.</b> Your panels for lesson ${l.n} appear here as you build them.
         <ol>
-          <li>${l.slides ? `Go through <a href="../${esc(l.slides)}">the slides</a> first.` : 'Go through the slides first.'}</li>
-          <li>Open your assistant and say <i>"${esc(say)}"</i>: it builds this board with you.</li>
+          <li>${l.slides ? `Go through <a href="../${esc(l.slides)}">the lesson's slides</a>, if you haven't yet.` : 'Go through the lesson\'s slides, if you haven\'t yet.'}</li>
+          <li>Open your assistant and say <i>"${esc(say)}"</i>: it builds this board with you, step by step.</li>
         </ol>
         <a class="go" href="https://claude.ai/code" target="_blank" rel="noopener" data-say="${esc(say)}">Open your assistant ↗</a>
-        <small>It copies "${esc(say)}": click <b>+ New</b> in Claude Code and paste.</small></div>`
+        <small>The button also copies "${esc(say)}": in Claude Code click <b>+ New</b> and paste.</small></div>`
         : `<div class="placeholder">Nothing here yet.</div>`;
       const go = $('board').querySelector('[data-say]');
       if (go) go.addEventListener('click', () => navigator.clipboard.writeText(go.dataset.say).catch(() => {}));
@@ -436,7 +436,7 @@
     if (error) { el.className = 'recording idle'; el.innerHTML = `<span class="dot"></span>Could not check recording: ${esc(error.message)}`; return; }
     if (!data.length) {
       el.className = 'recording idle';
-      el.innerHTML = '<span class="dot"></span>No visits yet. <a href="../app/?test=1">Open the app as a test run</a>.';
+      el.innerHTML = '<span class="dot"></span>No visits recorded yet. <a href="../app/?test=1">Open the app as a test run</a> to try it.';
       return;
     }
     const v = data[0], m = Math.max(0, Math.round((Date.now() - new Date(v.started_at)) / 60000));
