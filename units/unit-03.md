@@ -2,6 +2,31 @@
 
 **The question this lesson asks:** where do people give up on registration?
 
+## How it goes
+
+1. **[The class slides](slides/03-funnels/slides.html)**, in class with your lecturer.
+2. **The guided walkthrough, with your assistant.** In the Claude app: **Code → + New**, check the chips say
+   **Data-mindset** and your repository, and say: ***"Let's start lesson 3"***. It takes you through
+   everything, one step at a time: loading the practice data, deciding what each number means, building
+   your board, and checking it.
+3. **[Lesson 3 · Questions](checker/?lesson=lesson-03)**, answered from [your dashboard](dashboard/#unit-03), then the memo.
+
+## What you'll build
+
+On [your dashboard's **lesson 3** board](dashboard/#unit-03):
+- **The start screen**: Log in, Register, or left without choosing.
+- **The registration funnel**: each step, its % of the step before and of the first step.
+
+## The practice data
+
+Your assistant asks you to load it at the right moment: copy it here, then run it in Supabase's SQL Editor.
+
+[the practice data](data/copy.html?f=lesson-03)
+
+<!-- For your assistant: the page stops here. Everything below is your brief for this lesson; the team doesn't see it on the page. -->
+
+**The question this lesson asks:** where do people give up on registration?
+
 ## 0. The class slides
 
 Start with [the slides for this lesson](slides/03-funnels/slides.html) (arrow keys to move). The

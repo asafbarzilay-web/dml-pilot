@@ -101,7 +101,11 @@ them to a later lesson. Don't guess which question they're on; they'll say if it
   make a number wrong, or any question about risks.
 
 ### The guided walkthrough
-- Go panel by panel, as `units/<lesson>.md` lists them. **Gather first, build once:** a panel that is
+- **You lead the walkthrough.** The lesson's page (`units/<lesson>.md`) shows the team only a short
+  overview; everything after its `<!-- For your assistant` marker is **your brief**: the steps,
+  what is already decided, what is theirs, the scope. Take them through it in order, one step at a
+  time (the practice data, anything to look at, then the panels), so they never need to read it.
+- Go panel by panel, as the brief lists them. **Gather first, build once:** a panel that is
   a table (a split, a funnel, a breakdown) is one set of decisions. Ask its questions one at a time,
   and build nothing until all of them are answered; then build the whole panel in one go.
 - **While gathering, a message is only the next question** (with a link if they need to look
@@ -191,7 +195,7 @@ lesson 4, run `sh core/task.sh show`.
   `sh core/task.sh route '<marks>'` and show them, in plain words: the **best route**, step by step,
   and **what counts as success**. Ask one question: *"Is this the task you mean?"*
   - **Yes:** `sh core/task.sh save "<their task, in their words>" '<marks>'`, then send them to the
-    walkthrough's practice data button (`view.html?f=units/unit-04.md`, step 2).
+    lesson page's practice data button (`view.html?f=units/unit-04.md`, under *The practice data*).
   - **No:** they say it again differently, say another, or pick a suggested one. Never argue for
     your reading.
 - **Something the app doesn't record** (typed text, "a photo they like", anything without a screen
@@ -268,7 +272,7 @@ number can always be traced and two numbers never quietly disagree.
   one line ("I see you've already loaded lesson 3's practice data. Let's move on.") and go to the next
   step. If it says unknown or another lesson's, ask them to load it.
 - **Practice data is the team's one paste.** Send them to the lesson's walkthrough page (link,
-  `view.html?f=units/unit-02.md`): step 1 has a **Copy the practice data** button; they paste it in
+  `view.html?f=units/unit-02.md`): under *The practice data* there is a **Copy the practice data** button; they paste it in
   Supabase's SQL Editor and click Run. It worked if the result shows the row counts listed under the
   button. Skip it when the lesson's `data` in `units/lessons.json` is the same as the previous
   lesson's (lesson 2 uses lesson 1's data).

@@ -1,5 +1,30 @@
 # Lesson 8 · Segmentation
 
+**The question this lesson asks:** do some groups of visitors do better than others, and is the difference real?
+
+## How it goes
+
+1. **[The class slides](slides/08-segmentation/slides.html)**, in class with your lecturer.
+2. **The guided walkthrough, with your assistant.** In the Claude app: **Code → + New**, check the chips say
+   **Data-mindset** and your repository, and say: ***"Let's start lesson 8"***. It takes you through
+   everything, one step at a time: loading the practice data, deciding what each number means, building
+   your board, and checking it.
+3. **[Lesson 8 · Questions](checker/?lesson=lesson-08)**, answered from [your dashboard](dashboard/#unit-08), then the memo.
+
+## What you'll build
+
+On [your dashboard's **lesson 8** board](dashboard/#unit-08):
+- **Activation**, overall: visits, how many got into the app, the rate.
+- **A segment control** (device, source, new or returning) that every number on the board follows, with sizes and warnings.
+
+## The practice data
+
+Your assistant asks you to load it at the right moment: copy it here, then run it in Supabase's SQL Editor.
+
+[the practice data](data/copy.html?f=lesson-08)
+
+<!-- For your assistant: the page stops here. Everything below is your brief for this lesson; the team doesn't see it on the page. -->
+
 **The question this lesson asks:** do some groups of visitors do better than others, and is
 the difference real?
 

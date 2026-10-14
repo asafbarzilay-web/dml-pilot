@@ -2,6 +2,27 @@
 
 **The question this lesson asks:** how many people used your app, and how many came back?
 
+## How it goes
+
+1. **[The class slides](slides/02-people-vs-sessions/slides.html)**, in class with your lecturer.
+2. **The guided walkthrough, with your assistant.** In the Claude app: **Code → + New**, check the chips say
+   **Data-mindset** and your repository, and say: ***"Let's start lesson 2"***. It takes you through
+   everything, one step at a time: loading the practice data, deciding what each number means, building
+   your board, and checking it.
+3. **[Lesson 2 · Questions](checker/?lesson=lesson-02)**, answered from [your dashboard](dashboard/#unit-02), then the memo.
+
+## What you'll build
+
+On [your dashboard's **lesson 2** board](dashboard/#unit-02):
+- **Visits**, **browsers**, and **people**: your best estimate of how many humans that is.
+- **Came back**: how many people visited more than once, and **visits per person**.
+
+It uses the same practice data as lesson 1.
+
+<!-- For your assistant: the page stops here. Everything below is your brief for this lesson; the team doesn't see it on the page. -->
+
+**The question this lesson asks:** how many people used your app, and how many came back?
+
 ## 0. The class slides
 
 Start with [the slides for this lesson](slides/02-people-vs-sessions/slides.html) (arrow keys to move). The

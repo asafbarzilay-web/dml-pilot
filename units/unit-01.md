@@ -1,5 +1,31 @@
 # Lesson 1 · The data you start with
 
+**The question this lesson asks:** what exactly does the app record, and can you follow one visit through it?
+
+## How it goes
+
+1. **[The class slides](slides/01-the-data-you-start-with/slides.html)**, in class with your lecturer.
+2. **The guided walkthrough, with your assistant.** In the Claude app: **Code → + New**, check the chips say
+   **Data-mindset** and your repository, and say: ***"Let's start lesson 1"***. It takes you through
+   everything, one step at a time: loading the practice data, deciding what each number means, building
+   your board, and checking it.
+3. **[Lesson 1 · Questions](checker/?lesson=lesson-01)**, answered from [your dashboard](dashboard/#unit-01), then the memo.
+
+## What you'll build
+
+On [your dashboard's **lesson 1** board](dashboard/#unit-01):
+- **Replay a visit**: paste a `session_id`, and see that visit as one timeline, oldest first: every click, choice and sign-in.
+
+Along the way your assistant has you read [the database map](units/database-map.html), run [a test visit](app/?test=1), and find yourself in the raw data.
+
+## The practice data
+
+Your assistant asks you to load it at the right moment: copy it here, then run it in Supabase's SQL Editor.
+
+[the practice data](data/copy.html?f=lesson-02)
+
+<!-- For your assistant: the page stops here. Everything below is your brief for this lesson; the team doesn't see it on the page. -->
+
 **The question this lesson asks:** what exactly does the app record, and can you follow one
 visit through it?
 

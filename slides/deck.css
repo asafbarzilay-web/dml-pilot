@@ -53,3 +53,11 @@ th { font-size: 20px; color: #6B6B66; font-weight: 700; text-transform: uppercas
 .links a:hover { color: #C2410C; }
 .links a span { font-size: 15px; font-weight: 400; color: #8A8A85; }
 .handin { margin-top: 16px; background: #FEF0E6; border-radius: 14px; padding: 14px 18px; font-size: 18px; line-height: 1.45; }
+
+/* The end of a deck: what to do now, in order. */
+.nextsteps { list-style: none; margin: 0; padding: 0; counter-reset: n; }
+.nextsteps li { counter-increment: n; position: relative; padding: 14px 0 14px 52px; border-top: 2px solid #E5E3DD; font-size: 20px; line-height: 1.45; }
+.nextsteps li::before { content: counter(n); position: absolute; left: 0; top: 14px; width: 36px; height: 36px; border-radius: 50%; background: #C2410C; color: #fff; font-weight: 800; display: grid; place-items: center; font-size: 18px; }
+.nextsteps .say { display: inline-block; background: #1C1C1A; color: #fff; border-radius: 10px; padding: 4px 12px; margin: 4px 0; font-weight: 600; }
+.nextsteps small { display: block; font-size: 15px; color: #6B6B66; margin-top: 2px; }
+.nextsteps a { color: #C2410C; text-decoration: none; font-weight: 600; }
