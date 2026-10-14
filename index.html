@@ -115,7 +115,7 @@
       <ol>
         <li>Claude app → <b>Code</b> → <b>+ New</b></li>
         <li>Check the chips say <b>Data-mindset</b> and <b class="team">your repository</b>. If not: the cloud chip → <b>Cloud → Data-mindset</b>, and <b>+ Select repository…</b></li>
-        <li>Say what the lesson card says, e.g. <i>"Let's start lesson 3"</i></li>
+        <li>Say what the lesson card says, e.g. <i>"Let's practice lesson 3"</i></li>
       </ol>
     </details>
   </div>
@@ -194,7 +194,7 @@
     const w = work[focus.checker] || {};
     const qDone = !!w.memoSubmitted, qStarted = rightSoFar(focus) > 0;
     const here = !open ? 0 : qDone ? 0 : qStarted ? 3 : 2;   // where the team is: walkthrough until a question is right
-    const say = `Let's start lesson ${focus.n}`;
+    const say = `Let's practice lesson ${focus.n}`;
     const li = (k, cls, title, sub, act) => `<li class="${cls}"><span class="k">${cls === 'done' ? '✓' : k}</span><div><b>${title}</b><div class="sub">${sub}</div></div>${act}</li>`;
     const steps = [
       focus.slides && li(1, !focus.checker ? (open ? 'here' : '') : open && here > 1 ? 'done' : '', 'Class slides', 'In class, with your lecturer. Open them again any time.',

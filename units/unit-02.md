@@ -6,7 +6,7 @@
 
 1. **[The class slides](slides/02-people-vs-sessions/slides.html)**, in class with your lecturer.
 2. **The guided walkthrough, with your assistant.** In the Claude app: **Code → + New**, check the chips say
-   **Data-mindset** and your repository, and say: ***"Let's start lesson 2"***. It takes you through
+   **Data-mindset** and your repository, and say: ***"Let's practice lesson 2"***. It takes you through
    everything, one step at a time: loading the practice data, deciding what each number means, building
    your board, and checking it.
 3. **[Lesson 2 · Questions](checker/?lesson=lesson-02)**, answered from [your dashboard](dashboard/#unit-02), then the memo.
@@ -44,7 +44,7 @@ own test runs, and any real visits, are never touched.
 ## 2. Build: "Who used the app?"
 
 > **Build it with your AI assistant.** In the Claude app (or [claude.ai/code](https://claude.ai/code)): **Code → + New**,
-> check the chip above the message box says **Data-mindset**, and type: *"Let's start lesson 2"*.
+> check the chip above the message box says **Data-mindset**, and type: *"Let's practice lesson 2"*.
 > It walks you through everything below, one step at a time.
 
 Build these numbers on [your dashboard's **lesson 2** board](dashboard/#unit-02), **each in its own panel**:

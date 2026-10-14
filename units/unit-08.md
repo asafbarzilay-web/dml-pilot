@@ -6,7 +6,7 @@
 
 1. **[The class slides](slides/08-segmentation/slides.html)**, in class with your lecturer.
 2. **The guided walkthrough, with your assistant.** In the Claude app: **Code → + New**, check the chips say
-   **Data-mindset** and your repository, and say: ***"Let's start lesson 8"***. It takes you through
+   **Data-mindset** and your repository, and say: ***"Let's practice lesson 8"***. It takes you through
    everything, one step at a time: loading the practice data, deciding what each number means, building
    your board, and checking it.
 3. **[Lesson 8 · Questions](checker/?lesson=lesson-08)**, answered from [your dashboard](dashboard/#unit-08), then the memo.
@@ -44,7 +44,7 @@ This replaces the previous practice data. Your own test runs and real visits sta
 ## 2. Build: segments, everywhere
 
 > **Build it with your AI assistant.** In the Claude app (or [claude.ai/code](https://claude.ai/code)): **Code → + New**,
-> check the chip above the message box says **Data-mindset**, and type: *"Let's start lesson 8"*.
+> check the chip above the message box says **Data-mindset**, and type: *"Let's practice lesson 8"*.
 > It walks you through everything below, one step at a time.
 
 The metric for this lesson is **activation**: a visit in which the person got into the app.

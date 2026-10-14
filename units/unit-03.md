@@ -6,7 +6,7 @@
 
 1. **[The class slides](slides/03-funnels/slides.html)**, in class with your lecturer.
 2. **The guided walkthrough, with your assistant.** In the Claude app: **Code → + New**, check the chips say
-   **Data-mindset** and your repository, and say: ***"Let's start lesson 3"***. It takes you through
+   **Data-mindset** and your repository, and say: ***"Let's practice lesson 3"***. It takes you through
    everything, one step at a time: loading the practice data, deciding what each number means, building
    your board, and checking it.
 3. **[Lesson 3 · Questions](checker/?lesson=lesson-03)**, answered from [your dashboard](dashboard/#unit-03), then the memo.
@@ -42,7 +42,7 @@ practice data; your own test runs and real visits stay.
 ## 2. Build: the start screen, and the registration funnel
 
 > **Build it with your AI assistant.** In the Claude app (or [claude.ai/code](https://claude.ai/code)): **Code → + New**,
-> check the chip above the message box says **Data-mindset**, and type: *"Let's start lesson 3"*.
+> check the chip above the message box says **Data-mindset**, and type: *"Let's practice lesson 3"*.
 > It walks you through everything below, one step at a time.
 
 Every visit opens on the **start screen** (`start`), and goes one of three ways: **Log in**, for
