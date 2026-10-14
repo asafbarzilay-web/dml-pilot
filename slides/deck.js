@@ -24,7 +24,12 @@
     if (e.key === 'Home') show(0);
     if (e.key === 'End') show(slides.length - 1);
   });
-  addEventListener('click', e => { if (!e.target.closest('a')) show(e.clientX < innerWidth / 3 ? i - 1 : i + 1); });
+  addEventListener('click', e => { if (!e.target.closest('a, button')) show(e.clientX < innerWidth / 3 ? i - 1 : i + 1); });
+  // A button that copies words to say to the assistant (data-copy="Let's start lesson 3").
+  document.querySelectorAll('button[data-copy]').forEach(b => b.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = 'Copied: paste it to your assistant'; }
+    catch { b.textContent = b.dataset.copy; }
+  }));
   // Links to the team's own pages (data-site="dashboard/"). Slides sit in <site>/slides/<lesson>/.
   const site = location.pathname.includes('/slides/') ? '../../' : '../../template/';
   document.querySelectorAll('a[data-site]').forEach(a => { a.href = site + a.dataset.site; });
