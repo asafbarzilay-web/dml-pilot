@@ -19,7 +19,7 @@ On [your dashboard's **lesson 3** board](dashboard/#unit-03):
 
 ## The practice data
 
-Your assistant asks you to load it at the right moment: copy it here, then run it in Supabase's SQL Editor.
+Your assistant tells you when. Then copy it here, and run it in Supabase's SQL Editor.
 
 [the practice data](data/copy.html?f=lesson-03)
 

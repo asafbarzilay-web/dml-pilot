@@ -17,11 +17,9 @@ On [your dashboard's **lesson 4** board](dashboard/#unit-04):
 - **Your task**: you choose it (a suggested one, or your own in words), and approve its best route. Your practice data is made from it.
 - **Your task's runs**, **who succeeded** (directly, indirectly, or not), and **time to success**.
 
-Load the practice data only after your task is saved: it is made from your task.
-
 ## The practice data
 
-Your assistant asks you to load it at the right moment: copy it here, then run it in Supabase's SQL Editor.
+Your assistant tells you when. Then copy it here, and run it in Supabase's SQL Editor.
 
 [the practice data](data/copy.html?f=lesson-04)
 
