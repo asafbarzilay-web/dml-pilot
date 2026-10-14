@@ -107,7 +107,7 @@
   <div class="top">
     <div>
       <h1>Your study platform</h1>
-      <p class="lead">An app that records how people use it, and a dashboard you grow into one whose every number you can prove.</p>
+      <p class="lead">An app that records how people use it, and a dashboard where every number is one you can prove.</p>
     </div>
     <a class="setup" id="setup" href="units/setup.html" hidden><b>One-time setup</b><span>Do this before lesson 1 →</span></a>
     <details class="assist" id="assist">
@@ -121,8 +121,8 @@
   </div>
 
   <div class="update" id="update" hidden></div>
-  <div class="unset" id="unset" hidden><b>Not connected to a database yet.</b> This copy can't record or show anything
-    until the one-time setup is done. <a href="units/setup.html">Follow the one-time setup →</a></div>
+  <div class="unset" id="unset" hidden><b>Not connected to a database yet.</b> Finish
+    <a href="units/setup.html">the one-time setup</a> first.</div>
   <div class="now" id="now">Loading…</div>
 
   <h2>Your tools</h2>
@@ -159,8 +159,8 @@
           const el = document.getElementById('update');
           el.innerHTML = `<b>A course update is waiting</b> (${c.ahead_by} change${c.ahead_by === 1 ? '' : 's'}).<br>
             <a class="go" href="https://github.com/${owner}/${repo}" target="_blank" rel="noopener">Update now</a>
-            <small>It opens your repository on GitHub: click <b>Sync fork</b>, then <b>Update branch</b>. Your site refreshes about
-            a minute later. (Or start a new session with your assistant: it updates by itself.)</small>`;
+            <small>It opens your repository: click <b>Sync fork</b>, then <b>Update branch</b>. Your site refreshes a minute later.
+            (A new assistant session updates it by itself.)</small>`;
           el.hidden = false;
         }).catch(() => {});
     }
@@ -197,14 +197,14 @@
     const say = `Let's practice lesson ${focus.n}`;
     const li = (k, cls, title, sub, act) => `<li class="${cls}"><span class="k">${cls === 'done' ? '✓' : k}</span><div><b>${title}</b><div class="sub">${sub}</div></div>${act}</li>`;
     const steps = [
-      focus.slides && li(1, !focus.checker ? (open ? 'here' : '') : open && here > 1 ? 'done' : '', 'Class slides', 'In class, with your lecturer. Open them again any time.',
+      focus.slides && li(1, !focus.checker ? (open ? 'here' : '') : open && here > 1 ? 'done' : '', 'Class slides', 'In class. Open them again any time.',
         `<a class="act" href="${esc(focus.slides)}">Slides</a>`),
       focus.checker && li(2, !open ? '' : here === 2 ? 'here' : here > 2 || qDone ? 'done' : '', 'Guided walkthrough, with your assistant',
-        open ? `In Claude Code: <b>+ New</b>, then paste <span class="say">"${say}"</span> (the button copies it for you). Your assistant loads the practice data with you and builds the panels, step by step. <a class="minor" href="${brief(focus)}">Read the walkthrough</a>`
+        open ? `Click <b>+ New</b> and paste <span class="say">"${say}"</span> (the button copies it). Your assistant takes you through the practice data and your panels, step by step. <a class="minor" href="${brief(focus)}">Overview</a>`
              : 'Opens in your next class.',
         open ? `<a class="act" href="https://claude.ai/code" target="_blank" rel="noopener" data-say="${esc(say)}">Open your assistant ↗</a>` : '<span class="act off">Opens in class</span>'),
       focus.checker && li(3, !open ? '' : qDone ? 'done' : here === 3 ? 'here' : '', 'Questions and memo',
-        !open ? 'Opens in your next class.' : qDone ? 'Done: every question answered and the memo submitted.'
+        !open ? 'Opens in your next class.' : qDone ? 'Done: questions answered, memo submitted.'
           : qStarted ? `${rightSoFar(focus)} right so far. Keep answering, using the numbers on your board, then write the memo.`
           : 'Answer this lesson\'s questions, using the numbers on your board. Then write a short memo.',
         open ? `<a class="act" href="${checker(focus)}">Questions</a>` : '<span class="act off">Opens in class</span>')

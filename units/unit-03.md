@@ -1,25 +1,23 @@
 # Lesson 3 · Funnels and drop-off
 
-**The question this lesson asks:** where do people give up on registration?
+**The question:** where do people give up on registration?
 
 ## How it goes
 
-1. **[The class slides](slides/03-funnels/slides.html)**, in class with your lecturer.
-2. **The guided walkthrough, with your assistant.** In the Claude app: **Code → + New**, check the chips say
-   **Data-mindset** and your repository, and say: ***"Let's practice lesson 3"***. It takes you through
-   everything, one step at a time: loading the practice data, deciding what each number means, building
-   your board, and checking it.
+1. **[Slides](slides/03-funnels/slides.html)**, in class.
+2. **Your assistant leads the practice.** In the Claude app: **Code → + New**, check the chips say
+   **Data-mindset** and your repository, and say ***"Let's practice lesson 3"***.
 3. **[Lesson 3 · Questions](checker/?lesson=lesson-03)**, answered from [your dashboard](dashboard/#unit-03), then the memo.
 
 ## What you'll build
 
-On [your dashboard's **lesson 3** board](dashboard/#unit-03):
+Build on [your dashboard's **lesson 3** board](dashboard/#unit-03):
 - **The start screen**: Log in, Register, or left without choosing.
 - **The registration funnel**: each step, its % of the step before and of the first step.
 
 ## The practice data
 
-Your assistant tells you when. Then copy it here, and run it in Supabase's SQL Editor.
+Your assistant tells you when. Then copy it here and run it in Supabase's SQL Editor.
 
 [the practice data](data/copy.html?f=lesson-03)
 
