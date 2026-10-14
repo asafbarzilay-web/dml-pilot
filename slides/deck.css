@@ -66,6 +66,8 @@ th { font-size: 20px; color: #6B6B66; font-weight: 700; text-transform: uppercas
 .go button, .go a { font: inherit; font-size: 17px; font-weight: 700; border-radius: 12px; padding: 10px 16px; cursor: pointer; text-decoration: none; }
 .go button { background: #1C1C1A; color: #fff; border: 0; }
 .go a { background: #fff; color: #1C1C1A !important; border: 2px solid #1C1C1A; }
+.go a.primary { background: #C2410C; color: #fff !important; border-color: #C2410C; font-size: 20px; padding: 12px 22px; }
+.go + small { display: block; font-size: 16px; color: #4A4A45; margin-bottom: 6px; }
 /* The chips above the Claude message box, drawn as they should look. */
 .chips { display: flex; gap: 8px; align-items: center; margin: 8px 0 2px; font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif; }
 .chips span { display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid #D9D7D0; background: #fff; border-radius: 9px; padding: 5px 11px; font-size: 16px; color: #1C1C1A; }

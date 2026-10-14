@@ -200,9 +200,9 @@
       focus.slides && li(1, !focus.checker ? (open ? 'here' : '') : open && here > 1 ? 'done' : '', 'Class slides', 'In class, with your lecturer. Open them again any time.',
         `<a class="act" href="${esc(focus.slides)}">Slides</a>`),
       focus.checker && li(2, !open ? '' : here === 2 ? 'here' : here > 2 || qDone ? 'done' : '', 'Guided walkthrough, with your assistant',
-        open ? `Open your assistant and say: <span class="say">"${say}"</span>. It loads the practice data with you and builds the panels, step by step. <a class="minor" href="${brief(focus)}">Read the walkthrough</a>`
+        open ? `In Claude Code: <b>+ New</b>, then paste <span class="say">"${say}"</span> (the button copies it for you). Your assistant loads the practice data with you and builds the panels, step by step. <a class="minor" href="${brief(focus)}">Read the walkthrough</a>`
              : 'Opens in your next class.',
-        open ? `<button class="act" data-say="${esc(say)}">Copy "${esc(say)}"</button>` : '<span class="act off">Opens in class</span>'),
+        open ? `<a class="act" href="https://claude.ai/code" target="_blank" rel="noopener" data-say="${esc(say)}">Open your assistant ↗</a>` : '<span class="act off">Opens in class</span>'),
       focus.checker && li(3, !open ? '' : qDone ? 'done' : here === 3 ? 'here' : '', 'Questions and memo',
         !open ? 'Opens in your next class.' : qDone ? 'Done: every question answered and the memo submitted.'
           : qStarted ? `${rightSoFar(focus)} right so far. Answer from your dashboard, then write the memo.` : 'When your board is built: answer from your dashboard, then write the memo.',
@@ -215,9 +215,10 @@
       <ol class="path">${steps}</ol>
       ${lessons.filter(unfinished).map(l => `<p class="again">Lesson ${l.n} isn't finished yet. You can still finish it: <a href="${checker(l)}">its questions and memo</a>.</p>`).join('')}
       ${open ? '' : `<p class="again">✓ Lesson ${cur.n} done. Go back over it: ${[cur.slides && `<a href="${esc(cur.slides)}">slides</a>`, cur.checker && `<a href="${brief(cur)}">walkthrough</a>`, cur.checker && `<a href="${checker(cur)}">questions</a>`].filter(Boolean).join(' · ')}</p>`}`;
-    document.getElementById('now').addEventListener('click', async (e) => {
+    // Opening the assistant also copies what to say to it: the link opens Claude Code, the words are ready to paste.
+    document.getElementById('now').addEventListener('click', (e) => {
       const b = e.target.closest('[data-say]'); if (!b) return;
-      try { await navigator.clipboard.writeText(b.dataset.say); b.textContent = 'Copied: paste it to your assistant'; } catch { b.textContent = b.dataset.say; }
+      navigator.clipboard.writeText(b.dataset.say).catch(() => {});
     });
     // Setup is needed before lesson 1 only: lesson 1 can't be done without it.
     // Before lesson 1 is done: setup in the corner and the assistant's steps in full. After: a small tip.
