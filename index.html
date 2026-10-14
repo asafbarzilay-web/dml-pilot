@@ -205,7 +205,8 @@
         open ? `<a class="act" href="https://claude.ai/code" target="_blank" rel="noopener" data-say="${esc(say)}">Open your assistant ↗</a>` : '<span class="act off">Opens in class</span>'),
       focus.checker && li(3, !open ? '' : qDone ? 'done' : here === 3 ? 'here' : '', 'Questions and memo',
         !open ? 'Opens in your next class.' : qDone ? 'Done: every question answered and the memo submitted.'
-          : qStarted ? `${rightSoFar(focus)} right so far. Answer from your dashboard, then write the memo.` : 'When your board is built: answer from your dashboard, then write the memo.',
+          : qStarted ? `${rightSoFar(focus)} right so far. Keep answering, using the numbers on your board, then write the memo.`
+          : 'Answer this lesson\'s questions, using the numbers on your board. Then write a short memo.',
         open ? `<a class="act" href="${checker(focus)}">Questions</a>` : '<span class="act off">Opens in class</span>')
     ].filter(Boolean).join('');
     document.getElementById('now').innerHTML = `
