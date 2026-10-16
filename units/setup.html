@@ -158,10 +158,10 @@
         <ol><li>Name: <code>Data-mindset</code>.</li><li>Network access: <b>Full</b>.</li></ol></div>
 
       <div class="mini"><div class="sub">C · Add your secret key</div>
-        <ol><li>In Supabase: <b>Project Settings → API Keys → Secret keys</b>. Copy the key named <code>default</code>.</li>
-          <li>In the form's <b>Environment variables</b> box, first this:
+        <ol><li>In the form's <b>Environment variables</b> box, first the name: click
             <div class="copyrow"><button class="copy" id="copy-env" type="button">Copy "SUPABASE_SECRET_KEY="</button> <span id="copy-env-status" class="copied"></span></div>
-            Paste it (⌘V), then paste your key right after it:
+            then paste it (⌘V) into the box.</li>
+          <li>Now the key. In Supabase (another tab): <b>Project Settings → API Keys → Secret keys</b>. Copy the key named <code>default</code>, come back, and paste it right after the <code>=</code>:
             <div class="line">SUPABASE_SECRET_KEY=<span>sb_secret_…</span></div></li>
           <li>Click <b>Add environment</b>.</li></ol>
         <img src="../slides/00-tools-and-concepts/img/claude-env-form.jpg" alt="The environment form: name, network access, environment variables" style="max-width:420px">
