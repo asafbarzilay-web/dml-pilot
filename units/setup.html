@@ -57,6 +57,8 @@
   .partnav a.next { background: #C2410C; color: #fff; }
   .partnav a.back2 { color: #1C1C1A; border: 1.5px solid #CFCFCA; background: #fff; }
   .partdone { color: #1F7A3F; font-weight: 700; }
+  .copyrow { margin: 8px 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .copyrow button.copy { margin: 0; }
   .step .mini { border-top: 1px dashed #D9D9D4; margin-top: 16px; padding-top: 2px; }
   @media (max-width: 600px) { .step { padding-left: 20px; padding-top: 56px; } a.card { grid-template-columns: 40px 1fr; } a.card .go { grid-column: 2; } }
 </style>
@@ -157,7 +159,9 @@
 
       <div class="mini"><div class="sub">C · Add your secret key</div>
         <ol><li>In Supabase: <b>Project Settings → API Keys → Secret keys</b>. Copy the key named <code>default</code>.</li>
-          <li>In the form's <b>Environment variables</b> box: click <button class="copy" id="copy-env" type="button">Copy "SUPABASE_SECRET_KEY="</button> <span id="copy-env-status" class="copied"></span>, paste (⌘V), then paste your key right after it.
+          <li>In the form's <b>Environment variables</b> box, first this:
+            <div class="copyrow"><button class="copy" id="copy-env" type="button">Copy "SUPABASE_SECRET_KEY="</button> <span id="copy-env-status" class="copied"></span></div>
+            Paste it (⌘V), then paste your key right after it:
             <div class="line">SUPABASE_SECRET_KEY=<span>sb_secret_…</span></div></li>
           <li>Click <b>Add environment</b>.</li></ol>
         <img src="../slides/00-tools-and-concepts/img/claude-env-form.jpg" alt="The environment form: name, network access, environment variables" style="max-width:420px">
@@ -216,7 +220,7 @@
   // The variable's name, copied: they only paste the key right after it.
   document.getElementById('copy-env').addEventListener('click', async () => {
     const st = document.getElementById('copy-env-status');
-    try { await navigator.clipboard.writeText('SUPABASE_SECRET_KEY='); st.textContent = 'Copied. Paste it, then your key.'; }
+    try { await navigator.clipboard.writeText('SUPABASE_SECRET_KEY='); st.textContent = 'Copied ✓'; }
     catch { st.textContent = 'Your browser blocked the copy. Type it instead.'; st.style.color = '#B42318'; }
   });
   // The setup SQL, copied whole: selecting it by hand often copies only the part on screen.
