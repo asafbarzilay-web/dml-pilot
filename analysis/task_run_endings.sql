@@ -1,4 +1,4 @@
--- One row per way a run of the team's task ended, plus a row for all runs.
+-- One row per way a run of the team task ended, plus a row for all runs.
 create or replace view analysis.task_run_endings as
   with runs as (
     select case r.ended_by
