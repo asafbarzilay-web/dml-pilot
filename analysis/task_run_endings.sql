@@ -19,4 +19,4 @@ create or replace view analysis.task_run_endings as
   ) t;
 
 comment on view analysis.task_run_endings is
-  'We count runs of the team''s task, from task_runs, only rows whose task is "On Jane''s profile, like the photo of the woman with purple hair" and whose visit is in the photo app (photo_visits), excluding the team''s own test runs (is_test), split by how the run ended (ended_by): success, gave up, or never ended.';
+  'We count runs of the team''s task, from task_runs, only rows whose task is: On Jane''s profile, like the photo of the woman with purple hair; and whose visit is in the photo app (photo_visits), excluding the team''s own test runs (is_test), split by how the run ended (ended_by): success, gave up, or never ended.';
