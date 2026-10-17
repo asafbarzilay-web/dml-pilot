@@ -160,8 +160,9 @@ segments too small to trust.
 Lesson 4's data and questions are made from **one task the team chooses**. First, run
 `sh core/task.sh show`.
 - **No task yet:** say in two lines what a task is (a goal given to a participant), then ask: a
-  suggested one, or their own in words. For suggestions run `sh core/task.sh menu` and show the
-  tasks **in words only**, numbered.
+  suggested one, or their own in words. Run `sh core/task.sh menu` and show the suggested tasks
+  **in words only**, numbered 1–4, then always a last line in bold: **5. Your own task: say it in
+  your own words.** Never steer them to or away from 5.
 - **Their own:** turn their words into success criteria yourself (the marks: the choices, in
   order, that mean they got there, as `step`/`value`; never `label`; `*` = starts with). A task can
   name one photo ("like the three puppies": `like:d07`) or any (`like:*`). You can't see photos:

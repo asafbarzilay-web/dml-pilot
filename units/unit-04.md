@@ -12,7 +12,7 @@
 ## What you'll build
 
 Build on [your dashboard's **lesson 4** board](dashboard/#unit-04):
-- **Your task**: pick a suggested one or say your own, and approve its best route. Your practice data is made from it.
+- **Your task**: pick one of 4 suggested or **5, say your own**, and approve its best route. Your practice data is made from it.
 - **Your task's runs**, **who succeeded** (directly, indirectly, not), and **time to success**.
 
 ## The practice data
@@ -39,10 +39,10 @@ walkthrough below assumes you have been through them.
 A usability task is a goal you give a participant: *"Find a photo of a dog and open it."* Your team
 chooses **one** task for the photo app. Two ways:
 
-- **Pick a suggested one.** Your assistant shows you a short list.
-- **Say your own, in words.** Your assistant works out what reaching it looks like in the data and
-  shows you the **best route**: the fewest choices that get there, step by step. If that's your
-  task, approve it. If not, say it again differently, say another, or pick a suggested one.
+- **1–4. Pick a suggested one.** Your assistant shows you a short list.
+- **5. Your own task, in words.** Say what a participant should do. Your assistant works out the
+  **best route** (the fewest choices that get there). If that's your task, approve it; if not, say it
+  again differently, say another, or pick a suggested one.
 
 A task must end in something the app records: a screen reached, a photo opened, a search, a like.
 "Find a photo you love" can't be checked; "like the photo of the three puppies" can. It can be about
