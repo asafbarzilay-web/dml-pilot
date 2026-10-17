@@ -213,7 +213,20 @@ const BOARDS = {
           <p class="muted" style="margin:2px 0">We count visits to the photo app that got to the discover page, from photo_visits (the photo app's visits, excluding the team's own test runs): visits with a selection on the register_username screen or the login screen (step = register_username or login) whose value = discover, each visit counted once.</p></div>`;
       } }
   ],
-  'unit-04': [],
+  'unit-04': [
+    { title: 'Your task\'s runs', view: 'task_run_endings', render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('task_run_endings').select('*');
+        if (error) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        const order = ['success', 'gave up', 'never ended'];
+        const rows = order.map(e => ({ ending: e, runs: (data.find(r => r.ending === e) || {}).runs || 0 }));
+        const total = rows.reduce((t, r) => t + Number(r.runs), 0);
+        el.innerHTML = `<p class="muted">Population: runs of the task "On Jane's profile, like the photo of the woman with purple hair", practice data included, the team's own test runs excluded.</p>
+          <p class="muted">We count runs of the team's task, split by how the run ended: success, gave up, or never ended.</p>
+          <div class="scroll"><table><thead><tr><th>how the run ended</th><th>runs</th></tr></thead><tbody>${
+          rows.map(r => `<tr><td>${esc(r.ending)}</td><td class="num">${esc(r.runs)}</td></tr>`).join('')}
+          <tr><td><b>all runs</b></td><td class="num"><b>${esc(total)}</b></td></tr></tbody></table></div>`;
+      } }
+  ],
   'unit-08': []
 };
 
