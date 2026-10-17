@@ -213,16 +213,7 @@ const BOARDS = {
           <p class="muted" style="margin:2px 0">We count visits to the photo app that got to the discover page, from photo_visits (the photo app's visits, excluding the team's own test runs): visits with a selection on the register_username screen or the login screen (step = register_username or login) whose value = discover, each visit counted once.</p></div>`;
       } }
   ],
-  'unit-04': [
-    { title: 'Your task\'s runs', view: 'task_run_endings', render: async (el) => {
-        const { data, error } = await db.schema('analysis').from('task_run_endings').select('*').order('n');
-        if (error || !data.length) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
-        el.innerHTML = `<p class="muted">Population: runs of the task "On Jane's profile, like the photo of the woman with purple hair", photo app only, practice data included, the team's own test runs excluded.</p>
-          <p class="muted">We count runs of the team's task from task_runs, split by how the run ended: success, gave up, or never ended.</p>
-          <div class="scroll"><table><thead><tr><th>how the run ended</th><th>runs</th></tr></thead><tbody>${
-          data.map(r => `<tr><td>${esc(r.ending)}</td><td class="num">${esc(r.runs)}</td></tr>`).join('')}</tbody></table></div>`;
-      } }
-  ],
+  'unit-04': [],
   'unit-08': []
 };
 
