@@ -16,9 +16,37 @@ const Coursework = (() => {
     auth: { persistSession: false, autoRefreshToken: false, storageKey: 'coursework' }
   });
 
+  // Resets the lecturer made for this team: once each, clear that lesson's saved answers and memo (and the
+  // "practice data loaded" mark when it was this lesson's data). Each applied reset is noted in
+  // practice-data, so it never runs twice. Their built work (panels, views) is cleared by their assistant.
+  let resetsDone = null;
+  function applyResets() {
+    if (unset || typeof Course === 'undefined') return Promise.resolve();
+    return resetsDone || (resetsDone = (async () => {
+      try {
+        const resets = await Course.pendingResets();
+        if (!resets.length) return;
+        const { data: marks } = await db.from('coursework').select('question, answer').eq('lesson', 'practice-data');
+        const done = new Set((marks || []).map(m => m.question)), loaded = (marks || []).find(m => m.question === 'loaded');
+        let lessons = null;
+        for (const r of resets) {
+          if (done.has('reset:' + r.id)) continue;
+          await db.from('coursework').delete().eq('lesson', r.lesson);
+          if (loaded) {
+            lessons = lessons || await Course.lessonList().catch(() => []);
+            const l = lessons.find(x => x.checker === r.lesson);
+            if (l && l.data === loaded.answer) await db.from('coursework').delete().eq('lesson', 'practice-data').eq('question', 'loaded');
+          }
+          await db.from('coursework').upsert({ lesson: 'practice-data', question: 'reset:' + r.id, answer: 'applied', updated_at: new Date().toISOString() }, { onConflict: 'lesson,question' });
+        }
+      } catch {}
+    })());
+  }
+
   // { q1: { answer, is_right, tries, submitted_at }, …, memo: {…} } for one lesson.
   async function load(lesson) {
     if (unset) return {};
+    await applyResets();
     const { data, error } = await db.from('coursework').select('*').eq('lesson', lesson);
     if (error) throw error;
     return Object.fromEntries(data.map(r => [r.question, r]));
@@ -34,10 +62,12 @@ const Coursework = (() => {
   // Per lesson: how many answers are right, and whether the memo was submitted.
   async function summary() {
     if (unset) return {};
+    await applyResets();
     const { data, error } = await db.from('coursework').select('lesson, question, is_right, submitted_at');
     if (error) throw error;
     const out = {};
     for (const r of data) {
+      if (r.lesson === 'practice-data') continue;   // the data's own marks, not a lesson
       const l = out[r.lesson] = out[r.lesson] || { right: 0, memoSubmitted: false };
       if (r.question.includes(':')) continue;   // e.g. 'q4:gaveup', the words written when giving up
       if (r.question === 'memo') l.memoSubmitted = !!r.submitted_at;

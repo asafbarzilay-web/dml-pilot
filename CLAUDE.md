@@ -28,6 +28,10 @@ a number counts, what the board is missing, why a number is wrong.
      with `submitted_at` was **given up**: closed for good, scores 0, the team saw its answer. Don't
      reopen it; it counts as done.
    - What is built: every view with its definition, each board's panels and numbers, the last steps.
+   - **`RESET PENDING: lesson-NN (id N)`**: your lecturer reset that lesson. Before anything else run
+     `sh core/reset-lesson.sh lesson-NN N` (it clears the lesson's saved answers, panels and views),
+     then say in one line "Your lecturer reset lesson N, so it starts fresh." and go on as if it was
+     never started (its practice data may need loading again). Never run it for a reset not listed.
 3. **Continue where they left off.** In your first message, say in one line what is already built
    and go straight to the next step. Never call a lesson "not started" when it has views or panels.
    - Lesson done: say so in one line; the next opens in class, its slides are open (link).
@@ -239,7 +243,7 @@ One definition in one place, so a number is always traceable and two never quiet
 - **No permission prompts for routine steps.** Read files with your file tools, not shell. One
   command at a time, never chained (`;`, `&&`, `|`). Pre-approved: `sh core/update.sh`,
   `core/progress.sh`, `core/check-setup.sh`, `core/apply.sh …`, `core/look.sh …`,
-  `core/question.sh …`, `core/task.sh …`, `core/save.sh "…"`, and ordinary git (status, log, diff,
+  `core/question.sh …`, `core/task.sh …`, `core/reset-lesson.sh …`, `core/save.sh "…"`, and ordinary git (status, log, diff,
   add, commit, push, pull, fetch, merge, checkout). Anything else asks them: avoid it.
 
 ## Pace and voice

@@ -20,6 +20,7 @@
       "Bash(sh core/look.sh:*)",
       "Bash(sh core/question.sh:*)",
       "Bash(sh core/task.sh:*)",
+      "Bash(sh core/reset-lesson.sh:*)",
       "Bash(sh core/save.sh)",
       "Bash(sh core/save.sh:*)",
       "Bash(git remote get-url:*)",

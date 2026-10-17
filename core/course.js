@@ -56,5 +56,11 @@ const Course = (() => {
     const s = await student(); if (!s) return;
     call('course_save_memo', { p_student: s, p_lesson: lessonId, p_text: text, p_submitted: submittedAt }).catch(() => {});
   }
-  return { student, lesson, data, questions, check, giveUp, memo };
+  // Resets the lecturer made for this team: [{ id, lesson }] (pages and the assistant apply them once).
+  async function pendingResets() {
+    const s = await student(); if (!s) return [];
+    return (await call('course_pending_resets', { p_student: s }).catch(() => [])) || [];
+  }
+  const lessonList = () => fetch(root + 'units/lessons.json', { cache: 'no-store' }).then(r => r.json());
+  return { student, lesson, data, questions, check, giveUp, memo, pendingResets, lessonList };
 })();

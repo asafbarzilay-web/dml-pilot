@@ -27,6 +27,16 @@ try:
 except Exception:
     print('unknown')")
 echo "Practice data in the database: $loaded"
+# Resets your lecturer made for this team whose built work (panels, views) is not cleared yet.
+resets=$(course_rpc course_pending_resets "{\"p_student\":\"$STUDENT_ID\"}" 2>/dev/null)
+applied=$(curl -s "$URL/rest/v1/coursework?select=question&lesson=eq.practice-data&question=like.resetwork:*" -H "apikey: $KEY")
+RESETS="$resets" APPLIED="$applied" python3 -c '
+import json, os
+try:
+    rs = json.loads(os.environ["RESETS"] or "[]"); done = {r["question"] for r in json.loads(os.environ["APPLIED"] or "[]")}
+except Exception: rs, done = [], set()
+for r in rs:
+    if "resetwork:%s" % r["id"] not in done: print("RESET PENDING: %s (id %s): your lecturer reset it" % (r["lesson"], r["id"]))'
 # Each lesson's questions as the course has them now (old answers to removed questions don't count).
 curl -s "$URL/rest/v1/coursework?select=lesson,question,is_right,submitted_at,answer&lesson=neq.practice-data" -H "apikey: $KEY" |
 STUDENT_ID="$STUDENT_ID" FN="$COURSE_URL/functions/v1/course" python3 -c '
