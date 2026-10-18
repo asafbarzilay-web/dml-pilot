@@ -45,9 +45,6 @@
   .path .minor { font-size: 13px; color: inherit; opacity: .75; }
   .path li.here .minor { color: #C2410C; opacity: 1; }
   @media (max-width: 600px) { .path li { grid-template-columns: 30px 1fr; } .path li > :last-child { grid-column: 2; justify-self: start; } }
-  .update { background: #EEF4FF; border: 1px solid #C7D7FE; border-radius: 12px; padding: 14px 18px; font-size: 15px; line-height: 1.55; margin: 0 0 16px; }
-  .update a.go { display: inline-block; margin: 6px 0 2px; background: #1C1C1A; color: #fff; text-decoration: none; font-weight: 600; padding: 7px 14px; border-radius: 8px; }
-  .update small { display: block; color: #6B6B66; }
   .unset { background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 12px; padding: 14px 18px; font-size: 15px; line-height: 1.55; margin: 0 0 16px; }
   .unset a { color: #92400E; font-weight: 600; }
   .tag.unfinished { background: #FEF3C7; color: #92400E; }
@@ -120,7 +117,6 @@
     </details>
   </div>
 
-  <div class="update" id="update" hidden></div>
   <div class="unset" id="unset" hidden><b>Not connected to a database yet.</b> Finish
     <a href="units/setup.html">the one-time setup</a> first.</div>
   <div class="now" id="now">Loading…</div>
@@ -147,24 +143,6 @@
   const repo = window.COURSE_TEAM ? window.COURSE_TEAM.site.split('/')[1]
     : location.hostname.endsWith('github.io') ? location.pathname.split('/')[1] : '';
   if (repo) document.querySelectorAll('.team').forEach(el => { el.textContent = repo; });
-  // A course update this copy doesn't have yet: GitHub says how many course changes the fork is missing.
-  // The page can't update the fork itself (only its owner can); it sends them to the two clicks that do.
-  // (Only on a local copy: the course's central copy is always current.)
-  if (repo && !window.COURSE_TEAM) {
-    const owner = location.hostname.split('.')[0], COURSE = 'asafbarzilay-web/data-mindset-template';
-    if (`${owner}/${repo}`.toLowerCase() !== COURSE.toLowerCase()) {
-      fetch(`https://api.github.com/repos/${owner}/${repo}/compare/main...${COURSE.replace('/', ':')}:main`)
-        .then(r => r.ok ? r.json() : null).then(c => {
-          if (!c || !c.ahead_by) return;
-          const el = document.getElementById('update');
-          el.innerHTML = `<b>A course update is waiting</b> (${c.ahead_by} change${c.ahead_by === 1 ? '' : 's'}).<br>
-            <a class="go" href="https://github.com/${owner}/${repo}" target="_blank" rel="noopener">Update now</a>
-            <small>It opens your repository: click <b>Sync fork</b>, then <b>Update branch</b>. Your site refreshes a minute later.
-            (A new assistant session updates it by itself.)</small>`;
-          el.hidden = false;
-        }).catch(() => {});
-    }
-  }
   // A copy whose database isn't filled in yet (the course's original, or a new fork) says so.
   document.getElementById('unset').hidden = !/YOUR-PROJECT/.test(SUPABASE_URL);
   const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));

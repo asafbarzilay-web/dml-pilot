@@ -46,7 +46,7 @@ Copy the practice data with the button below and run it in Supabase.
 ## 2. Read the map
 
 Open [**The database on one page**](units/database-map.html). Then draw the
-four tables and how they connect on paper, in your own words, and compare your drawing with the map.
+four tables and how they connect on paper, in your own words, and compare your drawing with the map. (Supabase also lists a fifth, `task_runs`: it stays empty until lesson 4.)
 
 ## 3. Watch yourself being recorded
 
