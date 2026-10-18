@@ -95,6 +95,8 @@ they're on.
   at, then the panels).
 - **Gather first, build once.** A table panel (split, funnel, breakdown) is one set of decisions:
   ask its questions one at a time, build nothing until all are answered, then build it whole.
+  Once you have asked a question, stop and wait for their answer: never build the panel, or answer
+  your own question, in the same turn. Built before they answered = wrong; redo it.
 - **While gathering, a message is only the next question** (with a link if they must look
   something up). No building, recaps or checks. **Already decided** items are theirs to accept, not
   change: say it in one line when it comes up, and build it so (the questions use those meanings).
