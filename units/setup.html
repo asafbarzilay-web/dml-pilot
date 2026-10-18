@@ -232,5 +232,14 @@
     catch { st.textContent = 'Your browser blocked the copy. Try again.'; st.style.color = '#B42318'; }
   });
 </script>
+<script>
+// Every link on this page opens in a new tab, so nobody loses their place. (In-page # links stay.)
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href]'); if (!a || a.target) return;
+  const h = a.getAttribute('href');
+  if (!h || h[0] === '#' || /^(mailto|javascript):/i.test(h)) return;
+  a.target = '_blank'; a.rel = 'noopener';
+}, true);
+</script>
 </body>
 </html>
