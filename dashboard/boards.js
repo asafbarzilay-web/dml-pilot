@@ -225,6 +225,18 @@ const BOARDS = {
           <div class="scroll"><table><thead><tr><th>how the run ended</th><th>runs</th></tr></thead><tbody>${
           rows.map(r => `<tr><td>${esc(r.ending)}</td><td class="num">${esc(r.runs)}</td></tr>`).join('')}
           <tr><td><b>all runs</b></td><td class="num"><b>${esc(total)}</b></td></tr></tbody></table></div>`;
+      } },
+    { title: 'Who succeeded', view: 'task_participant_results', render: async (el) => {
+        const { data, error } = await db.schema('analysis').from('task_participant_results').select('*');
+        if (error) { el.innerHTML = '<p class="muted">This panel\'s view is not built yet.</p>'; return; }
+        const order = ['direct', 'indirect', 'failed'];
+        const rows = order.map(g => ({ result: g, participants: (data.find(r => r.result === g) || {}).participants || 0 }));
+        const total = rows.reduce((t, r) => t + Number(r.participants), 0);
+        el.innerHTML = `<p class="muted">Population: participants (browsers) who tried the task "On Jane's profile, like the photo of the woman with purple hair", all runs, practice data included, the team's own test runs excluded. Each participant counts by their last run.</p>
+          <p class="muted">Direct = succeeded in no more than 3 choices (the best route); indirect = succeeded in more; failed = did not succeed. A run's choices: selections in the same visit between started_at and ended_at.</p>
+          <div class="scroll"><table><thead><tr><th>result</th><th>participants</th></tr></thead><tbody>${
+          rows.map(r => `<tr><td>${esc(r.result)}</td><td class="num">${esc(r.participants)}</td></tr>`).join('')}
+          <tr><td><b>all participants</b></td><td class="num"><b>${esc(total)}</b></td></tr></tbody></table></div>`;
       } }
   ],
   'unit-08': []
