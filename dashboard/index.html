@@ -10,6 +10,7 @@
 <script src="../core/team.js" data-file="supabase-config.js"></script>
 <script src="../core/course-config.js"></script>
 <script src="../core/course.js"></script>
+<script src="../core/coursework.js"></script>
 <script src="../core/row-limit-guard.js"></script>
 <!--
   Your dashboard. Two areas:
@@ -74,6 +75,8 @@
   .lessons button.on .n { color: #C2410C; }
   .lessons .sep { height: 1px; background: #E2E2DE; margin: 6px 4px; }
   .board-head { margin: 2px 0 14px; }
+  .lesson-done { margin-top: 8px; font-size: 14px; font-weight: 600; color: #166534; }
+  .lesson-done a { color: #166534; }
   .board-head .kicker { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #C2410C; }
   .board-head h2 { font-size: 22px; margin: 4px 0 4px; }
   .placeholder { border: 1.5px dashed #CFCFCA; border-radius: 12px; padding: 26px; text-align: center; color: #6B6B66; font-size: 14px; line-height: 1.6; }
@@ -197,12 +200,22 @@
       lessons.map(l => `<button data-b="${l.unit}" class="${board === l.unit ? 'on' : ''}"><span class="n">${l.n}</span>${esc(l.title)}</button>`).join('');
   }
 
+  // A finished lesson (memo submitted) says so on its own board, and points back home.
+  let lessonWork = null;
+  function markDone(l) {
+    const el = $('lesson-done'); if (!el || !l || !l.checker) return;
+    const show = () => { const w = (lessonWork || {})[l.checker]; if (w && w.memoSubmitted) { el.hidden = false; el.innerHTML = `✓ Lesson ${l.n} is done. <a href="../">Back to your home page</a>`; } };
+    if (lessonWork) return show();
+    Coursework.summary().then(w => { lessonWork = w; show(); }).catch(() => {});
+  }
+
   async function renderBoard() {
     renderLessonList();
     const l = lessons.find(x => x.unit === board);
     $('board-head').innerHTML = l
-      ? `<div class="kicker">Lesson ${l.n}</div><h2>${esc(l.title)}</h2><div class="muted">${esc(l.question)}</div>`
+      ? `<div class="kicker">Lesson ${l.n}</div><h2>${esc(l.title)}</h2><div class="muted">${esc(l.question)}</div><div class="lesson-done" id="lesson-done" hidden></div>`
       : `<div class="kicker">Example</div><h2>How a panel is built</h2><div class="muted">A view in <code>analysis</code> does the counting; the panel only shows it. Copy this pattern.</div>`;
+    markDone(l);
     const panels = BOARDS[board] || [];
     if (!panels.length) {
       // An empty lesson board says what fills it: the slides first, then the walkthrough with the assistant.

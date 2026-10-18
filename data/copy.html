@@ -70,7 +70,7 @@
         document.getElementById('expect').innerHTML = '';
         document.getElementById('copy').textContent = 'Copy the setup';
         const li = document.querySelectorAll('ol li');
-        li[1].innerHTML = 'Paste (⌘V) and press <b>Run</b>. If it warns about destructive operations, confirm: the setup only creates what is missing.';
+        li[1].innerHTML = 'Paste (⌘V) and press <b>Run</b>. If Supabase says <b>“potential issue detected”</b>, that is expected: confirm and run it.';
         li[2].textContent = 'The result lists four tables: sessions, clicks, selections, identities.';
       }
       document.getElementById('copy').disabled = false;

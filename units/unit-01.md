@@ -18,7 +18,7 @@ Along the way: [the database map](units/database-map.html), [a test visit](app/?
 
 ## The practice data
 
-Your assistant tells you when. Then copy it here and run it in Supabase's SQL Editor.
+Your assistant tells you when. Then copy it here and run it in Supabase's SQL Editor. If Supabase says "potential issue detected", that is expected: confirm and run it.
 
 [the practice data](data/copy.html?f=lesson-02)
 
@@ -50,10 +50,9 @@ four tables and how they connect on paper, in your own words, and compare your d
 
 ## 3. Watch yourself being recorded
 
-1. On [your dashboard](dashboard/#checks), press **Is capture working? → Run the check**. It must say "Capture works".
-2. Open [your app as a test run](app/?test=1) and use it for a minute: open a photo,
+1. Open [your app as a test run](app/?test=1) and use it for a minute: open a photo,
    visit a profile, start signing up.
-3. Find your visit in the dashboard's [raw `sessions` table](dashboard/#raw), then your taps in `clicks`.
+2. Find your visit in the dashboard's [raw `sessions` table](dashboard/#raw), then your taps in `clicks`.
    Does what you see match what you did?
 
 ## 4. Build: "Replay a visit"

@@ -17,7 +17,7 @@ Build on [your dashboard's **lesson 3** board](dashboard/#unit-03):
 
 ## The practice data
 
-Your assistant tells you when. Then copy it here and run it in Supabase's SQL Editor.
+Your assistant tells you when. Then copy it here and run it in Supabase's SQL Editor. If Supabase says "potential issue detected", that is expected: confirm and run it.
 
 [the practice data](data/copy.html?f=lesson-03)
 
